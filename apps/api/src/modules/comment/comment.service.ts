@@ -1,69 +1,67 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Injectable } from '@nestjs/common';
+import { Queue } from 'bullmq';
 
-import {
-  CommentStatus,
-  EntryStatus,
-  EntryVisibility,
-} from '../../generated/prisma/enums';
+import { CommentStatus, PostStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  MODERATE_CONTENT_PORT,
-  ModerateContentPort,
-} from '../moderation/ports/moderate-content.port';
+  MODERATION_QUEUE,
+  ModerateCommentJobData,
+  ModeratePostJobData,
+  ModerationJobName,
+} from '../queue/consts/queue.const';
 import { COMMENTS_LIST_TAKE } from './consts/comment.const';
 import { CreateCommentDto } from './dtos/create-comment.dto';
 import { CreateCommentResponseDto } from './dtos/create-comment-response.dto';
 import { DeleteCommentResponseDto } from './dtos/delete-comment-response.dto';
 import { ListCommentsQueryDto } from './dtos/list-comments-query.dto';
 import { ListCommentsResponseDto } from './dtos/list-comments-response.dto';
-import { CommentBlockedException } from './exceptions/comment-blocked.exception';
 import { CommentNotFoundException } from './exceptions/comment-not-found.exception';
-import { EntryNotCommentableException } from './exceptions/entry-not-commentable.exception';
+import { PostNotCommentableException } from './exceptions/post-not-commentable.exception';
 import { CommentMapper } from './mappers/comment.mapper';
 
 @Injectable()
 export class CommentService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(MODERATE_CONTENT_PORT)
-    private readonly moderateContentPort: ModerateContentPort,
+    @InjectQueue(MODERATION_QUEUE)
+    private readonly moderationQueue: Queue<
+      ModeratePostJobData | ModerateCommentJobData
+    >,
   ) {}
 
   async create(
     dto: CreateCommentDto,
     authorId: string,
   ): Promise<CreateCommentResponseDto> {
-    await this.assertEntryIsCommentable(dto.entryId);
-
-    const moderation = await this.moderateContentPort.execute({
-      content: dto.content,
-      type: 'comment',
-    });
-
-    if (!moderation.allow) {
-      throw new CommentBlockedException(moderation.reason);
-    }
+    await this.assertPostIsCommentable(dto.postId);
 
     const { id } = await this.prisma.comment.create({
       data: {
-        entryId: dto.entryId,
+        postId: dto.postId,
         authorId,
         content: dto.content,
+        status: CommentStatus.PENDING,
       },
       select: { id: true },
+    });
+
+    await this.moderationQueue.add(ModerationJobName.MODERATE_COMMENT, {
+      commentId: id,
+      authorId,
     });
 
     return { id };
   }
 
   async findAll(dto: ListCommentsQueryDto): Promise<ListCommentsResponseDto> {
-    await this.assertEntryIsCommentable(dto.entryId);
+    await this.assertPostIsCommentable(dto.postId);
 
-    const { entryId, lastCursorId, lastCreatedAt } = dto;
+    const { postId, lastCursorId, lastCreatedAt } = dto;
 
     const comments = await this.prisma.comment.findMany({
       where: {
-        entryId,
+        postId,
         status: CommentStatus.ACTIVE,
         deletedAt: null,
         ...(lastCursorId && lastCreatedAt
@@ -106,7 +104,7 @@ export class CommentService {
       where: {
         id: commentId,
         authorId,
-        status: CommentStatus.ACTIVE,
+        status: { in: [CommentStatus.ACTIVE, CommentStatus.PENDING] },
         deletedAt: null,
       },
     });
@@ -122,17 +120,16 @@ export class CommentService {
     return { id };
   }
 
-  private async assertEntryIsCommentable(entryId: string): Promise<void> {
-    const entry = await this.prisma.journalEntry.findFirst({
+  private async assertPostIsCommentable(postId: string): Promise<void> {
+    const post = await this.prisma.post.findFirst({
       where: {
-        id: entryId,
-        visibility: EntryVisibility.PUBLIC,
-        status: EntryStatus.ACTIVE,
+        id: postId,
+        status: PostStatus.ACTIVE,
         deletedAt: null,
       },
       select: { id: true },
     });
 
-    if (!entry) throw new EntryNotCommentableException();
+    if (!post) throw new PostNotCommentableException();
   }
 }

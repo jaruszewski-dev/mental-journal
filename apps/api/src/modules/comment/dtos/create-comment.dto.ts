@@ -9,7 +9,7 @@ import {
 export class CreateCommentDto {
   @ApiProperty({ format: 'uuid' })
   @IsUUID()
-  entryId!: string;
+  postId!: string;
 
   @ApiProperty({ example: 'I hear you. You are not alone.' })
   @IsString()

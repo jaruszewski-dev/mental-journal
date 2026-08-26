@@ -5,7 +5,7 @@ import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 export class ListCommentsQueryDto {
   @ApiProperty({ format: 'uuid' })
   @IsUUID()
-  entryId!: string;
+  postId!: string;
 
   @ApiPropertyOptional()
   @IsOptional()

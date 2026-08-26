@@ -1,0 +1,5 @@
+export const TRUST_SCORE_ALLOW_DELTA = 1;
+
+export const TRUST_SCORE_BLOCK_DELTA = -10;
+
+export const TRUST_SCORE_SHADOWBAN_THRESHOLD = -50;

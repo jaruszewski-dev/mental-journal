@@ -23,21 +23,24 @@ export class FeedItemDto {
   @ApiProperty()
   content!: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   mood?: number;
 
   @ApiProperty()
   tags!: string[];
 
   @ApiProperty()
-  createdAt!: Date;
+  anonName!: string;
 
   @ApiProperty()
+  createdAt!: Date;
+
+  @ApiProperty({ nullable: true })
   updatedAt!: Date | null;
 }
 
 export class ListFeedResponseDto {
-  @ApiProperty()
+  @ApiProperty({ type: [FeedItemDto] })
   items!: FeedItemDto[];
 
   @ApiProperty()

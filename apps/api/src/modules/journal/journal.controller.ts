@@ -63,6 +63,15 @@ export class JournalController {
     return this.journalService.findOne(user.userId, entryId);
   }
 
+  @Post(':id/publish')
+  @HttpCode(HttpStatus.CREATED)
+  publish(
+    @Param('id', ParseUUIDPipe) entryId: string,
+    @CurrentUser() user: AuthUser,
+  ): Promise<{ id: string }> {
+    return this.journalService.publish(user.userId, entryId);
+  }
+
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -82,5 +91,3 @@ export class JournalController {
     return this.journalService.delete(user.userId, entryId);
   }
 }
-
-//TODO: Figure out if is needed to implement java spring boot locations e.g URI location = URI.create("/users/" + user.id());

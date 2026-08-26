@@ -15,6 +15,8 @@ import { CommentModule } from './modules/comment/comment.module';
 import { FeedModule } from './modules/feed/feed.module';
 import { HealthModule } from './modules/health/health.module';
 import { JournalModule } from './modules/journal/journal.module';
+import { ModerationModule } from './modules/moderation/moderation.module';
+import { QueueModule } from './modules/queue/queue.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 const throttleFactory = (configService: ConfigService) => ({
@@ -54,6 +56,8 @@ const i18nModuleResolvers = [
       resolvers: i18nModuleResolvers,
     }),
     PrismaModule,
+    QueueModule,
+    ModerationModule,
     HealthModule,
     AuthModule,
     JournalModule,

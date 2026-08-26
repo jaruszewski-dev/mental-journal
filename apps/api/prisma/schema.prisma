@@ -7,6 +7,7 @@ enum UserStatus {
   ACTIVE
   BANNED
   INACTIVE
+  SHADOWBANNED
 }
 
 enum UserRole {
@@ -15,17 +16,19 @@ enum UserRole {
   MODERATOR
 }
 
-enum EntryVisibility {
-  PRIVATE
-  PUBLIC
-}
-
 enum EntryStatus {
   ACTIVE
   HIDDEN
 }
 
+enum PostStatus {
+  PENDING
+  ACTIVE
+  HIDDEN
+}
+
 enum CommentStatus {
+  PENDING
   ACTIVE
   HIDDEN
 }
@@ -64,6 +67,7 @@ model User {
 
   session        Session[]
   journalEntries JournalEntry[]
+  posts          Post[]
   comments       Comment[]
 
   @@map("user")
@@ -91,35 +95,58 @@ model JournalEntry {
   mood    Int?
   tags    String[] @default([])
 
-  visibility EntryVisibility @default(PRIVATE)
-  status     EntryStatus     @default(ACTIVE)
+  status EntryStatus @default(ACTIVE)
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comments Comment[]
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  post Post?
 
   @@index([userId, createdAt])
   @@map("journal_entries")
 }
 
-model Comment {
-  id       String @id @default(uuid())
-  entryId  String @map("entry_id")
-  authorId String @map("author_id")
+model Post {
+  id              String @id @default(uuid())
+  authorId        String @map("author_id")
+  journalEntryId  String @unique @map("journal_entry_id")
 
   content String
-  status  CommentStatus @default(ACTIVE)
+  mood    Int?
+  tags    String[] @default([])
+
+  status PostStatus @default(PENDING)
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  entry  JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
-  author User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author       User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  comments     Comment[]
 
-  @@index([entryId, createdAt])
+  @@index([createdAt])
+  @@map("posts")
+}
+
+model Comment {
+  id       String @id @default(uuid())
+  postId   String @map("post_id")
+  authorId String @map("author_id")
+
+  content String
+  status  CommentStatus @default(PENDING)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
   @@map("comments")
 }

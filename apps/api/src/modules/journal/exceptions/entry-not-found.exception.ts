@@ -8,3 +8,12 @@ export class EntryNotFoundException extends AppException {
     super(`${ErrorPath.JOURNAL}: entry not found`, HttpStatus.NOT_FOUND);
   }
 }
+
+export class EntryAlreadyPublishedException extends AppException {
+  constructor() {
+    super(
+      `${ErrorPath.JOURNAL}: entry already published`,
+      HttpStatus.CONFLICT,
+    );
+  }
+}

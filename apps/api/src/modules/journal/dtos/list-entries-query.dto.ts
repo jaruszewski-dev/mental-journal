@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsDate,
-  IsEnum,
   IsIn,
   IsNumber,
   IsOptional,
@@ -11,7 +10,6 @@ import {
   Min,
 } from 'class-validator';
 
-import { EntryVisibility } from '../../../generated/prisma/enums';
 import { MAX_MOOD, MIN_MOOD } from '../consts/entry.const';
 
 const ORDER_BY = ['asc', 'desc'] as const;
@@ -49,9 +47,4 @@ export class ListEntriesQueryDto {
   @Max(MAX_MOOD)
   @IsOptional()
   lastMood?: number;
-
-  @ApiProperty({ required: false })
-  @IsEnum(EntryVisibility)
-  @IsOptional()
-  visibility?: EntryVisibility;
 }

@@ -1,7 +1,9 @@
+import { getQueueToken } from '@nestjs/bullmq';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { EntryStatus, EntryVisibility } from '../../generated/prisma/enums';
+import { EntryStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
+import { MODERATION_QUEUE } from '../queue/consts/queue.const';
 import { ENTRIES_LIST_TAKE } from './consts/entry.const';
 import { CreateEntryDto } from './dtos/create-entry.dto';
 import { ListEntriesQueryDto } from './dtos/list-entries-query.dto';
@@ -18,7 +20,6 @@ const makeCreateEntryDto = (
   content: 'Test content',
   mood: 5,
   tags: ['therapy', 'need_support'],
-  visibility: EntryVisibility.PRIVATE,
   ...overrides,
 });
 
@@ -53,7 +54,6 @@ const makeUpdateEntryDto = (
   content: 'Updated content test',
   mood: 5,
   tags: ['evening_summary', 'weekly_goals'],
-  visibility: EntryVisibility.PUBLIC,
   ...overrides,
 });
 
@@ -67,6 +67,14 @@ describe('journalService', () => {
       findFirst: jest.fn(),
       update: jest.fn(),
     },
+    post: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+    },
+  };
+
+  const moderationQueue = {
+    add: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -76,6 +84,7 @@ describe('journalService', () => {
       providers: [
         JournalService,
         { provide: PrismaService, useValue: prismaService },
+        { provide: getQueueToken(MODERATION_QUEUE), useValue: moderationQueue },
       ],
     }).compile();
 
@@ -98,7 +107,6 @@ describe('journalService', () => {
           content: dto.content,
           mood: dto.mood,
           tags: dto.tags,
-          visibility: dto.visibility,
         },
       });
       expect(result).toEqual({ id: ENTRY_ID });
@@ -252,7 +260,6 @@ describe('journalService', () => {
           content: dto.content,
           mood: dto.mood,
           tags: dto.tags,
-          visibility: dto.visibility,
         },
         select: {
           id: true,

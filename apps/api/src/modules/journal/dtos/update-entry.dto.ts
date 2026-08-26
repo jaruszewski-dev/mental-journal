@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsEnum,
   IsIn,
   IsInt,
   IsOptional,
@@ -15,7 +14,6 @@ import {
   ALL_JOURNAL_TAGS,
   JournalTag,
 } from '../../../common/consts/tags.const';
-import { EntryVisibility } from '../../../generated/prisma/enums';
 import {
   MAX_CONTENT_LENGTH,
   MAX_MOOD,
@@ -42,9 +40,4 @@ export class UpdateEntryDto {
   @IsIn(ALL_JOURNAL_TAGS, { each: true })
   @IsOptional()
   tags?: JournalTag[];
-
-  @ApiProperty()
-  @IsEnum(EntryVisibility)
-  @IsOptional()
-  visibility?: EntryVisibility;
 }

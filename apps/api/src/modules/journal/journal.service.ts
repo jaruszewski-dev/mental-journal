@@ -1,8 +1,15 @@
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
+import { Queue } from 'bullmq';
 
-import { EntryStatus, EntryVisibility } from '../../generated/prisma/enums';
+import { EntryStatus, PostStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
-import { FindFeedInput, FindFeedResult } from '../feed/ports/find-feed.port';
+import {
+  MODERATION_QUEUE,
+  ModerateCommentJobData,
+  ModeratePostJobData,
+  ModerationJobName,
+} from '../queue/consts/queue.const';
 import { ENTRIES_LIST_TAKE } from './consts/entry.const';
 import { CreateEntryDto } from './dtos/create-entry.dto';
 import { ListEntriesQueryDto } from './dtos/list-entries-query.dto';
@@ -11,15 +18,24 @@ import {
   ListEntriesResponseDto,
 } from './dtos/list-entries-response.dto';
 import { UpdateEntryDto } from './dtos/update-entry.dto';
-import { EntryNotFoundException } from './exceptions/entry-not-found.exception';
+import {
+  EntryAlreadyPublishedException,
+  EntryNotFoundException,
+} from './exceptions/entry-not-found.exception';
 import { Entry, JournalMapper } from './mappers/journal.mapper';
 
 @Injectable()
 export class JournalService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @InjectQueue(MODERATION_QUEUE)
+    private readonly moderationQueue: Queue<
+      ModeratePostJobData | ModerateCommentJobData
+    >,
+  ) {}
 
   async create(dto: CreateEntryDto, userId: string): Promise<{ id: string }> {
-    const { content, mood, tags, visibility } = dto;
+    const { content, mood, tags } = dto;
 
     const { id } = await this.prisma.journalEntry.create({
       data: {
@@ -27,7 +43,6 @@ export class JournalService {
         content,
         mood,
         tags,
-        visibility,
       },
     });
 
@@ -41,7 +56,6 @@ export class JournalService {
     const {
       lastCursorId,
       lastCreatedAt,
-      visibility,
       lastMood,
       orderBy = 'desc',
       sortBy,
@@ -59,7 +73,6 @@ export class JournalService {
 
         deletedAt: null,
 
-        ...(visibility ? { visibility: visibility } : {}),
         ...(sortBy !== 'mood' && lastCursorId && lastCreatedAt
           ? {
               OR: ascending
@@ -124,7 +137,7 @@ export class JournalService {
   ): Promise<{ id: string }> {
     await this.assertEntryExists(entryId, userId);
 
-    const { content, mood, tags, visibility } = dto;
+    const { content, mood, tags } = dto;
 
     const { id } = await this.prisma.journalEntry.update({
       where: { id: entryId },
@@ -133,7 +146,6 @@ export class JournalService {
         ...(content !== undefined ? { content } : {}),
         ...(mood !== undefined ? { mood } : {}),
         ...(tags !== undefined ? { tags } : {}),
-        ...(visibility !== undefined ? { visibility } : {}),
       },
 
       select: {
@@ -162,40 +174,37 @@ export class JournalService {
     return { id };
   }
 
-  async feed(dto: FindFeedInput): Promise<FindFeedResult> {
-    const { lastCreatedAt, lastCursorId, tags } = dto;
+  async publish(
+    userId: string,
+    entryId: string,
+  ): Promise<{ id: string }> {
+    const entry = await this.assertEntryExists(entryId, userId);
 
-    const feed = await this.prisma.journalEntry.findMany({
-      where: {
-        visibility: EntryVisibility.PUBLIC,
-        status: EntryStatus.ACTIVE,
-        deletedAt: null,
-        ...(tags?.length ? { tags: { hasSome: tags } } : {}),
-        ...(lastCursorId && lastCreatedAt
-          ? {
-              OR: [
-                { createdAt: { lt: lastCreatedAt } },
-                { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
-              ],
-            }
-          : {}),
-      },
-      take: ENTRIES_LIST_TAKE + 1,
-      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    const existingPost = await this.prisma.post.findUnique({
+      where: { journalEntryId: entryId },
+      select: { id: true },
     });
 
-    const hasMore = feed.length > ENTRIES_LIST_TAKE;
-    const page = hasMore ? feed.slice(0, ENTRIES_LIST_TAKE) : feed;
-    const last = page[page.length - 1];
+    if (existingPost) throw new EntryAlreadyPublishedException();
 
-    return {
-      items: page.map(JournalMapper.toFeedItem),
-      meta: {
-        hasMore,
-        nextCursor:
-          !hasMore || !last ? null : { id: last.id, createdAt: last.createdAt },
+    const { id } = await this.prisma.post.create({
+      data: {
+        authorId: userId,
+        journalEntryId: entryId,
+        content: entry.content,
+        mood: entry.mood,
+        tags: entry.tags,
+        status: PostStatus.PENDING,
       },
-    };
+      select: { id: true },
+    });
+
+    await this.moderationQueue.add(ModerationJobName.MODERATE_POST, {
+      postId: id,
+      authorId: userId,
+    });
+
+    return { id };
   }
 
   private async assertEntryExists(
