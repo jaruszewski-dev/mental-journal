@@ -1,0 +1,11 @@
+---
+description: Work one small step at a time; propose the next step before continuing
+alwaysApply: true
+---
+
+# Step-by-step workflow
+
+- Implement **one thin slice at a time** (e.g. schema, then util, then service method, then controller, then tests) — never dump service + controller + exceptions + tests + wiring in one go.
+- After finishing a step, **stop and propose the next step** in chat; wait for the user to confirm before continuing (unless they explicitly say to keep going / "nie czekaj").
+- Prefer a short checklist of upcoming steps when starting a feature; execute only the agreed current step.
+- Reviews stay easy: each reply should leave a small, inspectable diff.

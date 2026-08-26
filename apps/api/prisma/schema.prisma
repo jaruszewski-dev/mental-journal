@@ -61,6 +61,7 @@ model User {
 
   bannedAt     DateTime? @map("banned_at")
   bannedReason String?   @map("banned_reason")
+  shadowBannedUntil DateTime? @map("shadow_banned_until")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

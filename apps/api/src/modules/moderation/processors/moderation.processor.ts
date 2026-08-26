@@ -18,6 +18,7 @@ import {
   TRUST_SCORE_ALLOW_DELTA,
   TRUST_SCORE_BLOCK_DELTA,
   TRUST_SCORE_SHADOWBAN_THRESHOLD,
+  computeShadowBannedUntil,
 } from '../consts/trust-score.const';
 import {
   MODERATE_CONTENT_PORT,
@@ -124,6 +125,28 @@ export class ModerationProcessor extends WorkerHost {
       select: { id: true, trustScore: true, status: true },
     });
 
+    if (!allowed && user.status === UserStatus.SHADOWBANNED) {
+      await this.prisma.$transaction([
+        this.prisma.user.update({
+          where: { id: authorId },
+          data: {
+            status: UserStatus.BANNED,
+            bannedAt: new Date(),
+            bannedReason: reason
+              ? `shadowban_block:${reason}`
+              : 'shadowban_block',
+            shadowBannedUntil: null,
+          },
+        }),
+        ...this.hidePendingContent(authorId),
+      ]);
+
+      this.logger.warn(
+        `User ${authorId} permanently banned after shadowban block (trustScore=${user.trustScore})`,
+      );
+      return;
+    }
+
     if (
       user.status === UserStatus.ACTIVE &&
       user.trustScore <= TRUST_SCORE_SHADOWBAN_THRESHOLD
@@ -137,29 +160,36 @@ export class ModerationProcessor extends WorkerHost {
             bannedReason: reason
               ? `trust_score:${reason}`
               : 'trust_score_threshold',
+            shadowBannedUntil: computeShadowBannedUntil(),
           },
         }),
-        this.prisma.post.updateMany({
-          where: {
-            authorId,
-            status: PostStatus.PENDING,
-            deletedAt: null,
-          },
-          data: { status: PostStatus.HIDDEN },
-        }),
-        this.prisma.comment.updateMany({
-          where: {
-            authorId,
-            status: CommentStatus.PENDING,
-            deletedAt: null,
-          },
-          data: { status: CommentStatus.HIDDEN },
-        }),
+        ...this.hidePendingContent(authorId),
       ]);
 
       this.logger.warn(
         `User ${authorId} shadowbanned (trustScore=${user.trustScore})`,
       );
     }
+  }
+
+  private hidePendingContent(authorId: string) {
+    return [
+      this.prisma.post.updateMany({
+        where: {
+          authorId,
+          status: PostStatus.PENDING,
+          deletedAt: null,
+        },
+        data: { status: PostStatus.HIDDEN },
+      }),
+      this.prisma.comment.updateMany({
+        where: {
+          authorId,
+          status: CommentStatus.PENDING,
+          deletedAt: null,
+        },
+        data: { status: CommentStatus.HIDDEN },
+      }),
+    ] as const;
   }
 }

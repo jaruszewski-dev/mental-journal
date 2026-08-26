@@ -2,7 +2,9 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
-import { EntryStatus, PostStatus } from '../../generated/prisma/enums';
+import { ErrorPath } from '../../common/consts/error-path.const';
+import { assertCanActPublicly } from '../../common/utils/assert-can-act-publicly.util';
+import { EntryStatus, PostStatus, UserStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   MODERATION_QUEUE,
@@ -174,10 +176,9 @@ export class JournalService {
     return { id };
   }
 
-  async publish(
-    userId: string,
-    entryId: string,
-  ): Promise<{ id: string }> {
+  async publish(userId: string, entryId: string): Promise<{ id: string }> {
+    await this.assertAuthorCanPublish(userId);
+
     const entry = await this.assertEntryExists(entryId, userId);
 
     const existingPost = await this.prisma.post.findUnique({
@@ -205,6 +206,18 @@ export class JournalService {
     });
 
     return { id };
+  }
+
+  private async assertAuthorCanPublish(userId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { status: true },
+    });
+
+    assertCanActPublicly(
+      user?.status ?? UserStatus.BANNED,
+      ErrorPath.JOURNAL,
+    );
   }
 
   private async assertEntryExists(

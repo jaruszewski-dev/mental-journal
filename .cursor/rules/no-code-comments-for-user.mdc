@@ -1,0 +1,10 @@
+---
+description: Never leave explanatory comments in code for the user
+alwaysApply: true
+---
+
+# No comments as communication
+
+- Do not leave comments in code to explain decisions, TODOs for the user, or messages meant for the user.
+- If something needs to be communicated, say it in the chat reply instead.
+- Prefer self-explanatory names over comments. Avoid narrating what the code does.

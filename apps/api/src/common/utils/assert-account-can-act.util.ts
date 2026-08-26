@@ -5,13 +5,18 @@ import { AccountNotVerifiedException } from '../exceptions/custom/account-not-ve
 import { UserNotFoundException } from '../exceptions/custom/user-not-found.exception';
 import { AssertUser } from '../interfaces/assert-user';
 
+const ALLOWED_STATUSES: ReadonlySet<UserStatus> = new Set([
+  UserStatus.ACTIVE,
+  UserStatus.SHADOWBANNED,
+]);
+
 export function assertAccountCanAct(
   user: AssertUser | null,
   errorPath: ErrorPath,
 ) {
   if (!user) throw new UserNotFoundException(errorPath);
 
-  if (user.status !== UserStatus.ACTIVE)
+  if (!ALLOWED_STATUSES.has(user.status))
     throw new AccountNotAllowedException(errorPath);
 
   if (!user.emailVerified) throw new AccountNotVerifiedException(errorPath);

@@ -2,7 +2,13 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
-import { CommentStatus, PostStatus } from '../../generated/prisma/enums';
+import { ErrorPath } from '../../common/consts/error-path.const';
+import { assertCanActPublicly } from '../../common/utils/assert-can-act-publicly.util';
+import {
+  CommentStatus,
+  PostStatus,
+  UserStatus,
+} from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   MODERATION_QUEUE,
@@ -34,6 +40,7 @@ export class CommentService {
     dto: CreateCommentDto,
     authorId: string,
   ): Promise<CreateCommentResponseDto> {
+    await this.assertAuthorCanComment(authorId);
     await this.assertPostIsCommentable(dto.postId);
 
     const { id } = await this.prisma.comment.create({
@@ -118,6 +125,18 @@ export class CommentService {
     });
 
     return { id };
+  }
+
+  private async assertAuthorCanComment(authorId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: authorId },
+      select: { status: true },
+    });
+
+    assertCanActPublicly(
+      user?.status ?? UserStatus.BANNED,
+      ErrorPath.COMMENT,
+    );
   }
 
   private async assertPostIsCommentable(postId: string): Promise<void> {
