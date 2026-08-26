@@ -1,98 +1,182 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Mental Journal API (`apps/api`)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS REST API for Mental Journal — private journal, public feed, comments, AI moderation, and auth.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Monorepo root docs: [`../../README.md`](../../README.md) · architecture notes: [`../../AGENT.md`](../../AGENT.md)
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Stack
 
-## Project setup
+| Piece | Tech |
+|-------|------|
+| Runtime | NestJS 11, TypeScript |
+| DB | PostgreSQL 16, Prisma 7 |
+| Queue | Redis + BullMQ |
+| Auth | JWT in httpOnly cookies + hashed refresh sessions |
+| Mail | Resend (async `mail` queue) |
+| Moderation | OpenAI Moderations (async `moderation` queue) |
 
-```bash
-$ pnpm install
+Global prefix: **`/v1`**. Swagger (non-production): **`/api`**.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Client["HTTP client"]
+  API["NestJS /v1"]
+  PG[(PostgreSQL)]
+  Redis[(Redis)]
+  OpenAI[OpenAI]
+  Resend[Resend]
+
+  Client -->|cookies| API
+  API --> PG
+  API --> Redis
+  Redis -->|workers| API
+  API -.-> OpenAI
+  API -.-> Resend
 ```
 
-## Compile and run the project
+**v1 style:** `controller → service → Prisma`. Ports/adapters only for external edges (auth use-cases, mail enqueue, OpenAI). HTTP responses are DTOs only.
 
-```bash
-# development
-$ pnpm run start
+### Modules
 
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+```
+src/
+  modules/
+    auth/          register, login, verify, refresh, logout
+    user/          user persistence + adapters for auth ports
+    session/       refresh sessions + adapters
+    mail/          Resend + MailProcessor
+    journal/       private entries + publish → Post
+    feed/          public ACTIVE posts
+    comment/       comments on ACTIVE posts
+    moderation/    OpenAI service, ModerationProcessor, shadowban cron
+    queue/         BullMQ registration + job consts
+    health/
+  common/          guards, exceptions, assert* helpers
+  prisma/          PrismaService
+  generated/       Prisma client (generated)
 ```
 
-## Run tests
+### Domain (simplified)
 
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+```mermaid
+erDiagram
+  User ||--o{ JournalEntry : writes
+  User ||--o{ Post : authors
+  User ||--o{ Comment : authors
+  User ||--o{ Session : has
+  User ||--o{ ModerationCase : subject
+  JournalEntry ||--o| Post : publish
+  Post ||--o{ Comment : has
+  ModerationCase ||--o{ ModerationEvidence : has
 ```
 
-## Deployment
+| Concept | Behavior |
+|---------|----------|
+| `JournalEntry` | Private; owner-only CRUD |
+| `Post` | Snapshot created on publish; `PENDING` → AI → `ACTIVE` / `HIDDEN` |
+| `Comment` | Same moderation pipeline as posts |
+| `SHADOWBANNED` | Can use journal; cannot publish/comment |
+| `ModerationCase` | Opened on AI block while already shadowbanned (for future human review) |
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Publish / comment moderation
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+```mermaid
+flowchart TD
+  A[Create Post or Comment PENDING] --> B[Enqueue moderation job]
+  B --> C[OpenAI Moderations]
+  C -->|allow| D[ACTIVE + trustScore +1]
+  C -->|block| E[HIDDEN + trustScore -10]
+  E --> F{Already SHADOWBANNED?}
+  F -->|yes| G[ModerationCase + evidence]
+  F -->|no| H{trustScore <= -50?}
+  H -->|yes| I[SHADOWBANNED 3 days]
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Trust deltas: `+1` allow, `-10` block, threshold `-50`. Shadowban until midnight Europe/Warsaw (+3 calendar days). Cron: `SHADOWBAN_EXPIRY_CRON` / `SHADOWBAN_TIME_ZONE`.
 
-## Resources
+### Auth
 
-Check out a few resources that may come in handy when working with NestJS:
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant A as API
+  participant Q as mail queue
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+  C->>A: POST /v1/auth/register
+  A->>Q: send verification email
+  C->>A: GET /v1/auth/verify-email
+  C->>A: POST /v1/auth/login
+  A-->>C: Set-Cookie access_token, refresh_token
+  C->>A: authenticated routes
+  Note over A: JwtAuthGuard + AccountCanActGuard
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## HTTP surface
 
-## Stay in touch
+| Area | Routes |
+|------|--------|
+| Health | `GET /v1/health` |
+| Auth | `/v1/auth/register`, `login`, `verify-email`, `me`, `resend-verification`, `logout`, `logout-all`, `refresh` |
+| Journal | `/v1/journal` CRUD + `POST /v1/journal/:id/publish` |
+| Feed | `GET /v1/feed` |
+| Comments | `POST|GET|DELETE /v1/comments` |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## Local setup
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+From **repo root** (recommended):
+
+```sh
+pnpm install
+cp apps/api/.env.example apps/api/.env   # fill values
+pnpm docker:up                           # Postgres + Redis
+pnpm db:migrate
+pnpm --filter api dev
+```
+
+Or from this package:
+
+```sh
+pnpm install          # from root first
+pnpm dev              # predev brings docker up + prisma generate
+pnpm test
+pnpm check-types
+pnpm db:migrate
+```
+
+See `.env.example` for required keys (`DATABASE_URL`, `REDIS_URL`, `JWT_*`, `OPENAI_API_KEY`, `RESEND_*`, …).
+
+| URL | |
+|-----|--|
+| API | http://localhost:3001/v1 |
+| Swagger | http://localhost:3001/api |
+
+---
+
+## Scripts (package)
+
+| Script | Description |
+|--------|-------------|
+| `dev` | Nest watch (`predev`: docker + `prisma generate`) |
+| `build` / `start:prod` | Build / run `dist` |
+| `test` | Jest unit tests |
+| `check-types` | `tsc --noEmit` |
+| `db:migrate` / `db:push` / `db:studio` | Prisma |
+
+---
+
+## Out of scope (this package)
+
+- Frontend
+- Chat / WebSockets
+- CMS endpoints to resolve `ModerationCase`
+- Password reset

@@ -1,59 +1,67 @@
 # Mental Journal
 
-Backend API for a **private mental journal**: register with email, verify account, then create and manage your own journal entries (mood, emotional tags, visibility).
+Anonymous, privacy-first emotional support platform. Users keep a **private journal**, can **publish** selected entries to a public feed, and leave **comments**. Public content goes through **AI moderation**; accounts that repeatedly violate rules can be **shadowbanned** (private journal still works).
 
-This is intentionally a learning-focused NestJS backend. There is **no frontend app in this repo yet**, and no public social feed / chat / AI moderation in the current codebase.
+This repo currently ships the **NestJS API**. A Next.js client is planned but not included yet.
+
+For architecture diagrams and deeper design notes, see [`AGENT.md`](./AGENT.md).
 
 ## Stack
 
 - **Monorepo:** pnpm + Turborepo
 - **API:** NestJS 11, Prisma 7, PostgreSQL 16
-- **Auth:** JWT access token + refresh session (httpOnly cookies), email verification via Resend
-- **Other:** Swagger (non-production), throttling, i18n for journal tags (PL/EN)
+- **Queue:** Redis 7 + BullMQ (moderation + mail)
+- **Auth:** JWT access + refresh in httpOnly cookies; email verification via Resend
+- **Moderation:** OpenAI Moderations API (async workers)
+- **Other:** Swagger (non-production), throttling, i18n for tags (PL/EN)
 
-## What’s implemented
+## What’s in v1
 
-| Area    | Endpoints (prefix `/v1`)                                                                                                                                                                  |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Auth    | `POST /auth/register`, `POST /auth/login`, `GET /auth/verify-email`, `POST /auth/resend-verification`, `POST /auth/refresh`, `POST /auth/logout`, `POST /auth/logout-all`, `GET /auth/me` |
-| Journal | CRUD under `/journal` (authenticated, own entries only)                                                                                                                                   |
-| Health  | `GET /health`                                                                                                                                                                             |
+| Area | Capabilities |
+|------|----------------|
+| Auth | Register, verify email, login, refresh, logout, `/me` |
+| Journal | Private CRUD + `POST /journal/:id/publish` (creates public post snapshot) |
+| Feed | List ACTIVE public posts (cursor, optional tags) |
+| Comments | Create / list / delete on ACTIVE posts |
+| Safety | Async AI moderation, trust score, temporary shadowban, moderation cases for human review later |
+| Ops | Health check, cron to lift expired shadowbans |
 
-Auth details worth knowing:
+Prefix: `/v1`. Example: `GET /v1/feed`.
 
-- Access + refresh tokens live in **httpOnly** cookies (`secure` in `NODE_ENV=production`)
-- Refresh tokens are stored hashed; rotation uses an atomic DB update
-- Account must be **ACTIVE** and **email-verified** to use journal routes
+**Auth notes**
+
+- Cookies: `access_token`, `refresh_token` (`secure` when `NODE_ENV=production`)
+- Refresh tokens stored hashed; rotation via atomic update
+- Allowed statuses for authenticated use: `ACTIVE` and `SHADOWBANNED` (email must be verified)
+- Shadowbanned users **cannot** publish or comment; private journal remains available
 
 ## Requirements
 
 - Node.js ≥ 18
 - pnpm 9
-- Docker (for Postgres)
+- Docker (Postgres + Redis)
 
 ## Setup
 
 ```sh
 pnpm install
-```
-
-Copy env templates and fill values:
-
-```sh
 cp apps/api/.env.example apps/api/.env
-# optional: docker/.env for Postgres user/password/port
+# fill secrets in apps/api/.env
+# optional: docker/.env for Postgres/Redis ports and credentials
 ```
 
-Minimum for local API (`apps/api/.env`):
+Important env vars (`apps/api/.env`):
 
-- `DATABASE_URL` — e.g. `postgresql://mental_journal:mental_journal@localhost:5432/mental_journal`
-- `FRONTEND_URL` — used in verification links (e.g. `http://localhost:3000`)
-- `JWT_ACCESS_SECRET`, `ACCESS_TOKEN_TTL`, `SESSION_REFRESH_TTL`, `EMAIL_TTL`
-- `RESEND_API_KEY`, `MAIL_FROM`
-- `PORT` (default `3001`), optional throttle / `FALLBACK_LANGUAGE`
-- `NODE_ENV` — use `production` only in real deploy (enables secure cookies; disables Swagger)
-
-Start Postgres and apply migrations:
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Postgres connection |
+| `REDIS_URL` | BullMQ / Redis |
+| `FRONTEND_URL` | CORS origin + links in verification emails |
+| `JWT_ACCESS_SECRET`, `ACCESS_TOKEN_TTL`, `SESSION_REFRESH_TTL`, `EMAIL_TTL` | Auth / sessions |
+| `RESEND_API_KEY`, `MAIL_FROM` | Outbound mail |
+| `OPENAI_API_KEY` | Content moderation |
+| `SHADOWBAN_EXPIRY_CRON`, `SHADOWBAN_TIME_ZONE` | Unban cron |
+| `PORT` | API port (default `3001`) |
 
 ```sh
 pnpm docker:up
@@ -66,35 +74,38 @@ pnpm db:migrate
 pnpm dev
 ```
 
-This starts Docker Postgres (if needed) and the API in watch mode.
-
-- API: `http://localhost:3001/v1`
-- Swagger (when not production): `http://localhost:3001/api`
+- API: [http://localhost:3001/v1](http://localhost:3001/v1)
+- Swagger (when not production): [http://localhost:3001/api](http://localhost:3001/api)
 
 ## Scripts
 
-| Command                               | Description                                  |
-| ------------------------------------- | -------------------------------------------- |
-| `pnpm dev`                            | Docker up + API watch                        |
-| `pnpm build`                          | Build (runs tests as part of turbo pipeline) |
-| `pnpm api:test`                       | Unit tests for API                           |
-| `pnpm db:migrate`                     | Prisma migrate (dev)                         |
-| `pnpm db:studio`                      | Prisma Studio                                |
-| `pnpm docker:up` / `pnpm docker:down` | Postgres container                           |
-| `pnpm lint` / `pnpm check`            | Lint / lint + format check                   |
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Docker up + API watch |
+| `pnpm build` | Build workspace |
+| `pnpm api:test` | API unit tests |
+| `pnpm db:migrate` | Prisma migrate (dev) |
+| `pnpm db:studio` | Prisma Studio |
+| `pnpm docker:up` / `pnpm docker:down` | Postgres + Redis |
+| `pnpm lint` / `pnpm check` | Lint / lint + format check |
+| `pnpm ci:local` | Fix + check + tests |
 
-## Project layout
+## Layout
 
 ```
-apps/api/          NestJS API + Prisma
-docker/            Postgres compose
-packages/          Shared ESLint / TypeScript configs
+apps/api/     NestJS API, Prisma schema & migrations
+docker/       Postgres + Redis compose
+packages/     Shared ESLint / TypeScript configs
+AGENT.md      Technical architecture (diagrams, flows)
 ```
 
 ## Out of scope (for now)
 
-- Next.js (or any) client
-- Public posts, comments, chat, WebSockets
-- AI moderation
+- Next.js (or any) client in this repo
+- Chat / WebSockets / realtime feed
+- CMS HTTP API to resolve moderation cases
+- Password reset / profile editing
 
-Those may appear later; the current MVP is **private journal + auth**.
+## Non-goals
+
+No likes, rankings, followers, or engagement gamification. Tags are emotional, not clinical.
