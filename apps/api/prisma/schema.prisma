@@ -33,6 +33,18 @@ enum CommentStatus {
   HIDDEN
 }
 
+enum ModerationCaseStatus {
+  OPEN
+  BANNED
+  DISMISSED
+  EXPIRED
+}
+
+enum ModerationCaseTrigger {
+  TRUST_THRESHOLD
+  SHADOWBAN_REPEAT_BLOCK
+}
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -59,8 +71,8 @@ model User {
   emailVerificationTokenHash      String?   @map("email_verification_token_hash")
   emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at")
 
-  bannedAt     DateTime? @map("banned_at")
-  bannedReason String?   @map("banned_reason")
+  bannedAt          DateTime? @map("banned_at")
+  bannedReason      String?   @map("banned_reason")
   shadowBannedUntil DateTime? @map("shadow_banned_until")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -70,6 +82,9 @@ model User {
   journalEntries JournalEntry[]
   posts          Post[]
   comments       Comment[]
+
+  moderationCases         ModerationCase[] @relation("ModerationCaseSubject")
+  resolvedModerationCases ModerationCase[] @relation("ModerationCaseResolver")
 
   @@map("user")
 }
@@ -102,7 +117,7 @@ model JournalEntry {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   post Post?
 
@@ -111,9 +126,9 @@ model JournalEntry {
 }
 
 model Post {
-  id              String @id @default(uuid())
-  authorId        String @map("author_id")
-  journalEntryId  String @unique @map("journal_entry_id")
+  id             String @id @default(uuid())
+  authorId       String @map("author_id")
+  journalEntryId String @unique @map("journal_entry_id")
 
   content String
   mood    Int?
@@ -125,9 +140,10 @@ model Post {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  author       User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
-  comments     Comment[]
+  author             User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  journalEntry       JournalEntry         @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  comments           Comment[]
+  moderationEvidence ModerationEvidence[]
 
   @@index([createdAt])
   @@map("posts")
@@ -145,9 +161,58 @@ model Comment {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post               Post                 @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author             User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  moderationEvidence ModerationEvidence[]
 
   @@index([postId, createdAt])
   @@map("comments")
+}
+
+model ModerationCase {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+
+  status  ModerationCaseStatus  @default(OPEN)
+  trigger ModerationCaseTrigger
+  reason  String
+
+  trustScoreSnapshot Int @map("trust_score_snapshot")
+
+  openedAt   DateTime  @default(now()) @map("opened_at")
+  resolvedAt DateTime? @map("resolved_at")
+
+  resolvedById   String? @map("resolved_by_id")
+  resolutionNote String? @map("resolution_note")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user       User                 @relation("ModerationCaseSubject", fields: [userId], references: [id], onDelete: Cascade)
+  resolvedBy User?                @relation("ModerationCaseResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  evidence   ModerationEvidence[]
+
+  @@index([status, openedAt])
+  @@index([userId, openedAt])
+  @@map("moderation_cases")
+}
+
+model ModerationEvidence {
+  id     String @id @default(uuid())
+  caseId String @map("case_id")
+
+  postId    String? @map("post_id")
+  commentId String? @map("comment_id")
+
+  contentSnapshot String? @map("content_snapshot")
+  aiReason        String? @map("ai_reason")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  case    ModerationCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  post    Post?          @relation(fields: [postId], references: [id], onDelete: SetNull)
+  comment Comment?       @relation(fields: [commentId], references: [id], onDelete: SetNull)
+
+  @@index([caseId])
+  @@map("moderation_evidence")
 }

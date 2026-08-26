@@ -4,6 +4,8 @@ import { Job } from 'bullmq';
 
 import {
   CommentStatus,
+  ModerationCaseStatus,
+  ModerationCaseTrigger,
   PostStatus,
   UserStatus,
 } from '../../../generated/prisma/enums';
@@ -26,6 +28,12 @@ import {
 } from '../ports/moderate-content.port';
 
 type ModerationJobData = ModeratePostJobData | ModerateCommentJobData;
+
+type TrustScoreEvidence = {
+  postId?: string;
+  commentId?: string;
+  contentSnapshot: string;
+};
 
 @Processor(MODERATION_QUEUE)
 export class ModerationProcessor extends WorkerHost {
@@ -79,7 +87,10 @@ export class ModerationProcessor extends WorkerHost {
       },
     });
 
-    await this.applyTrustScore(post.authorId, result.allow, result.reason);
+    await this.applyTrustScore(post.authorId, result.allow, result.reason, {
+      postId: post.id,
+      contentSnapshot: post.content,
+    });
   }
 
   private async moderateComment(data: ModerateCommentJobData): Promise<void> {
@@ -109,13 +120,22 @@ export class ModerationProcessor extends WorkerHost {
       },
     });
 
-    await this.applyTrustScore(comment.authorId, result.allow, result.reason);
+    await this.applyTrustScore(
+      comment.authorId,
+      result.allow,
+      result.reason,
+      {
+        commentId: comment.id,
+        contentSnapshot: comment.content,
+      },
+    );
   }
 
   private async applyTrustScore(
     authorId: string,
     allowed: boolean,
-    reason?: string,
+    reason: string | undefined,
+    evidence: TrustScoreEvidence,
   ): Promise<void> {
     const delta = allowed ? TRUST_SCORE_ALLOW_DELTA : TRUST_SCORE_BLOCK_DELTA;
 
@@ -126,23 +146,16 @@ export class ModerationProcessor extends WorkerHost {
     });
 
     if (!allowed && user.status === UserStatus.SHADOWBANNED) {
-      await this.prisma.$transaction([
-        this.prisma.user.update({
-          where: { id: authorId },
-          data: {
-            status: UserStatus.BANNED,
-            bannedAt: new Date(),
-            bannedReason: reason
-              ? `shadowban_block:${reason}`
-              : 'shadowban_block',
-            shadowBannedUntil: null,
-          },
-        }),
-        ...this.hidePendingContent(authorId),
-      ]);
+      await this.openOrExtendModerationCase(
+        authorId,
+        user.trustScore,
+        reason,
+        evidence,
+      );
+      await this.prisma.$transaction([...this.hidePendingContent(authorId)]);
 
       this.logger.warn(
-        `User ${authorId} permanently banned after shadowban block (trustScore=${user.trustScore})`,
+        `User ${authorId} queued for ban review after shadowban block (trustScore=${user.trustScore})`,
       );
       return;
     }
@@ -170,6 +183,48 @@ export class ModerationProcessor extends WorkerHost {
         `User ${authorId} shadowbanned (trustScore=${user.trustScore})`,
       );
     }
+  }
+
+  private async openOrExtendModerationCase(
+    authorId: string,
+    trustScore: number,
+    reason: string | undefined,
+    evidence: TrustScoreEvidence,
+  ): Promise<void> {
+    const existing = await this.prisma.moderationCase.findFirst({
+      where: {
+        userId: authorId,
+        status: ModerationCaseStatus.OPEN,
+      },
+      select: { id: true },
+    });
+
+    const evidenceData = {
+      postId: evidence.postId,
+      commentId: evidence.commentId,
+      contentSnapshot: evidence.contentSnapshot,
+      aiReason: reason,
+    };
+
+    if (existing) {
+      await this.prisma.moderationEvidence.create({
+        data: {
+          caseId: existing.id,
+          ...evidenceData,
+        },
+      });
+      return;
+    }
+
+    await this.prisma.moderationCase.create({
+      data: {
+        userId: authorId,
+        trigger: ModerationCaseTrigger.SHADOWBAN_REPEAT_BLOCK,
+        reason: reason ?? 'shadowban_repeat_block',
+        trustScoreSnapshot: trustScore,
+        evidence: { create: evidenceData },
+      },
+    });
   }
 
   private hidePendingContent(authorId: string) {
