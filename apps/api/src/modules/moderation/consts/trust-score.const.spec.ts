@@ -1,6 +1,6 @@
 import {
-  SHADOWBAN_DURATION_DAYS,
   computeShadowBannedUntil,
+  SHADOWBAN_DURATION_DAYS,
 } from './trust-score.const';
 
 describe('computeShadowBannedUntil', () => {

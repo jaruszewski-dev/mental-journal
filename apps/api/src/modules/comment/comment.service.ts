@@ -11,9 +11,9 @@ import {
 } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  MODERATION_QUEUE,
   ModerateCommentJobData,
   ModeratePostJobData,
+  MODERATION_QUEUE,
   ModerationJobName,
 } from '../queue/consts/queue.const';
 import { COMMENTS_LIST_TAKE } from './consts/comment.const';
@@ -133,10 +133,7 @@ export class CommentService {
       select: { status: true },
     });
 
-    assertCanActPublicly(
-      user?.status ?? UserStatus.BANNED,
-      ErrorPath.COMMENT,
-    );
+    assertCanActPublicly(user?.status ?? UserStatus.BANNED, ErrorPath.COMMENT);
   }
 
   private async assertPostIsCommentable(postId: string): Promise<void> {

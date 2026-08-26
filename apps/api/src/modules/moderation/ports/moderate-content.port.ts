@@ -1,4 +1,7 @@
-export type ModerationContentType = 'comment' | 'journal_entry' | 'chat_message';
+export type ModerationContentType =
+  | 'comment'
+  | 'journal_entry'
+  | 'chat_message';
 
 export type ModerationSeverity = 'low' | 'medium' | 'high';
 

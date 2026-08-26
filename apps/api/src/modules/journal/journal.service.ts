@@ -4,12 +4,16 @@ import { Queue } from 'bullmq';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
 import { assertCanActPublicly } from '../../common/utils/assert-can-act-publicly.util';
-import { EntryStatus, PostStatus, UserStatus } from '../../generated/prisma/enums';
+import {
+  EntryStatus,
+  PostStatus,
+  UserStatus,
+} from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
-  MODERATION_QUEUE,
   ModerateCommentJobData,
   ModeratePostJobData,
+  MODERATION_QUEUE,
   ModerationJobName,
 } from '../queue/consts/queue.const';
 import { ENTRIES_LIST_TAKE } from './consts/entry.const';
@@ -214,10 +218,7 @@ export class JournalService {
       select: { status: true },
     });
 
-    assertCanActPublicly(
-      user?.status ?? UserStatus.BANNED,
-      ErrorPath.JOURNAL,
-    );
+    assertCanActPublicly(user?.status ?? UserStatus.BANNED, ErrorPath.JOURNAL);
   }
 
   private async assertEntryExists(

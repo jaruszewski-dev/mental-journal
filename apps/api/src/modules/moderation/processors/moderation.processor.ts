@@ -11,16 +11,16 @@ import {
 } from '../../../generated/prisma/enums';
 import { PrismaService } from '../../../prisma/prisma.service';
 import {
-  MODERATION_QUEUE,
   ModerateCommentJobData,
   ModeratePostJobData,
+  MODERATION_QUEUE,
   ModerationJobName,
 } from '../../queue/consts/queue.const';
 import {
+  computeShadowBannedUntil,
   TRUST_SCORE_ALLOW_DELTA,
   TRUST_SCORE_BLOCK_DELTA,
   TRUST_SCORE_SHADOWBAN_THRESHOLD,
-  computeShadowBannedUntil,
 } from '../consts/trust-score.const';
 import {
   MODERATE_CONTENT_PORT,
@@ -120,15 +120,10 @@ export class ModerationProcessor extends WorkerHost {
       },
     });
 
-    await this.applyTrustScore(
-      comment.authorId,
-      result.allow,
-      result.reason,
-      {
-        commentId: comment.id,
-        contentSnapshot: comment.content,
-      },
-    );
+    await this.applyTrustScore(comment.authorId, result.allow, result.reason, {
+      commentId: comment.id,
+      contentSnapshot: comment.content,
+    });
   }
 
   private async applyTrustScore(
