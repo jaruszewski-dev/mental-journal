@@ -370,5 +370,3 @@ export class AuthService {
     };
   }
 }
-
-//Check if split one service into few
