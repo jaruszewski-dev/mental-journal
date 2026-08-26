@@ -11,6 +11,7 @@ import {
 import * as path from 'path';
 
 import { AuthModule } from './modules/auth/auth.module';
+import { CommentModule } from './modules/comment/comment.module';
 import { FeedModule } from './modules/feed/feed.module';
 import { HealthModule } from './modules/health/health.module';
 import { JournalModule } from './modules/journal/journal.module';
@@ -57,6 +58,7 @@ const i18nModuleResolvers = [
     AuthModule,
     JournalModule,
     FeedModule,
+    CommentModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

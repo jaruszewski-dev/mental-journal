@@ -25,6 +25,11 @@ enum EntryStatus {
   HIDDEN
 }
 
+enum CommentStatus {
+  ACTIVE
+  HIDDEN
+}
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -59,6 +64,7 @@ model User {
 
   session        Session[]
   journalEntries JournalEntry[]
+  comments       Comment[]
 
   @@map("user")
 }
@@ -92,8 +98,28 @@ model JournalEntry {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments Comment[]
 
   @@index([userId, createdAt])
   @@map("journal_entries")
+}
+
+model Comment {
+  id       String @id @default(uuid())
+  entryId  String @map("entry_id")
+  authorId String @map("author_id")
+
+  content String
+  status  CommentStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  entry  JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  author User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([entryId, createdAt])
+  @@map("comments")
 }

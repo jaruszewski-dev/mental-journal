@@ -4,6 +4,7 @@ export const ErrorPath = {
   MAIL: 'mail',
   USER: 'user',
   FEED: 'feed',
+  COMMENT: 'comment',
 } as const;
 
 export type ErrorPath = (typeof ErrorPath)[keyof typeof ErrorPath];
