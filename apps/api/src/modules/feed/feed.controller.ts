@@ -10,7 +10,7 @@ import { ListFeedResponseDto } from './dtos/list-feed-response.dto';
 import { FeedService } from './feed.service';
 
 @Controller('feed')
-@ApiTags('feed')
+@ApiTags('Feed')
 @SetErrorPath(ErrorPath.FEED)
 export class FeedController {
   constructor(private readonly feedService: FeedService) {}

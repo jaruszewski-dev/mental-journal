@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import {
   CommentStatus,
@@ -6,25 +6,43 @@ import {
   EntryVisibility,
 } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
+import {
+  MODERATE_CONTENT_PORT,
+  ModerateContentPort,
+} from '../moderation/ports/moderate-content.port';
 import { COMMENTS_LIST_TAKE } from './consts/comment.const';
 import { CreateCommentDto } from './dtos/create-comment.dto';
 import { CreateCommentResponseDto } from './dtos/create-comment-response.dto';
 import { DeleteCommentResponseDto } from './dtos/delete-comment-response.dto';
 import { ListCommentsQueryDto } from './dtos/list-comments-query.dto';
 import { ListCommentsResponseDto } from './dtos/list-comments-response.dto';
+import { CommentBlockedException } from './exceptions/comment-blocked.exception';
 import { CommentNotFoundException } from './exceptions/comment-not-found.exception';
 import { EntryNotCommentableException } from './exceptions/entry-not-commentable.exception';
 import { CommentMapper } from './mappers/comment.mapper';
 
 @Injectable()
 export class CommentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(MODERATE_CONTENT_PORT)
+    private readonly moderateContentPort: ModerateContentPort,
+  ) {}
 
   async create(
     dto: CreateCommentDto,
     authorId: string,
   ): Promise<CreateCommentResponseDto> {
     await this.assertEntryIsCommentable(dto.entryId);
+
+    const moderation = await this.moderateContentPort.execute({
+      content: dto.content,
+      type: 'comment',
+    });
+
+    if (!moderation.allow) {
+      throw new CommentBlockedException(moderation.reason);
+    }
 
     const { id } = await this.prisma.comment.create({
       data: {

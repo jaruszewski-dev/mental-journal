@@ -12,6 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
 import {
@@ -35,6 +36,7 @@ import { ListCommentsResponseDto } from './dtos/list-comments-response.dto';
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(
