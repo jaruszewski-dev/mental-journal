@@ -2,7 +2,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { MODERATION_QUEUE } from './consts/queue.const';
+import { MAIL_QUEUE, MODERATION_QUEUE } from './consts/queue.const';
 
 const bullRootFactory = (configService: ConfigService) => {
   const redisUrl = new URL(configService.getOrThrow<string>('REDIS_URL'));
@@ -39,6 +39,9 @@ const bullRootFactory = (configService: ConfigService) => {
     }),
     BullModule.registerQueue({
       name: MODERATION_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: MAIL_QUEUE,
     }),
   ],
   exports: [BullModule],

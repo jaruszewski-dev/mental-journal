@@ -14,3 +14,14 @@ export type ModerateCommentJobData = {
   commentId: string;
   authorId: string;
 };
+
+export const MAIL_QUEUE = 'mail';
+
+export const MailJobName = {
+  SEND_VERIFICATION_EMAIL: 'send-verification-email',
+} as const;
+
+export type SendVerificationEmailJobData = {
+  to: string;
+  verificationLink: string;
+};
