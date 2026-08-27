@@ -75,6 +75,7 @@ pnpm dev
 ```
 
 - API: [http://localhost:3001/v1](http://localhost:3001/v1)
+- Web: [http://localhost:3000](http://localhost:3000)
 - Swagger (when not production): [http://localhost:3001/api](http://localhost:3001/api)
 
 ## Scripts
@@ -94,6 +95,7 @@ pnpm dev
 
 ```
 apps/api/     NestJS API, Prisma schema & migrations
+apps/web/     Next.js frontend (port 3000)
 docker/       Postgres + Redis compose
 packages/     Shared ESLint / TypeScript configs
 AGENT.md      Technical architecture (diagrams, flows)
@@ -101,7 +103,6 @@ AGENT.md      Technical architecture (diagrams, flows)
 
 ## Out of scope (for now)
 
-- Next.js (or any) client in this repo
 - Chat / WebSockets / realtime feed
 - CMS HTTP API to resolve moderation cases
 - Password reset / profile editing

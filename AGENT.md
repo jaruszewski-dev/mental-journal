@@ -17,7 +17,7 @@ This file describes **what is implemented today** (API v1). Product vision lefto
 | Auth | JWT access + refresh in **httpOnly** cookies |
 | Mail | Resend (async via `mail` queue) |
 | Moderation | OpenAI Moderations API (async via `moderation` queue) |
-| Frontend (planned) | Next.js — not in repo yet |
+| Frontend | Next.js (`apps/web`, port 3000) |
 
 Local infra: `docker/docker-compose.yml` (Postgres + Redis).
 
