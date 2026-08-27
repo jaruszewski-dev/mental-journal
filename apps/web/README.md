@@ -45,11 +45,13 @@ Structure (feature-based):
 app/[locale]/        routes (pl default, /en/… for English)
 components/ui/       shared shadcn
 components/layout/   shared shells (e.g. AppShell)
-features/auth/       auth UI + validations
+features/auth/       auth domain (shared + register/login/verify-email)
 i18n/                next-intl routing + request config
 messages/            pl.json, en.json
 lib/                 cross-cutting utils
 ```
+
+Auth slices: `features/auth/{shared,register,login,verify-email}`.
 
 Locales: `pl` (default, no URL prefix) · `en` (`/en/...`).
 

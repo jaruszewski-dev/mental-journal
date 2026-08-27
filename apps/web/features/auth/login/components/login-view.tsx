@@ -1,14 +1,14 @@
 import { getTranslations } from "next-intl/server";
 
-import { AuthVideo } from "./auth-video";
-import { VerifyEmailStatus } from "./verify-email-status";
+import { LoginPanel } from "@/features/auth/login/components/login-panel";
+import { AuthVideo } from "@/features/auth/shared/auth-video";
 
-type VerifyEmailViewProps = {
-  token: string | undefined;
+type LoginViewProps = {
+  verified: boolean;
 };
 
-export async function VerifyEmailView({ token }: VerifyEmailViewProps) {
-  const t = await getTranslations("auth.verifyEmail");
+export async function LoginView({ verified }: LoginViewProps) {
+  const t = await getTranslations("auth.login");
 
   return (
     <>
@@ -16,12 +16,12 @@ export async function VerifyEmailView({ token }: VerifyEmailViewProps) {
         <div className="w-full max-w-md rounded-2xl border border-border bg-card/95 p-6 shadow-sm backdrop-blur-sm md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
           <div className="mb-8">
             <p className="font-heading text-3xl font-medium tracking-tight">
-              {t("brand")}
+              {t("title")}
             </p>
             <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
           </div>
 
-          <VerifyEmailStatus token={token} />
+          <LoginPanel verified={verified} />
         </div>
       </section>
 

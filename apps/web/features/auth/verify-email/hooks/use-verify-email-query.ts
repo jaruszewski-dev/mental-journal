@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { verifyEmail } from "@/features/auth/api/verify-email";
+import { verifyEmail } from "@/features/auth/verify-email/api/verify-email";
 
 export function useVerifyEmailQuery(token: string | undefined) {
   return useQuery({

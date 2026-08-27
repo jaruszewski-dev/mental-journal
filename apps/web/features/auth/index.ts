@@ -1,12 +1,16 @@
-export { registerUser, type RegisterResponse } from "./api/register";
-export { verifyEmail, type VerifyEmailResponse } from "./api/verify-email";
-export { AuthShell } from "./components/auth-shell";
-export { AuthVideo } from "./components/auth-video";
-export { LoginView } from "./components/login-view";
-export { RegisterForm } from "./components/register-form";
-export { RegisterView } from "./components/register-view";
-export { VerifyEmailView } from "./components/verify-email-view";
+export { LoginView } from "./login/components/login-view";
+export { RegisterForm } from "./register/components/register-form";
+export { RegisterView } from "./register/components/register-view";
+export { registerUser, type RegisterResponse } from "./register/api/register";
 export {
   createRegisterSchema,
   type RegisterFormValues,
-} from "./validations/register.schema";
+} from "./register/validations/register.schema";
+export { AuthShell } from "./shared/auth-shell";
+export { AuthStatusMessage } from "./shared/auth-status-message";
+export { AuthVideo } from "./shared/auth-video";
+export { VerifyEmailView } from "./verify-email/components/verify-email-view";
+export {
+  verifyEmail,
+  type VerifyEmailResponse,
+} from "./verify-email/api/verify-email";

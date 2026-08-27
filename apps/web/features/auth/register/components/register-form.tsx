@@ -8,17 +8,17 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRegisterMutation } from "@/features/auth/hooks/use-register-mutation";
+import { useRegisterMutation } from "@/features/auth/register/hooks/use-register-mutation";
+import {
+  createRegisterSchema,
+  type RegisterFormValues,
+} from "@/features/auth/register/validations/register.schema";
 import {
   ANON_NAME_MAX_LENGTH,
   ANON_NAME_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
-} from "@/features/auth/validations/auth.const";
-import {
-  createRegisterSchema,
-  type RegisterFormValues,
-} from "@/features/auth/validations/register.schema";
+} from "@/features/auth/shared/auth.const";
 import { Link } from "@/i18n/navigation";
 import { getApiErrorMessage } from "@/lib/api-error";
 

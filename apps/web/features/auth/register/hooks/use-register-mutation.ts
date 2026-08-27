@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 
-import { registerUser } from "@/features/auth/api/register";
+import { registerUser } from "@/features/auth/register/api/register";
 
 export function useRegisterMutation() {
   return useMutation({

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
-import { AuthVideo } from "./auth-video";
-import { RegisterForm } from "./register-form";
+import { RegisterForm } from "@/features/auth/register/components/register-form";
+import { AuthVideo } from "@/features/auth/shared/auth-video";
 
 export async function RegisterView() {
   const t = await getTranslations("auth.register");
