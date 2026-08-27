@@ -53,9 +53,23 @@
       "title": "Mental Journal",
       "subtitle": "Sign in and get back to writing.",
       "verifiedBanner": "Email confirmed. You can log in now.",
-      "placeholder": "Login form comes in the next step.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
       "noAccount": "Don't have an account?",
-      "registerLink": "Sign up"
+      "registerLink": "Sign up",
+      "errors": {
+        "emailRequired": "Enter your email",
+        "emailInvalid": "Invalid email address",
+        "passwordRequired": "Enter your password",
+        "generic": "Could not log in. Check your details and try again."
+      }
     }
+  },
+  "apiErrors": {
+    "AUTH_INVALID_CREDENTIALS": "Invalid email or password",
+    "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "The verification link is invalid",
+    "AUTH_VERIFICATION_TOKEN_EXPIRED": "The verification link has expired",
+    "generic": "Something went wrong. Please try again."
   }
 }

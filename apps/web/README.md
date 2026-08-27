@@ -3,7 +3,8 @@
 Next.js frontend for Mental Journal.
 
 - Dev: [http://localhost:3000](http://localhost:3000)
-- API: [http://localhost:3001/v1](http://localhost:3001/v1) (see `apps/api`)
+- API (direct): [http://localhost:3001/v1](http://localhost:3001/v1) (see `apps/api`)
+- Browser calls API via **same-origin** proxy: `http://localhost:3000/v1/*` → API
 
 ## Env
 
@@ -13,9 +14,13 @@ cp .env.example .env.local
 
 | Variable | Purpose |
 |----------|---------|
-| `NEXT_PUBLIC_API_URL` | API origin without path prefix (default `http://localhost:3001`) |
+| `API_ORIGIN` | Upstream API origin for rewrites (default `http://localhost:3001`, server-only) |
 
-API CORS expects `FRONTEND_URL=http://localhost:3000` in `apps/api/.env`.
+Browser `apiClient` always uses `/v1` (same origin). Cookies from login land on `:3000`, so `proxy.ts` can see `access_token`.
+
+Auth gate (`proxy.ts`): without `access_token`, only `/login`, `/register`, `/verify-email` (plus locale variants). Everything else → `/login`. Logged-in users hitting login/register → `/`.
+
+API CORS still expects `FRONTEND_URL=http://localhost:3000` in `apps/api/.env` for any direct browser→API calls.
 
 ## Develop
 
@@ -53,11 +58,13 @@ lib/                 cross-cutting utils
 
 Auth slices: `features/auth/{shared,register,login,verify-email}`.
 
+Shared API contract: `packages/api-types` (`ErrorResponse`, `ErrorCode`).
+
 Locales: `pl` (default, no URL prefix) · `en` (`/en/...`).
 
 ## Calling the API
 
-Browser client: `lib/api-client.ts` (`apiClient`) — Axios with `baseURL` `…/v1` and `withCredentials: true` so httpOnly cookies work (3000 → 3001).
+Browser client: `lib/api-client.ts` — Axios `baseURL: "/v1"` + `withCredentials: true`.
 
 ```ts
 import { apiClient } from "@/lib/api-client";

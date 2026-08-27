@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { AuthStatusMessage } from "@/features/auth/shared/auth-status-message";
 import { useVerifyEmailQuery } from "@/features/auth/verify-email/hooks/use-verify-email-query";
 import { Link, useRouter } from "@/i18n/navigation";
+import { resolveApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 
 type VerifyEmailStatusProps = {
@@ -16,6 +17,7 @@ type VerifyEmailStatusProps = {
 
 export function VerifyEmailStatus({ token }: VerifyEmailStatusProps) {
   const t = useTranslations("auth.verifyEmail");
+  const tApi = useTranslations("apiErrors");
   const router = useRouter();
   const query = useVerifyEmailQuery(token);
 
@@ -68,7 +70,7 @@ export function VerifyEmailStatus({ token }: VerifyEmailStatusProps) {
         icon={CircleAlert}
         tone="error"
         title={t("errorTitle")}
-        body={t("errorGeneric")}
+        body={resolveApiErrorMessage(query.error, tApi)}
         action={
           <Link
             href="/login"

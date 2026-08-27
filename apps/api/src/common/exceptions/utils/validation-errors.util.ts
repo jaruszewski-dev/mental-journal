@@ -1,6 +1,6 @@
 import { ValidationError } from 'class-validator';
 
-import { FieldError } from '../interfaces/error-response';
+import type { FieldError } from '@repo/api-types';
 
 export function mapValidationErrors(errors: ValidationError[]): FieldError[] {
   return errors.flatMap((error) => {

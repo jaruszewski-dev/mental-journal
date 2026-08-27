@@ -28,12 +28,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? String((exceptionResponse as { error?: string }).error)
         : undefined;
 
-    const { message, fieldErrors } = parseHttpException(exceptionResponse);
+    const { message, fieldErrors, code } =
+      parseHttpException(exceptionResponse);
 
     return response
       .status(status)
       .json(
-        buildErrorResponse(status, message, request.url, fieldErrors, error),
+        buildErrorResponse(
+          status,
+          message,
+          request.url,
+          fieldErrors,
+          error,
+          code,
+        ),
       );
   }
 }

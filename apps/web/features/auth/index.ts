@@ -1,4 +1,10 @@
+export { LoginForm } from "./login/components/login-form";
 export { LoginView } from "./login/components/login-view";
+export { loginUser, type LoginResponse } from "./login/api/login";
+export {
+  createLoginSchema,
+  type LoginFormValues,
+} from "./login/validations/login.schema";
 export { RegisterForm } from "./register/components/register-form";
 export { RegisterView } from "./register/components/register-view";
 export { registerUser, type RegisterResponse } from "./register/api/register";

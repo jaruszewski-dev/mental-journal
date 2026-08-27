@@ -53,9 +53,23 @@
       "title": "Mental Journal",
       "subtitle": "Zaloguj się i wróć do pisania.",
       "verifiedBanner": "Email potwierdzony. Możesz się zalogować.",
-      "placeholder": "Formularz logowania w kolejnym kroku.",
+      "email": "Email",
+      "password": "Hasło",
+      "submit": "Zaloguj się",
       "noAccount": "Nie masz konta?",
-      "registerLink": "Zarejestruj się"
+      "registerLink": "Zarejestruj się",
+      "errors": {
+        "emailRequired": "Podaj adres email",
+        "emailInvalid": "Nieprawidłowy adres email",
+        "passwordRequired": "Podaj hasło",
+        "generic": "Nie udało się zalogować. Sprawdź dane i spróbuj ponownie."
+      }
     }
+  },
+  "apiErrors": {
+    "AUTH_INVALID_CREDENTIALS": "Nieprawidłowy email lub hasło",
+    "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "Link weryfikacyjny jest nieprawidłowy",
+    "AUTH_VERIFICATION_TOKEN_EXPIRED": "Link weryfikacyjny wygasł",
+    "generic": "Coś poszło nie tak. Spróbuj ponownie."
   }
 }

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Literata, Source_Sans_3 } from "next/font/google";
 
 import { QueryProvider } from "@/components/providers/query-provider";
+import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 
 const sourceSans = Source_Sans_3({
@@ -45,7 +46,10 @@ export default async function LocaleLayout({
     >
       <body className="flex min-h-full flex-col font-sans">
         <NextIntlClientProvider messages={messages}>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {children}
+            <Toaster position="top-center" richColors closeButton />
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>
