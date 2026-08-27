@@ -27,7 +27,7 @@ export function VerifyEmailStatus({ token }: VerifyEmailStatusProps) {
     }
 
     const timeoutId = window.setTimeout(() => {
-      router.replace({ pathname: "/login", query: { verified: "1" } });
+      router.replace("/login");
     }, 1600);
 
     return () => window.clearTimeout(timeoutId);

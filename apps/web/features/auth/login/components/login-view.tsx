@@ -4,11 +4,7 @@ import { LoginPanel } from "@/features/auth/login/components/login-panel";
 import { AuthVideo } from "@/features/auth/shared/auth-video";
 import { LocaleSwitcher } from "@/features/auth/shared/locale-switcher";
 
-type LoginViewProps = {
-  verified: boolean;
-};
-
-export async function LoginView({ verified }: LoginViewProps) {
+export async function LoginView() {
   const t = await getTranslations("auth.login");
 
   return (
@@ -25,7 +21,7 @@ export async function LoginView({ verified }: LoginViewProps) {
             <LocaleSwitcher />
           </div>
 
-          <LoginPanel verified={verified} />
+          <LoginPanel />
         </div>
       </section>
 

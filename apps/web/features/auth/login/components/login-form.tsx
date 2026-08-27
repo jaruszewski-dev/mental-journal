@@ -15,11 +15,7 @@ import {
 } from "@/features/auth/login/validations/login.schema";
 import { Link } from "@/i18n/navigation";
 
-type LoginFormProps = {
-  verified?: boolean;
-};
-
-export function LoginForm({ verified = false }: LoginFormProps) {
+export function LoginForm() {
   const t = useTranslations("auth.login");
 
   const loginSchema = useMemo(
@@ -56,12 +52,6 @@ export function LoginForm({ verified = false }: LoginFormProps) {
       className="flex flex-col gap-3"
       noValidate
     >
-      {verified ? (
-        <p className="mb-1 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground">
-          {t("verifiedBanner")}
-        </p>
-      ) : null}
-
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">{t("email")}</Label>
         <Input

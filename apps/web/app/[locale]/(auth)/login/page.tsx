@@ -5,18 +5,7 @@ import { LoginView } from "@/features/auth";
 
 type LoginPageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ verified?: string | string[] }>;
 };
-
-function isVerifiedFlag(value: string | string[] | undefined): boolean {
-  if (value === "1" || value === "true") {
-    return true;
-  }
-  if (Array.isArray(value)) {
-    return value.includes("1") || value.includes("true");
-  }
-  return false;
-}
 
 export async function generateMetadata({
   params,
@@ -30,14 +19,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function LoginPage({
-  params,
-  searchParams,
-}: LoginPageProps) {
+export default async function LoginPage({ params }: LoginPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const { verified } = await searchParams;
-
-  return <LoginView verified={isVerifiedFlag(verified)} />;
+  return <LoginView />;
 }
