@@ -27,6 +27,7 @@ const createRegisterInput = (overrides = {}) => ({
   email: TEST_EMAIL,
   anonName: 'TestUser',
   passwordHash: 'Pokemon1!',
+  preferredLocale: 'pl' as const,
   emailVerificationTokenHash: TEST_HASH,
   emailVerificationTokenExpiresAt: new Date(Date.now()),
   ...overrides,
@@ -63,6 +64,7 @@ const findByIdSelect = {
 const issueVerificationSelect = {
   id: true,
   emailVerified: true,
+  preferredLocale: true,
 } as const;
 
 describe('UserService', () => {
@@ -136,6 +138,7 @@ describe('UserService', () => {
           email: TEST_EMAIL,
           anonName: 'TestUser',
           passwordHash: input.passwordHash,
+          preferredLocale: 'pl',
         }),
       });
       expect(result).toEqual({ id: USER_ID, anonName: 'TestUser' });
@@ -275,6 +278,7 @@ describe('UserService', () => {
       prismaService.user.findUnique.mockResolvedValue({
         id: USER_ID,
         emailVerified: false,
+        preferredLocale: 'pl',
       });
       prismaService.user.update.mockResolvedValue({});
 
@@ -288,16 +292,19 @@ describe('UserService', () => {
           emailVerificationTokenExpiresAt: expiresAt,
         },
       });
-      expect(result).toBe(IssueEmailVerificationResult.ISSUED);
+      expect(result).toEqual({
+        result: IssueEmailVerificationResult.ISSUED,
+        preferredLocale: 'pl',
+      });
     });
 
     it.each([
       [
         'already verified',
-        { id: USER_ID, emailVerified: true },
-        IssueEmailVerificationResult.SKIPPED,
+        { id: USER_ID, emailVerified: true, preferredLocale: 'en' },
+        { result: IssueEmailVerificationResult.SKIPPED },
       ],
-      ['user not found', null, IssueEmailVerificationResult.SKIPPED],
+      ['user not found', null, { result: IssueEmailVerificationResult.SKIPPED }],
     ])('should return SKIPPED when %s', async (_, mockUser, expected) => {
       const input = createIssueInput();
 
@@ -307,7 +314,7 @@ describe('UserService', () => {
 
       expectIssueVerificationLookup();
       expect(prismaService.user.update).not.toHaveBeenCalled();
-      expect(result).toBe(expected);
+      expect(result).toEqual(expected);
     });
   });
 });

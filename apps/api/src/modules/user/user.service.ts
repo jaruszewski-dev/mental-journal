@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import type { AppLocale } from '../../common/consts/locale.const';
 import { IssueEmailVerificationResult } from '../../common/enums/issue-email-verification-result.enum';
 import { VerifyEmailResult } from '../../common/enums/verify-email-result.enum';
 import { Prisma, UserStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import type { IssueEmailVerificationOutcome } from '../auth/ports/issue-email-verification.port';
 import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
 import { FindUserByIdResult } from './ports/find-user-by-id.port';
 import { AnonName } from './value-objects/anon-name.vo';
@@ -30,6 +32,7 @@ export class UserService {
     email: string;
     anonName: string;
     passwordHash: string;
+    preferredLocale: AppLocale;
     emailVerificationTokenHash: string;
     emailVerificationTokenExpiresAt: Date;
   }): Promise<RegisteredUser> {
@@ -42,6 +45,7 @@ export class UserService {
           email,
           anonName: anonName.getValue(),
           passwordHash: input.passwordHash,
+          preferredLocale: input.preferredLocale,
           emailVerificationTokenHash: input.emailVerificationTokenHash,
           emailVerificationTokenExpiresAt:
             input.emailVerificationTokenExpiresAt,
@@ -131,7 +135,7 @@ export class UserService {
     email: string;
     tokenHash: string;
     expiresAt: Date | null;
-  }): Promise<IssueEmailVerificationResult> {
+  }): Promise<IssueEmailVerificationOutcome> {
     const email = input.email.trim().toLowerCase();
     const { tokenHash, expiresAt } = input;
 
@@ -140,12 +144,14 @@ export class UserService {
       select: {
         id: true,
         emailVerified: true,
+        preferredLocale: true,
       },
     });
 
-    if (!user) return IssueEmailVerificationResult.SKIPPED;
+    if (!user) return { result: IssueEmailVerificationResult.SKIPPED };
 
-    if (user.emailVerified) return IssueEmailVerificationResult.SKIPPED;
+    if (user.emailVerified)
+      return { result: IssueEmailVerificationResult.SKIPPED };
 
     await this.prisma.user.update({
       where: { id: user.id },
@@ -155,7 +161,10 @@ export class UserService {
       },
     });
 
-    return IssueEmailVerificationResult.ISSUED;
+    return {
+      result: IssueEmailVerificationResult.ISSUED,
+      preferredLocale: user.preferredLocale,
+    };
   }
 
   async findById(id: string): Promise<FindUserByIdResult | null> {

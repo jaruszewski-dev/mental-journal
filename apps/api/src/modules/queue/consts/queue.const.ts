@@ -1,3 +1,5 @@
+import type { AppLocale } from '../../../common/consts/locale.const';
+
 export const MODERATION_QUEUE = 'moderation';
 
 export const ModerationJobName = {
@@ -24,4 +26,5 @@ export const MailJobName = {
 export type SendVerificationEmailJobData = {
   to: string;
   verificationLink: string;
+  locale: AppLocale;
 };

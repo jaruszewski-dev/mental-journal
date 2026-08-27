@@ -48,6 +48,7 @@ import {
   RegisterUserPort,
 } from '../ports/register-user.port';
 import { SAVE_SESSION_PORT, SaveSessionPort } from '../ports/save-session.port';
+import { buildVerificationLink } from '../utils/build-verification-link.util';
 import {
   SEND_VERIFICATION_EMAIL_PORT,
   SendVerificationEmailPort,
@@ -146,12 +147,17 @@ export class AuthService {
     const email = dto.email.trim().toLowerCase();
 
     const { token, tokenHash, expiresAt } = createRandomToken(this.emailTtlMs);
-    const verificationLink = `${this.frontEndUrl}/verify-email?token=${token}`;
+    const verificationLink = buildVerificationLink(
+      this.frontEndUrl,
+      token,
+      dto.locale,
+    );
 
     const result = await this.registerUserPort.execute({
       email,
       anonName: dto.anonName,
       passwordHash,
+      preferredLocale: dto.locale,
       emailVerificationTokenHash: tokenHash,
       emailVerificationTokenExpiresAt: expiresAt,
     });
@@ -160,6 +166,7 @@ export class AuthService {
       await this.sendVerificationEmailPort.execute({
         to: email,
         verificationLink,
+        locale: dto.locale,
       });
     } catch (error) {
       this.logger.warn(
@@ -233,19 +240,25 @@ export class AuthService {
   ): Promise<IssueEmailVerificationResponseDto> {
     const normalized = email.trim().toLowerCase();
     const { token, tokenHash, expiresAt } = createRandomToken(this.emailTtlMs);
-    const verificationLink = `${this.frontEndUrl}/verify-email?token=${token}`;
 
-    const result = await this.issueEmailVerificationPort.execute({
+    const outcome = await this.issueEmailVerificationPort.execute({
       email: normalized,
       tokenHash,
       expiresAt,
     });
 
-    if (result === IssueEmailVerificationResult.ISSUED) {
+    if (outcome.result === IssueEmailVerificationResult.ISSUED) {
+      const verificationLink = buildVerificationLink(
+        this.frontEndUrl,
+        token,
+        outcome.preferredLocale,
+      );
+
       try {
         await this.sendVerificationEmailPort.execute({
           to: normalized,
           verificationLink,
+          locale: outcome.preferredLocale,
         });
       } catch (error) {
         this.logger.warn('Verification email failed on resend', error);

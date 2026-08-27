@@ -89,10 +89,12 @@ const makeRes = (withClear = false) =>
     ...(withClear ? { clearCookie: jest.fn() } : {}),
   }) as unknown as Response;
 
-const makeRegisterDto = () => ({
+const makeRegisterDto = (overrides = {}) => ({
   email: 'test@test.pl',
   password: 'Pokemon1!',
   anonName: 'TestUser',
+  locale: 'pl' as const,
+  ...overrides,
 });
 
 describe('AuthService', () => {
@@ -345,13 +347,41 @@ describe('AuthService', () => {
           email: registerDto.email.trim().toLocaleLowerCase(),
           anonName: registerDto.anonName,
           passwordHash: 'hashedPassword123!',
+          preferredLocale: 'pl',
         }),
       );
       expect(sendVerificationEmailPort.execute).toHaveBeenCalledWith({
         to: registerDto.email.trim().toLowerCase(),
-        verificationLink: expect.stringContaining('/verify-email?token='),
+        verificationLink: expect.stringMatching(
+          /\/verify-email\?token=[^&]+$/,
+        ),
+        locale: 'pl',
       });
       expect(result).toEqual({ id: 'user-1', anonName: registerDto.anonName });
+    });
+
+    it('should use en verification link when locale is en', async () => {
+      const registerDto = makeRegisterDto({ locale: 'en' });
+
+      hashingService.hash.mockResolvedValue('hashedPassword123!');
+      registerUserPort.execute.mockResolvedValue({
+        id: 'user-1',
+        anonName: registerDto.anonName,
+      });
+      sendVerificationEmailPort.execute.mockResolvedValue(undefined);
+
+      await authService.register(registerDto as RegisterDto);
+
+      expect(registerUserPort.execute).toHaveBeenCalledWith(
+        expect.objectContaining({ preferredLocale: 'en' }),
+      );
+      expect(sendVerificationEmailPort.execute).toHaveBeenCalledWith({
+        to: registerDto.email.trim().toLowerCase(),
+        verificationLink: expect.stringMatching(
+          /\/en\/verify-email\?token=[^&]+$/,
+        ),
+        locale: 'en',
+      });
     });
 
     it('should still register when verification email fails', async () => {

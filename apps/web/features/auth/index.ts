@@ -7,7 +7,11 @@ export {
 } from "./login/validations/login.schema";
 export { RegisterForm } from "./register/components/register-form";
 export { RegisterView } from "./register/components/register-view";
-export { registerUser, type RegisterResponse } from "./register/api/register";
+export {
+  registerUser,
+  type RegisterPayload,
+  type RegisterResponse,
+} from "./register/api/register";
 export {
   createRegisterSchema,
   type RegisterFormValues,

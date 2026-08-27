@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { RegisterForm } from "@/features/auth/register/components/register-form";
 import { AuthVideo } from "@/features/auth/shared/auth-video";
+import { LocaleSwitcher } from "@/features/auth/shared/locale-switcher";
 
 export async function RegisterView() {
   const t = await getTranslations("auth.register");
@@ -10,11 +11,14 @@ export async function RegisterView() {
     <>
       <section className="flex flex-1 items-center justify-center p-6 md:w-1/2 md:p-10 lg:p-14">
         <div className="w-full max-w-md rounded-2xl border border-border bg-card/95 p-6 shadow-sm backdrop-blur-sm md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
-          <div className="mb-8">
-            <p className="font-heading text-3xl font-medium tracking-tight">
-              {t("title")}
-            </p>
-            <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
+          <div className="mb-8 flex items-start justify-between gap-4">
+            <div>
+              <p className="font-heading text-3xl font-medium tracking-tight">
+                {t("title")}
+              </p>
+              <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
+            </div>
+            <LocaleSwitcher />
           </div>
 
           <RegisterForm />

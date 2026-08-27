@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsIn,
   IsNotEmpty,
   IsString,
   Matches,
@@ -8,6 +9,10 @@ import {
   MinLength,
 } from 'class-validator';
 
+import {
+  APP_LOCALES,
+  type AppLocale,
+} from '../../../common/consts/locale.const';
 import {
   ANON_NAME_MAX_LENGTH,
   ANON_NAME_MIN_LENGTH,
@@ -44,4 +49,8 @@ export class RegisterDto {
       'password: must be 8–72 chars with upper, lower, digit and special char',
   })
   password!: string;
+
+  @ApiProperty({ enum: APP_LOCALES, example: 'pl' })
+  @IsIn(APP_LOCALES)
+  locale!: AppLocale;
 }

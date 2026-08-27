@@ -15,6 +15,7 @@ jest.mock('resend', () => ({
 const input = {
   to: 'test@user.pl',
   verificationLink: 'http://localhost:3000/verify-email?token=abc123',
+  locale: 'en' as const,
 };
 
 describe('MailService', () => {
@@ -44,7 +45,7 @@ describe('MailService', () => {
   });
 
   describe('sendVerificationEmail', () => {
-    it('should send verification email', async () => {
+    it('should send verification email in English', async () => {
       sendMock.mockResolvedValue({
         data: { id: 'msg-1' },
         error: null,
@@ -58,6 +59,23 @@ describe('MailService', () => {
         subject: 'Verify your email',
         html: expect.stringContaining(input.verificationLink),
         text: `Verify your email: ${input.verificationLink}`,
+      });
+    });
+
+    it('should send verification email in Polish', async () => {
+      sendMock.mockResolvedValue({
+        data: { id: 'msg-1' },
+        error: null,
+      });
+
+      await mailService.sendVerificationEmail({ ...input, locale: 'pl' });
+
+      expect(sendMock).toHaveBeenCalledWith({
+        from: 'noreply@test.pl',
+        to: ['test@user.pl'],
+        subject: 'Potwierdź adres e-mail',
+        html: expect.stringContaining(input.verificationLink),
+        text: `Potwierdź adres e-mail: ${input.verificationLink}`,
       });
     });
 

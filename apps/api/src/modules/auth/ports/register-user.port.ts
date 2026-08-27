@@ -1,7 +1,10 @@
+import type { AppLocale } from '../../../common/consts/locale.const';
+
 export interface RegisterUserInput {
   email: string;
   anonName: string;
   passwordHash: string;
+  preferredLocale: AppLocale;
   emailVerificationTokenHash: string;
   emailVerificationTokenExpiresAt: Date;
 }

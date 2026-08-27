@@ -16,6 +16,11 @@ enum UserRole {
   MODERATOR
 }
 
+enum PreferredLocale {
+  pl
+  en
+}
+
 enum EntryStatus {
   ACTIVE
   HIDDEN
@@ -66,6 +71,8 @@ model User {
 
   email        String @unique
   passwordHash String @map("password_hash")
+
+  preferredLocale PreferredLocale @default(pl) @map("preferred_locale")
 
   emailVerified                   Boolean   @default(false) @map("email_verified")
   emailVerificationTokenHash      String?   @map("email_verification_token_hash")

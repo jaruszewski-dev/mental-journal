@@ -1,6 +1,11 @@
 {
   "common": {
-    "appName": "Mental Journal"
+    "appName": "Mental Journal",
+    "language": "Language",
+    "locales": {
+      "pl": "Polski",
+      "en": "English"
+    }
   },
   "home": {
     "title": "Mental Journal",

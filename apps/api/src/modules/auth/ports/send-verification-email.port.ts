@@ -1,6 +1,9 @@
+import type { AppLocale } from '../../../common/consts/locale.const';
+
 export interface SendVerificationEmailInput {
   to: string;
   verificationLink: string;
+  locale: AppLocale;
 }
 
 export interface SendVerificationEmailPort {

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
 
+import type { AppLocale } from '../../common/consts/locale.const';
 import { MailSendFailedException } from './exceptions/mail-send-failed.exception';
 import { verificationEmailContent } from './templates/verification-email.template';
 
@@ -30,9 +31,10 @@ export class MailService {
   async sendVerificationEmail(input: {
     to: string;
     verificationLink: string;
+    locale: AppLocale;
   }): Promise<void> {
-    const { to, verificationLink } = input;
-    const content = verificationEmailContent(verificationLink);
+    const { to, verificationLink, locale } = input;
+    const content = verificationEmailContent(verificationLink, locale);
 
     await this.send({
       to,

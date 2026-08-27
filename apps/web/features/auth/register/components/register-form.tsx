@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,10 +20,12 @@ import {
   PASSWORD_MIN_LENGTH,
 } from "@/features/auth/shared/auth.const";
 import { Link } from "@/i18n/navigation";
+import type { AppLocale } from "@/i18n/routing";
 import { getApiErrorMessage } from "@/lib/api-error";
 
 export function RegisterForm() {
   const t = useTranslations("auth.register");
+  const locale = useLocale() as AppLocale;
 
   const registerSchema = useMemo(
     () =>
@@ -60,7 +62,7 @@ export function RegisterForm() {
   const mutation = useRegisterMutation();
 
   function onSubmit(values: RegisterFormValues) {
-    mutation.mutate(values);
+    mutation.mutate({ ...values, locale });
   }
 
   if (mutation.isSuccess) {

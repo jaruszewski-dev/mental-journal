@@ -22,10 +22,12 @@ export class SendVerificationEmailAdapter implements SendVerificationEmailPort {
   async execute({
     to,
     verificationLink,
+    locale,
   }: SendVerificationEmailInput): Promise<void> {
     await this.mailQueue.add(MailJobName.SEND_VERIFICATION_EMAIL, {
       to,
       verificationLink,
+      locale,
     });
   }
 }
