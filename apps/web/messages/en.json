@@ -1,0 +1,61 @@
+{
+  "common": {
+    "appName": "Mental Journal"
+  },
+  "home": {
+    "title": "Mental Journal",
+    "placeholder": "Feed — composer and entries come next."
+  },
+  "auth": {
+    "register": {
+      "metaTitle": "Sign up | Mental Journal",
+      "metaDescription": "Create an anonymous account and start writing on your own terms.",
+      "title": "Mental Journal",
+      "subtitle": "Create an anonymous account and start writing on your own terms.",
+      "email": "Email",
+      "anonName": "Anonymous name",
+      "password": "Password",
+      "passwordHint": "At least 8 characters: upper, lower, digit, and special character.",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "successTitle": "Check your inbox",
+      "successBody": "We sent a verification link. Confirm your email before logging in.",
+      "errors": {
+        "emailRequired": "Enter your email",
+        "emailInvalid": "Invalid email address",
+        "anonNameLength": "Name must be {min}–{max} characters",
+        "anonNamePattern": "Only letters, digits, or _",
+        "passwordLength": "Password must be {min}–{max} characters",
+        "passwordPattern": "Required: upper, lower, digit, and special character",
+        "generic": "Could not create the account. Please try again."
+      }
+    },
+    "verifyEmail": {
+      "metaTitle": "Verify email | Mental Journal",
+      "metaDescription": "Confirm your email address to activate your account.",
+      "brand": "Mental Journal",
+      "subtitle": "Confirming your email address.",
+      "pendingTitle": "Verifying…",
+      "pendingBody": "One moment — checking the link from your email.",
+      "successTitle": "Email confirmed",
+      "successBody": "Redirecting you to log in.",
+      "errorTitle": "Could not verify",
+      "errorGeneric": "The link is invalid or has expired.",
+      "missingTitle": "Missing link",
+      "missingBody": "Open the full link from your email message.",
+      "loginLink": "Go to log in",
+      "registerLink": "Create an account"
+    },
+    "login": {
+      "metaTitle": "Log in | Mental Journal",
+      "metaDescription": "Sign in to your anonymous account.",
+      "title": "Mental Journal",
+      "subtitle": "Sign in and get back to writing.",
+      "verifiedBanner": "Email confirmed. You can log in now.",
+      "placeholder": "Login form comes in the next step.",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up"
+    }
+  }
+}

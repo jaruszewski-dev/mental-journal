@@ -31,12 +31,34 @@ Only web:
 pnpm --filter web dev
 ```
 
+## UI
+
+shadcn (style `base-nova`) + Tailwind v4.
+
+Theme **Soft slate ink** (notes / book): paper background, ink primary, sand accent (`--sand`).
+
+Fonts: **Source Sans 3** (UI) + **Literata** (headings / journal). Utility: `font-heading`.
+
+Structure (feature-based):
+
+```
+app/[locale]/        routes (pl default, /en/… for English)
+components/ui/       shared shadcn
+components/layout/   shared shells (e.g. AppShell)
+features/auth/       auth UI + validations
+i18n/                next-intl routing + request config
+messages/            pl.json, en.json
+lib/                 cross-cutting utils
+```
+
+Locales: `pl` (default, no URL prefix) · `en` (`/en/...`).
+
 ## Calling the API
 
-Use `credentials: 'include'` so httpOnly cookies work cross-origin (3000 → 3001):
+Browser client: `lib/api-client.ts` (`apiClient`) — Axios with `baseURL` `…/v1` and `withCredentials: true` so httpOnly cookies work (3000 → 3001).
 
 ```ts
-await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/me`, {
-  credentials: 'include',
-});
+import { apiClient } from "@/lib/api-client";
+
+await apiClient.get("/auth/me");
 ```

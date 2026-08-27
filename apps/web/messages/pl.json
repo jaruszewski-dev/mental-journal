@@ -1,0 +1,61 @@
+{
+  "common": {
+    "appName": "Mental Journal"
+  },
+  "home": {
+    "title": "Mental Journal",
+    "placeholder": "Tablica — composer i wpisy w kolejnym kroku."
+  },
+  "auth": {
+    "register": {
+      "metaTitle": "Rejestracja | Mental Journal",
+      "metaDescription": "Załóż anonimowe konto i zacznij pisać na własnych warunkach.",
+      "title": "Mental Journal",
+      "subtitle": "Załóż anonimowe konto i zacznij pisać na własnych warunkach.",
+      "email": "Email",
+      "anonName": "Anonimowa nazwa",
+      "password": "Hasło",
+      "passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra oraz znak specjalny.",
+      "submit": "Utwórz konto",
+      "hasAccount": "Masz już konto?",
+      "loginLink": "Zaloguj się",
+      "successTitle": "Sprawdź skrzynkę",
+      "successBody": "Wysłaliśmy link weryfikacyjny. Potwierdź email, zanim się zalogujesz.",
+      "errors": {
+        "emailRequired": "Podaj adres email",
+        "emailInvalid": "Nieprawidłowy adres email",
+        "anonNameLength": "Nazwa musi mieć {min}–{max} znaków",
+        "anonNamePattern": "Tylko litery, cyfry lub _",
+        "passwordLength": "Hasło musi mieć {min}–{max} znaków",
+        "passwordPattern": "Wymagane: wielka i mała litera, cyfra oraz znak specjalny",
+        "generic": "Nie udało się utworzyć konta. Spróbuj ponownie."
+      }
+    },
+    "verifyEmail": {
+      "metaTitle": "Weryfikacja email | Mental Journal",
+      "metaDescription": "Potwierdź adres email, aby aktywować konto.",
+      "brand": "Mental Journal",
+      "subtitle": "Potwierdzamy Twój adres email.",
+      "pendingTitle": "Weryfikujemy…",
+      "pendingBody": "Chwilę, sprawdzamy link z wiadomości.",
+      "successTitle": "Email potwierdzony",
+      "successBody": "Zaraz przeniesiemy Cię do logowania.",
+      "errorTitle": "Nie udało się potwierdzić",
+      "errorGeneric": "Link jest nieprawidłowy lub wygasł.",
+      "missingTitle": "Brak linku",
+      "missingBody": "Otwórz pełny link z wiadomości email.",
+      "loginLink": "Przejdź do logowania",
+      "registerLink": "Załóż konto"
+    },
+    "login": {
+      "metaTitle": "Logowanie | Mental Journal",
+      "metaDescription": "Zaloguj się do anonimowego konta.",
+      "title": "Mental Journal",
+      "subtitle": "Zaloguj się i wróć do pisania.",
+      "verifiedBanner": "Email potwierdzony. Możesz się zalogować.",
+      "placeholder": "Formularz logowania w kolejnym kroku.",
+      "noAccount": "Nie masz konta?",
+      "registerLink": "Zarejestruj się"
+    }
+  }
+}
