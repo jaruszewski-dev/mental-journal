@@ -14,7 +14,7 @@ export async function VerifyEmailView({ token }: VerifyEmailViewProps) {
     <>
       <section className="flex flex-1 items-center justify-center p-6 md:w-1/2 md:p-10 lg:p-14">
         <div className="w-full max-w-md rounded-2xl border border-border bg-card/95 p-6 shadow-sm backdrop-blur-sm md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
-          <div className="mb-8">
+          <div className="mb-12">
             <p className="font-heading text-3xl font-medium tracking-tight">
               {t("brand")}
             </p>

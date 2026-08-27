@@ -30,11 +30,11 @@ export function AuthStatusMessage({
   action,
 }: AuthStatusMessageProps) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col items-center gap-4 text-center">
       <Icon
         aria-hidden
         className={cn(
-          "size-10 stroke-[1.5]",
+          "size-12 stroke-[1.25]",
           toneClassName[tone],
           spin && "animate-spin",
         )}
@@ -45,7 +45,7 @@ export function AuthStatusMessage({
         </p>
         <p className="text-sm text-muted-foreground">{body}</p>
       </div>
-      {action ? <div className="pt-1">{action}</div> : null}
+      {action ? <div className="flex justify-center pt-1">{action}</div> : null}
     </div>
   );
 }
