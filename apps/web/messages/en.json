@@ -2,6 +2,9 @@
   "common": {
     "appName": "Mental Journal",
     "language": "Language",
+    "logout": "Log out",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "locales": {
       "pl": "Polski",
       "en": "English"
@@ -50,7 +53,15 @@
       "missingTitle": "Missing link",
       "missingBody": "Open the full link from your email message.",
       "loginLink": "Go to log in",
-      "registerLink": "Create an account"
+      "registerLink": "Create an account",
+      "email": "Email",
+      "resendPrompt": "Didn't get the email or did the link expire? We'll send a new one.",
+      "resendSubmit": "Resend email",
+      "resendSuccess": "If an account needs verification, we sent an email.",
+      "errors": {
+        "emailRequired": "Enter your email",
+        "emailInvalid": "Invalid email address"
+      }
     },
     "login": {
       "metaTitle": "Log in | Mental Journal",
@@ -62,6 +73,7 @@
       "submit": "Log in",
       "noAccount": "Don't have an account?",
       "registerLink": "Sign up",
+      "resendVerification": "Send verification link",
       "errors": {
         "emailRequired": "Enter your email",
         "emailInvalid": "Invalid email address",
@@ -72,6 +84,7 @@
   },
   "apiErrors": {
     "AUTH_INVALID_CREDENTIALS": "Invalid email or password",
+    "AUTH_ACCOUNT_NOT_VERIFIED": "Confirm your email before logging in",
     "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "The verification link is invalid",
     "AUTH_VERIFICATION_TOKEN_EXPIRED": "The verification link has expired",
     "generic": "Something went wrong. Please try again."

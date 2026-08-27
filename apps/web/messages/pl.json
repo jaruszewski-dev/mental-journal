@@ -2,6 +2,9 @@
   "common": {
     "appName": "Mental Journal",
     "language": "Język",
+    "logout": "Wyloguj",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
     "locales": {
       "pl": "Polski",
       "en": "English"
@@ -50,7 +53,15 @@
       "missingTitle": "Brak linku",
       "missingBody": "Otwórz pełny link z wiadomości email.",
       "loginLink": "Przejdź do logowania",
-      "registerLink": "Załóż konto"
+      "registerLink": "Załóż konto",
+      "email": "Email",
+      "resendPrompt": "Nie dostałeś maila albo link wygasł? Wyślemy nowy.",
+      "resendSubmit": "Wyślij ponownie",
+      "resendSuccess": "Jeśli konto wymaga weryfikacji, wysłaliśmy email.",
+      "errors": {
+        "emailRequired": "Podaj adres email",
+        "emailInvalid": "Nieprawidłowy adres email"
+      }
     },
     "login": {
       "metaTitle": "Logowanie | Mental Journal",
@@ -62,6 +73,7 @@
       "submit": "Zaloguj się",
       "noAccount": "Nie masz konta?",
       "registerLink": "Zarejestruj się",
+      "resendVerification": "Wyślij link weryfikacyjny",
       "errors": {
         "emailRequired": "Podaj adres email",
         "emailInvalid": "Nieprawidłowy adres email",
@@ -72,6 +84,7 @@
   },
   "apiErrors": {
     "AUTH_INVALID_CREDENTIALS": "Nieprawidłowy email lub hasło",
+    "AUTH_ACCOUNT_NOT_VERIFIED": "Potwierdź email, zanim się zalogujesz",
     "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "Link weryfikacyjny jest nieprawidłowy",
     "AUTH_VERIFICATION_TOKEN_EXPIRED": "Link weryfikacyjny wygasł",
     "generic": "Coś poszło nie tak. Spróbuj ponownie."

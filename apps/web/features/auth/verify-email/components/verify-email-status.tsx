@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { AuthStatusMessage } from "@/features/auth/shared/auth-status-message";
+import { ResendVerificationForm } from "@/features/auth/verify-email/components/resend-verification-form";
 import { useVerifyEmailQuery } from "@/features/auth/verify-email/hooks/use-verify-email-query";
 import { Link, useRouter } from "@/i18n/navigation";
 import { resolveApiErrorMessage } from "@/lib/api-error";
@@ -35,20 +36,23 @@ export function VerifyEmailStatus({ token }: VerifyEmailStatusProps) {
 
   if (!token) {
     return (
-      <AuthStatusMessage
-        icon={Link2Off}
-        tone="muted"
-        title={t("missingTitle")}
-        body={t("missingBody")}
-        action={
-          <Link
-            href="/register"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-          >
-            {t("registerLink")}
-          </Link>
-        }
-      />
+      <div className="flex flex-col items-center gap-8">
+        <AuthStatusMessage
+          icon={Link2Off}
+          tone="muted"
+          title={t("missingTitle")}
+          body={t("missingBody")}
+          action={
+            <Link
+              href="/register"
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            >
+              {t("registerLink")}
+            </Link>
+          }
+        />
+        <ResendVerificationForm />
+      </div>
     );
   }
 
@@ -66,20 +70,23 @@ export function VerifyEmailStatus({ token }: VerifyEmailStatusProps) {
 
   if (query.isError) {
     return (
-      <AuthStatusMessage
-        icon={CircleAlert}
-        tone="error"
-        title={t("errorTitle")}
-        body={resolveApiErrorMessage(query.error, tApi)}
-        action={
-          <Link
-            href="/login"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-          >
-            {t("loginLink")}
-          </Link>
-        }
-      />
+      <div className="flex flex-col items-center gap-8">
+        <AuthStatusMessage
+          icon={CircleAlert}
+          tone="error"
+          title={t("errorTitle")}
+          body={resolveApiErrorMessage(query.error, tApi)}
+          action={
+            <Link
+              href="/login"
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
+            >
+              {t("loginLink")}
+            </Link>
+          }
+        />
+        <ResendVerificationForm />
+      </div>
     );
   }
 

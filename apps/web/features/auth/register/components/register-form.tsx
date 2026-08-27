@@ -19,12 +19,14 @@ import {
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
 } from "@/features/auth/shared/auth.const";
+import { PasswordInput } from "@/features/auth/shared/password-input";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { getApiErrorMessage } from "@/lib/api-error";
 
 export function RegisterForm() {
   const t = useTranslations("auth.register");
+  const tCommon = useTranslations("common");
   const locale = useLocale() as AppLocale;
 
   const registerSchema = useMemo(
@@ -123,12 +125,13 @@ export function RegisterForm() {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="password">{t("password")}</Label>
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="new-password"
           aria-invalid={!!errors.password}
           className="h-10 bg-card"
+          showLabel={tCommon("showPassword")}
+          hideLabel={tCommon("hidePassword")}
           {...register("password")}
         />
         <p

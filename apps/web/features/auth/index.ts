@@ -24,3 +24,4 @@ export {
   verifyEmail,
   type VerifyEmailResponse,
 } from "./verify-email/api/verify-email";
+export { logoutUser, type LogoutResponse } from "./session/api/logout";

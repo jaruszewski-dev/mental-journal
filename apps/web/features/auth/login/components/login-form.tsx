@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -13,10 +13,14 @@ import {
   createLoginSchema,
   type LoginFormValues,
 } from "@/features/auth/login/validations/login.schema";
+import { PasswordInput } from "@/features/auth/shared/password-input";
+import { useResendVerificationMutation } from "@/features/auth/verify-email/hooks/use-resend-verification-mutation";
 import { Link } from "@/i18n/navigation";
 
 export function LoginForm() {
   const t = useTranslations("auth.login");
+  const tCommon = useTranslations("common");
+  const [showResend, setShowResend] = useState(false);
 
   const loginSchema = useMemo(
     () =>
@@ -31,6 +35,7 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -40,10 +45,22 @@ export function LoginForm() {
     },
   });
 
-  const mutation = useLoginMutation();
+  const mutation = useLoginMutation({
+    onUnverified: () => setShowResend(true),
+  });
+  const resendMutation = useResendVerificationMutation();
 
   function onSubmit(values: LoginFormValues) {
+    setShowResend(false);
     mutation.mutate(values);
+  }
+
+  function onResend() {
+    const email = getValues("email").trim().toLowerCase();
+    if (!email) {
+      return;
+    }
+    resendMutation.mutate({ email });
   }
 
   return (
@@ -69,12 +86,13 @@ export function LoginForm() {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="password">{t("password")}</Label>
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="current-password"
           aria-invalid={!!errors.password}
           className="h-10 bg-card"
+          showLabel={tCommon("showPassword")}
+          hideLabel={tCommon("hidePassword")}
           {...register("password")}
         />
         <p className="min-h-4 text-xs text-destructive">
@@ -90,6 +108,19 @@ export function LoginForm() {
       >
         {t("submit")}
       </Button>
+
+      {showResend ? (
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="w-full"
+          disabled={resendMutation.isPending}
+          onClick={onResend}
+        >
+          {t("resendVerification")}
+        </Button>
+      ) : null}
 
       <p className="text-center text-sm text-muted-foreground">
         {t("noAccount")}{" "}
