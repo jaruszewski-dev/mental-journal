@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 import { useFeedInfiniteQuery } from "../hooks/use-feed-infinite-query";
 import { FeedItem } from "./feed-item";
+import { FeedSkeleton } from "./feed-skeleton";
 
 export function FeedList() {
   const t = useTranslations("feed");
@@ -13,8 +14,8 @@ export function FeedList() {
 
   if (query.isPending) {
     return (
-      <div className="px-4 py-8 text-sm text-muted-foreground">
-        {t("loading")}
+      <div aria-busy="true" aria-label={t("loading")}>
+        <FeedSkeleton />
       </div>
     );
   }
