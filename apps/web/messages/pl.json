@@ -10,6 +10,11 @@
       "en": "English"
     }
   },
+  "nav": {
+    "feed": "Tablica",
+    "journal": "Dziennik",
+    "account": "Konto"
+  },
   "home": {
     "title": "Mental Journal",
     "placeholder": "Tablica — composer i wpisy w kolejnym kroku."

@@ -10,6 +10,11 @@
       "en": "English"
     }
   },
+  "nav": {
+    "feed": "Feed",
+    "journal": "Journal",
+    "account": "Account"
+  },
   "home": {
     "title": "Mental Journal",
     "placeholder": "Feed — composer and entries come next."
