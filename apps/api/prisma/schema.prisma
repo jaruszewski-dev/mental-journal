@@ -62,7 +62,8 @@ datasource db {
 model User {
   id String @id @default(uuid())
 
-  anonName String @map("anon_name")
+  anonName  String  @map("anon_name")
+  avatarUrl String? @map("avatar_url")
 
   status UserStatus @default(ACTIVE)
   role   UserRole   @default(USER)

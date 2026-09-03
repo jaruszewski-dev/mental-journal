@@ -6,6 +6,7 @@ export const ErrorPath = {
   FEED: 'feed',
   COMMENT: 'comment',
   MODERATION: 'moderation',
+  STORAGE: 'storage',
 } as const;
 
 export type ErrorPath = (typeof ErrorPath)[keyof typeof ErrorPath];
