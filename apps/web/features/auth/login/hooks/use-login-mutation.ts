@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { loginUser } from "@/features/auth/login/api/login";
 import { useRouter } from "@/i18n/navigation";
 import { getApiErrorCode, resolveApiErrorMessage } from "@/lib/api-error";
+import { useAuthMeStore } from "@/store/auth-me.store";
 
 type UseLoginMutationOptions = {
   onUnverified?: () => void;
@@ -16,10 +17,12 @@ type UseLoginMutationOptions = {
 export function useLoginMutation(options?: UseLoginMutationOptions) {
   const router = useRouter();
   const t = useTranslations("apiErrors");
+  const fetchMe = useAuthMeStore((s) => s.fetchMe);
 
   return useMutation({
     mutationFn: loginUser,
-    onSuccess: () => {
+    onSuccess: async () => {
+      await fetchMe();
       router.replace("/");
     },
     onError: (error) => {

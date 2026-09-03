@@ -1,6 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 
 import { AppShell } from "@/components/layout/app-shell";
+import { AuthProvider } from "@/components/providers/auth-provider";
 
 type MainLayoutProps = {
   children: React.ReactNode;
@@ -14,5 +15,9 @@ export default async function MainLayout({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <AppShell>{children}</AppShell>;
+  return (
+    <AuthProvider>
+      <AppShell>{children}</AppShell>
+    </AuthProvider>
+  );
 }
