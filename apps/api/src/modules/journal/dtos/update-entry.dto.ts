@@ -1,3 +1,4 @@
+import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsIn,
@@ -10,10 +11,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-import {
-  ALL_JOURNAL_TAGS,
-  JournalTag,
-} from '../../../common/consts/tags.const';
 import {
   MAX_CONTENT_LENGTH,
   MAX_MOOD,

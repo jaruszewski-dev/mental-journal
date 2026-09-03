@@ -13,8 +13,10 @@ import { useCreateEntryMutation } from "../hooks/use-create-entry-mutation";
 import {
   createEntrySchema,
   type EntryFormValues,
+  type JournalTag,
 } from "../validations/entry.schema";
 import { MoodPicker } from "./mood-picker";
+import { TagPicker } from "./tag-picker";
 import { VisibilityToggle } from "./visibility-toggle";
 
 export function Composer() {
@@ -28,6 +30,7 @@ export function Composer() {
       createEntrySchema({
         contentRequired: t("errors.contentRequired"),
         contentMax: t("errors.contentMax"),
+        tagsMax: t("errors.tagsMax"),
       }),
     [t],
   );
@@ -35,11 +38,17 @@ export function Composer() {
   const { register, handleSubmit, reset, watch, setValue, formState } =
     useForm<EntryFormValues>({
       resolver: zodResolver(schema),
-      defaultValues: { content: "", mood: undefined, publish: false },
+      defaultValues: {
+        content: "",
+        mood: undefined,
+        tags: [],
+        publish: false,
+      },
     });
 
   const content = watch("content");
   const mood = watch("mood");
+  const tags = watch("tags");
   const publish = watch("publish");
 
   const { ref: rhfRef, ...contentRest } = register("content");
@@ -80,6 +89,7 @@ export function Composer() {
     mutation.mutate({
       content: values.content.trim(),
       mood: values.mood,
+      tags: values.tags.length > 0 ? values.tags : undefined,
       publish: values.publish || undefined,
     });
   }
@@ -123,7 +133,9 @@ export function Composer() {
                 {...contentRest}
                 ref={(el) => {
                   rhfRef(el);
-                  (textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>).current = el;
+                  (
+                    textareaRef as React.MutableRefObject<HTMLTextAreaElement | null>
+                  ).current = el;
                 }}
                 rows={1}
                 placeholder={t("placeholder")}
@@ -135,27 +147,38 @@ export function Composer() {
             </div>
 
             {expanded ? (
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <MoodPicker
-                    value={mood}
-                    onChange={(v) => setValue("mood", v)}
-                  />
-                  <VisibilityToggle
-                    isPublic={publish}
-                    onChange={(v) => setValue("publish", v)}
-                  />
-                </div>
+              <div className="mt-3 flex flex-col gap-3">
+                <TagPicker
+                  value={tags}
+                  onChange={(next) =>
+                    setValue("tags", next as JournalTag[], {
+                      shouldValidate: true,
+                    })
+                  }
+                />
 
-                <Button
-                  type="submit"
-                  size="sm"
-                  disabled={!content.trim() || mutation.isPending}
-                  className="cursor-pointer gap-1.5"
-                >
-                  <SendIcon className="size-3.5" />
-                  {t("submit")}
-                </Button>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <MoodPicker
+                      value={mood}
+                      onChange={(v) => setValue("mood", v)}
+                    />
+                    <VisibilityToggle
+                      isPublic={publish}
+                      onChange={(v) => setValue("publish", v)}
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={!content.trim() || mutation.isPending}
+                    className="cursor-pointer gap-1.5"
+                  >
+                    <SendIcon className="size-3.5" />
+                    {t("submit")}
+                  </Button>
+                </div>
               </div>
             ) : null}
           </div>
@@ -163,6 +186,11 @@ export function Composer() {
           {formState.errors.content ? (
             <p className="mt-1.5 px-1 text-xs text-destructive">
               {formState.errors.content.message}
+            </p>
+          ) : null}
+          {formState.errors.tags ? (
+            <p className="mt-1.5 px-1 text-xs text-destructive">
+              {formState.errors.tags.message}
             </p>
           ) : null}
         </form>

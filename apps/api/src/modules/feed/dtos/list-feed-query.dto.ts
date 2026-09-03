@@ -1,11 +1,7 @@
+import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { IsArray, IsDate, IsIn, IsOptional, IsString } from 'class-validator';
-
-import {
-  ALL_JOURNAL_TAGS,
-  JournalTag,
-} from '../../../common/consts/tags.const';
 
 export class ListFeedQueryDto {
   @ApiPropertyOptional({
