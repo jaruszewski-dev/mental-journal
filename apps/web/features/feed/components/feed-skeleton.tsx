@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 import { Skeleton } from "@/components/ui/skeleton";
 
 function FeedItemSkeleton() {
@@ -25,11 +27,12 @@ function FeedItemSkeleton() {
 
 type FeedSkeletonProps = {
   count?: number;
+  className?: string;
 };
 
-export function FeedSkeleton({ count = 4 }: FeedSkeletonProps) {
+export function FeedSkeleton({ count = 4, className }: FeedSkeletonProps) {
   return (
-    <div className="flex flex-1 flex-col" aria-hidden>
+    <div className={cn("flex flex-1 flex-col", className)} aria-hidden>
       {Array.from({ length: count }, (_, index) => (
         <FeedItemSkeleton key={index} />
       ))}
