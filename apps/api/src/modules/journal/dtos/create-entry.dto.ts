@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsIn,
   IsInt,
   IsOptional,
@@ -39,4 +40,9 @@ export class CreateEntryDto {
   @IsIn(ALL_JOURNAL_TAGS, { each: true })
   @IsOptional()
   tags!: JournalTag[];
+
+  @ApiProperty({ example: false, required: false })
+  @IsBoolean()
+  @IsOptional()
+  publish?: boolean;
 }

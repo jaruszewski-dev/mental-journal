@@ -19,6 +19,27 @@
     "title": "Mental Journal",
     "placeholder": "Tablica — composer i wpisy w kolejnym kroku."
   },
+  "composer": {
+    "placeholder": "Co masz na myśli?",
+    "submit": "Zapisz",
+    "visibility": {
+      "private": "Tylko dla mnie",
+      "public": "Publiczny"
+    },
+    "mood": {
+      "label": "Nastrój",
+      "1": "Bardzo źle",
+      "2": "Źle",
+      "3": "Neutralnie",
+      "4": "Dobrze",
+      "5": "Bardzo dobrze"
+    },
+    "success": "Wpis zapisany",
+    "errors": {
+      "contentRequired": "Wpisz coś",
+      "contentMax": "Za długi wpis (max 10 000 znaków)"
+    }
+  },
   "auth": {
     "register": {
       "metaTitle": "Rejestracja | Mental Journal",

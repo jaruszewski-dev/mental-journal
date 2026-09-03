@@ -1,21 +1,9 @@
-import { InjectQueue } from '@nestjs/bullmq';
-import { Injectable } from '@nestjs/common';
-import { Queue } from 'bullmq';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
 import { assertCanActPublicly } from '../../common/utils/assert-can-act-publicly.util';
-import {
-  EntryStatus,
-  PostStatus,
-  UserStatus,
-} from '../../generated/prisma/enums';
+import { EntryStatus, UserStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
-import {
-  ModerateCommentJobData,
-  ModeratePostJobData,
-  MODERATION_QUEUE,
-  ModerationJobName,
-} from '../queue/consts/queue.const';
 import { ENTRIES_LIST_TAKE } from './consts/entry.const';
 import { CreateEntryDto } from './dtos/create-entry.dto';
 import { ListEntriesQueryDto } from './dtos/list-entries-query.dto';
@@ -29,30 +17,41 @@ import {
   EntryNotFoundException,
 } from './exceptions/entry-not-found.exception';
 import { Entry, JournalMapper } from './mappers/journal.mapper';
+import {
+  PUBLISH_ENTRY_PORT,
+  PublishEntryPort,
+} from './ports/publish-entry.port';
 
 @Injectable()
 export class JournalService {
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(MODERATION_QUEUE)
-    private readonly moderationQueue: Queue<
-      ModeratePostJobData | ModerateCommentJobData
-    >,
+    @Inject(PUBLISH_ENTRY_PORT)
+    private readonly publishEntryPort: PublishEntryPort,
   ) {}
 
   async create(dto: CreateEntryDto, userId: string): Promise<{ id: string }> {
-    const { content, mood, tags } = dto;
+    const { content, mood, tags, publish } = dto;
 
-    const { id } = await this.prisma.journalEntry.create({
-      data: {
-        userId,
-        content,
-        mood,
-        tags,
-      },
+    if (publish) {
+      await this.assertAuthorCanPublish(userId);
+    }
+
+    const entry = await this.prisma.journalEntry.create({
+      data: { userId, content, mood, tags },
     });
 
-    return { id };
+    if (publish) {
+      await this.publishEntryPort.execute({
+        authorId: userId,
+        journalEntryId: entry.id,
+        content,
+        mood,
+        tags: tags ?? [],
+      });
+    }
+
+    return { id: entry.id };
   }
 
   async findAll(
@@ -192,24 +191,13 @@ export class JournalService {
 
     if (existingPost) throw new EntryAlreadyPublishedException();
 
-    const { id } = await this.prisma.post.create({
-      data: {
-        authorId: userId,
-        journalEntryId: entryId,
-        content: entry.content,
-        mood: entry.mood,
-        tags: entry.tags,
-        status: PostStatus.PENDING,
-      },
-      select: { id: true },
-    });
-
-    await this.moderationQueue.add(ModerationJobName.MODERATE_POST, {
-      postId: id,
+    return this.publishEntryPort.execute({
       authorId: userId,
+      journalEntryId: entryId,
+      content: entry.content,
+      mood: entry.mood,
+      tags: entry.tags,
     });
-
-    return { id };
   }
 
   private async assertAuthorCanPublish(userId: string): Promise<void> {

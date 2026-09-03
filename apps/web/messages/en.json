@@ -19,6 +19,27 @@
     "title": "Mental Journal",
     "placeholder": "Feed — composer and entries come next."
   },
+  "composer": {
+    "placeholder": "What's on your mind?",
+    "submit": "Save",
+    "visibility": {
+      "private": "Only me",
+      "public": "Public"
+    },
+    "mood": {
+      "label": "Mood",
+      "1": "Very bad",
+      "2": "Bad",
+      "3": "Neutral",
+      "4": "Good",
+      "5": "Very good"
+    },
+    "success": "Entry saved",
+    "errors": {
+      "contentRequired": "Write something",
+      "contentMax": "Too long (max 10,000 characters)"
+    }
+  },
   "auth": {
     "register": {
       "metaTitle": "Sign up | Mental Journal",
