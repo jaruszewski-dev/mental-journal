@@ -37,6 +37,7 @@ const API_ERROR_MESSAGE_KEYS: Record<string, string> = {
     "AUTH_VERIFICATION_TOKEN_NOT_FOUND",
   [ErrorCode.AUTH_VERIFICATION_TOKEN_EXPIRED]:
     "AUTH_VERIFICATION_TOKEN_EXPIRED",
+  [ErrorCode.USER_ALREADY_EXISTS]: "USER_ALREADY_EXISTS",
 };
 
 export function resolveApiErrorMessage(

@@ -16,8 +16,15 @@
     "account": "Konto"
   },
   "home": {
-    "title": "Mental Journal",
-    "placeholder": "Tablica — composer i wpisy w kolejnym kroku."
+    "title": "Mental Journal"
+  },
+  "feed": {
+    "loading": "Ładowanie tablicy…",
+    "loadingMore": "Ładowanie…",
+    "loadMore": "Załaduj więcej",
+    "empty": "Brak wpisów na tablicy. Opublikuj pierwszy.",
+    "error": "Nie udało się wczytać tablicy.",
+    "retry": "Spróbuj ponownie"
   },
   "composer": {
     "placeholder": "Co masz na myśli?",
@@ -176,6 +183,7 @@
     "AUTH_ACCOUNT_NOT_VERIFIED": "Potwierdź email, zanim się zalogujesz",
     "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "Link weryfikacyjny jest nieprawidłowy",
     "AUTH_VERIFICATION_TOKEN_EXPIRED": "Link weryfikacyjny wygasł",
+    "USER_ALREADY_EXISTS": "Konto z tym emailem lub nazwą już istnieje",
     "generic": "Coś poszło nie tak. Spróbuj ponownie."
   }
 }

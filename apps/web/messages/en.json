@@ -16,8 +16,15 @@
     "account": "Account"
   },
   "home": {
-    "title": "Mental Journal",
-    "placeholder": "Feed — composer and entries come next."
+    "title": "Mental Journal"
+  },
+  "feed": {
+    "loading": "Loading feed…",
+    "loadingMore": "Loading…",
+    "loadMore": "Load more",
+    "empty": "No posts yet. Publish the first one.",
+    "error": "Could not load the feed.",
+    "retry": "Try again"
   },
   "composer": {
     "placeholder": "What's on your mind?",
@@ -176,6 +183,7 @@
     "AUTH_ACCOUNT_NOT_VERIFIED": "Confirm your email before logging in",
     "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "The verification link is invalid",
     "AUTH_VERIFICATION_TOKEN_EXPIRED": "The verification link has expired",
+    "USER_ALREADY_EXISTS": "An account with this email or name already exists",
     "generic": "Something went wrong. Please try again."
   }
 }

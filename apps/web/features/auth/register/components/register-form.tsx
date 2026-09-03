@@ -22,11 +22,12 @@ import {
 import { PasswordInput } from "@/features/auth/shared/password-input";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
-import { getApiErrorMessage } from "@/lib/api-error";
+import { resolveApiErrorMessage } from "@/lib/api-error";
 
 export function RegisterForm() {
   const t = useTranslations("auth.register");
   const tCommon = useTranslations("common");
+  const tApi = useTranslations("apiErrors");
   const locale = useLocale() as AppLocale;
 
   const registerSchema = useMemo(
@@ -147,7 +148,7 @@ export function RegisterForm() {
 
       <p className="min-h-5 text-sm text-destructive" role="alert">
         {mutation.isError
-          ? getApiErrorMessage(mutation.error, t("errors.generic"))
+          ? resolveApiErrorMessage(mutation.error, tApi)
           : "\u00a0"}
       </p>
 
