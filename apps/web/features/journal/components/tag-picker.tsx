@@ -2,7 +2,7 @@
 
 import { TagIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,23 @@ type TagPickerProps = {
 export function TagPicker({ value, onChange }: TagPickerProps) {
   const t = useTranslations("composer.tags");
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        rootRef.current &&
+        !rootRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
 
   function toggleTag(tag: JournalTag) {
     if (value.includes(tag)) {
@@ -33,7 +50,7 @@ export function TagPicker({ value, onChange }: TagPickerProps) {
   }
 
   return (
-    <div className="w-full">
+    <div ref={rootRef} className="w-full">
       <div className="flex flex-wrap items-center gap-1.5">
         <button
           type="button"

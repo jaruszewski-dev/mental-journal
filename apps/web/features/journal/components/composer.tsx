@@ -63,7 +63,7 @@ export function Composer() {
 
   const mutation = useCreateEntryMutation({
     onSuccess: () => {
-      toast.success(t("success"));
+      toast.success(t("success"), { position: "bottom-center" });
       collapse();
     },
   });
@@ -157,8 +157,8 @@ export function Composer() {
                   }
                 />
 
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:justify-between">
+                  <div className="flex flex-col items-start gap-2 md:flex-row md:flex-wrap md:items-center">
                     <MoodPicker
                       value={mood}
                       onChange={(v) => setValue("mood", v)}
@@ -173,7 +173,7 @@ export function Composer() {
                     type="submit"
                     size="sm"
                     disabled={!content.trim() || mutation.isPending}
-                    className="cursor-pointer gap-1.5"
+                    className="cursor-pointer gap-1.5 self-end md:self-auto"
                   >
                     <SendIcon className="size-3.5" />
                     {t("submit")}
