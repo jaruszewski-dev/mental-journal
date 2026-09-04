@@ -1,13 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
+import { ErrorPath } from '../../common/consts/error-path.const';
 import type { AppLocale } from '../../common/consts/locale.const';
 import { IssueEmailVerificationResult } from '../../common/enums/issue-email-verification-result.enum';
 import { VerifyEmailResult } from '../../common/enums/verify-email-result.enum';
+import { UserNotFoundException } from '../../common/exceptions/custom/user-not-found.exception';
 import { Prisma, UserStatus } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { IssueEmailVerificationOutcome } from '../auth/ports/issue-email-verification.port';
+import { UpdateUserResponseDto } from './dtos/update-user-response.dto';
 import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
 import { FindUserByIdResult } from './ports/find-user-by-id.port';
+import {
+  RESOLVE_PASSWORD_CHANGE_PORT,
+  ResolvePasswordChangePort,
+} from './ports/resolve-password-change.port';
 import { AnonName } from './value-objects/anon-name.vo';
 
 interface RegisteredUser {
@@ -26,7 +33,12 @@ interface UserCredentials {
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+
+    @Inject(RESOLVE_PASSWORD_CHANGE_PORT)
+    private readonly resolvePasswordChangePort: ResolvePasswordChangePort,
+  ) {}
 
   async registerUser(input: {
     email: string;
@@ -184,5 +196,76 @@ export class UserService {
       emailVerified: user.emailVerified,
       status: user.status,
     };
+  }
+
+  async update(
+    userId: string,
+    input: {
+      anonName?: string;
+      avatarUrl?: string;
+      currentPassword?: string;
+      newPassword?: string;
+    },
+  ): Promise<UpdateUserResponseDto> {
+    const data: Prisma.UserUpdateInput = {};
+
+    if (input.newPassword !== undefined) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { passwordHash: true },
+      });
+
+      if (!user) throw new UserNotFoundException(ErrorPath.USER);
+
+      const { passwordHash } = await this.resolvePasswordChangePort.execute({
+        currentPassword: input.currentPassword ?? '',
+        newPassword: input.newPassword,
+        currentPasswordHash: user.passwordHash,
+      });
+
+      data.passwordHash = passwordHash;
+    }
+
+    if (input.anonName !== undefined) {
+      data.anonName = AnonName.create(input.anonName).getValue();
+    }
+
+    if (input.avatarUrl !== undefined) {
+      data.avatarUrl = input.avatarUrl;
+    }
+
+    const select = {
+      id: true,
+      anonName: true,
+      avatarUrl: true,
+    } as const;
+
+    try {
+      if (Object.keys(data).length === 0) {
+        const user = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select,
+        });
+
+        if (!user) throw new UserNotFoundException(ErrorPath.USER);
+
+        return user;
+      }
+
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data,
+        select,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new UserNotFoundException(ErrorPath.USER);
+      }
+
+      throw error;
+    }
   }
 }

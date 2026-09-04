@@ -4,6 +4,7 @@ import { IssueEmailVerificationResult } from '../../common/enums/issue-email-ver
 import { VerifyEmailResult } from '../../common/enums/verify-email-result.enum';
 import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RESOLVE_PASSWORD_CHANGE_PORT } from './ports/resolve-password-change.port';
 import { AnonNameInvalidException } from './exceptions/anon-name-invalid.exception';
 import { UserAlreadyExistsException } from './exceptions/user-already-exists.exception';
 import { UserService } from './user.service';
@@ -79,6 +80,8 @@ describe('UserService', () => {
     },
   };
 
+  const resolvePasswordChangePort = { execute: jest.fn() };
+
   const expectFindByEmailLookup = (email: string) =>
     expect(prismaService.user.findUnique).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -116,6 +119,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         { provide: PrismaService, useValue: prismaService },
+        { provide: RESOLVE_PASSWORD_CHANGE_PORT, useValue: resolvePasswordChangePort },
       ],
     }).compile();
 

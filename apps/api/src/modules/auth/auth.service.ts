@@ -4,64 +4,65 @@ import { JwtService } from '@nestjs/jwt';
 import { createHash } from 'crypto';
 import type { Response } from 'express';
 
-import { ErrorPath } from '../../../common/consts/error-path.const';
-import { IssueEmailVerificationResult } from '../../../common/enums/issue-email-verification-result.enum';
-import { VerifyEmailResult } from '../../../common/enums/verify-email-result.enum';
-import { AccountNotAllowedException } from '../../../common/exceptions/custom/account-not-allowed.exception';
-import { UnauthorizedUserException } from '../../../common/exceptions/custom/unauthorized-user.exception';
-import { assertAccountCanAct } from '../../../common/utils/assert-account-can-act.util';
-import { Prisma } from '../../../generated/prisma/client';
-import { UserStatus } from '../../../generated/prisma/enums';
-import { IssueEmailVerificationResponseDto } from '../dtos/issue-email-verification-response.dto';
-import { LoginDto } from '../dtos/login.dto';
-import { LoginResponseDto } from '../dtos/login-response.dto';
-import { LogoutResponseDto } from '../dtos/logout-response.dto';
-import { RefreshResponseDto } from '../dtos/refresh-response.dto';
-import { RegisterDto } from '../dtos/register.dto';
-import { RegisterResponseDto } from '../dtos/register-response.dto';
-import { VerifyEmailResponseDto } from '../dtos/verify-email-response.dto';
-import { InvalidCredentialsException } from '../exceptions/invalid-credentials.exception';
-import { VerificationTokenExpiredException } from '../exceptions/verification-token-expired.exception';
-import { VerificationTokenNotFoundException } from '../exceptions/verification-token-not-found.exception';
+import { ErrorPath } from '../../common/consts/error-path.const';
+import { IssueEmailVerificationResult } from '../../common/enums/issue-email-verification-result.enum';
+import { VerifyEmailResult } from '../../common/enums/verify-email-result.enum';
+import { AccountNotAllowedException } from '../../common/exceptions/custom/account-not-allowed.exception';
+import { UnauthorizedUserException } from '../../common/exceptions/custom/unauthorized-user.exception';
+import { HashingService } from '../../common/services/hashing.service';
+import { assertAccountCanAct } from '../../common/utils/assert-account-can-act.util';
+import { Prisma } from '../../generated/prisma/client';
+import { UserStatus } from '../../generated/prisma/enums';
+import { IssueEmailVerificationResponseDto } from './dtos/issue-email-verification-response.dto';
+import { LoginDto } from './dtos/login.dto';
+import { LoginResponseDto } from './dtos/login-response.dto';
+import { LogoutResponseDto } from './dtos/logout-response.dto';
+import { RefreshResponseDto } from './dtos/refresh-response.dto';
+import { RegisterDto } from './dtos/register.dto';
+import { RegisterResponseDto } from './dtos/register-response.dto';
+import { VerifyEmailResponseDto } from './dtos/verify-email-response.dto';
+import { CurrentPasswordInvalidException } from './exceptions/current-password-invalid.exception';
+import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
+import { VerificationTokenExpiredException } from './exceptions/verification-token-expired.exception';
+import { VerificationTokenNotFoundException } from './exceptions/verification-token-not-found.exception';
 import {
   DELETE_ALL_SESSIONS_PORT,
   DeleteAllSessionsPort,
-} from '../ports/delete-all-sessions.port';
+} from './ports/delete-all-sessions.port';
 import {
   DELETE_SESSION_PORT,
   DeleteSessionPort,
-} from '../ports/delete-session.port';
+} from './ports/delete-session.port';
 import {
   FIND_BY_REFRESH_TOKEN_HASH_PORT,
   FindByRefreshTokenHashPort,
-} from '../ports/find-by-refresh-token-hash.port';
+} from './ports/find-by-refresh-token-hash.port';
 import {
   FIND_USER_BY_EMAIL_PORT,
   FindUserByEmailPort,
-} from '../ports/find-user-by-email.port';
+} from './ports/find-user-by-email.port';
 import {
   ISSUE_EMAIL_VERIFICATION_PORT,
   IssueEmailVerificationPort,
-} from '../ports/issue-email-verification.port';
+} from './ports/issue-email-verification.port';
 import {
   REGISTER_USER_PORT,
   RegisterUserPort,
-} from '../ports/register-user.port';
-import { SAVE_SESSION_PORT, SaveSessionPort } from '../ports/save-session.port';
-import { buildVerificationLink } from '../utils/build-verification-link.util';
+} from './ports/register-user.port';
+import { SAVE_SESSION_PORT, SaveSessionPort } from './ports/save-session.port';
+import { buildVerificationLink } from './utils/build-verification-link.util';
 import {
   SEND_VERIFICATION_EMAIL_PORT,
   SendVerificationEmailPort,
-} from '../ports/send-verification-email.port';
+} from './ports/send-verification-email.port';
 import {
   UPDATE_SESSION_PORT,
   UpdateSessionPort,
-} from '../ports/update-session.port';
-import { VERIFY_EMAIL_PORT, VerifyEmailPort } from '../ports/verify-email.port';
-import { createRandomToken } from '../utils/create-random-token.util';
-import { parseTtlMs } from '../utils/parse-ttl-ms.util';
-import { Password } from '../value-objects/password.vo';
-import { HashingService } from './hashing.service';
+} from './ports/update-session.port';
+import { VERIFY_EMAIL_PORT, VerifyEmailPort } from './ports/verify-email.port';
+import { createRandomToken } from './utils/create-random-token.util';
+import { parseTtlMs } from './utils/parse-ttl-ms.util';
+import { Password } from './value-objects/password.vo';
 
 const DUMMY_PASSWORD_HASH =
   '$2b$12$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ012';
@@ -372,6 +373,24 @@ export class AuthService {
     }
 
     return { id: session.userId, anonName: session.user.anonName };
+  }
+
+  async resolvePasswordChange(input: {
+    currentPassword: string;
+    newPassword: string;
+    currentPasswordHash: string;
+  }): Promise<{ passwordHash: string }> {
+    const ok = await this.hashingService.compare(
+      input.currentPassword,
+      input.currentPasswordHash,
+    );
+
+    if (!ok) throw new CurrentPasswordInvalidException();
+
+    const password = Password.create(input.newPassword);
+    const passwordHash = await this.hashingService.hash(password.getValue());
+
+    return { passwordHash };
   }
 
   private cookieBase(path: string) {

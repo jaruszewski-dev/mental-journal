@@ -32,7 +32,7 @@ import { RegisterDto } from './dtos/register.dto';
 import { RegisterResponseDto } from './dtos/register-response.dto';
 import { VerifyEmailQueryDto } from './dtos/verify-email-query.dto';
 import { VerifyEmailResponseDto } from './dtos/verify-email-response.dto';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './auth.service';
 
 @SetErrorPath(ErrorPath.AUTH)
 @Controller('auth')
