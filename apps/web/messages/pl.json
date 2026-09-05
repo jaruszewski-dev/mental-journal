@@ -15,6 +15,24 @@
     "journal": "Dziennik",
     "account": "Konto"
   },
+  "account": {
+    "title": "Konto",
+    "anonName": "Anonimowa nazwa",
+    "avatarHint": "Zdjęcie profilowe wkrótce",
+    "passwordSection": "Hasło",
+    "currentPassword": "Obecne hasło",
+    "newPassword": "Nowe hasło",
+    "passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra, znak specjalny",
+    "submit": "Zapisz",
+    "success": "Zapisano zmiany",
+    "errors": {
+      "anonNameLength": "Nazwa musi mieć od {min} do {max} znaków",
+      "anonNamePattern": "Tylko litery, cyfry i podkreślenie",
+      "currentPasswordRequired": "Podaj obecne hasło, aby je zmienić",
+      "passwordLength": "Hasło musi mieć od {min} do {max} znaków",
+      "passwordPattern": "Hasło musi zawierać wielką i małą literę, cyfrę oraz znak specjalny"
+    }
+  },
   "home": {
     "title": "Mental Journal"
   },
