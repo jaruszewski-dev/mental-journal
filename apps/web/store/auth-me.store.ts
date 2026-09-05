@@ -5,6 +5,7 @@ import { apiClient } from "@/lib/api-client";
 export type AuthMe = {
   userId: string;
   anonName?: string;
+  avatarUrl?: string | null;
 };
 
 type AuthMeStatus = "idle" | "loading" | "authenticated" | "unauthenticated" | "error";

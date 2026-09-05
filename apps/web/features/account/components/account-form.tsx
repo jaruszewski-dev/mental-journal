@@ -2,12 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  AVATAR_ALLOWED_MIME_TYPES,
+  AVATAR_MAX_BYTES,
+} from "@/features/account/consts/avatar.const";
 import { useUpdateAccountMutation } from "@/features/account/hooks/use-update-account-mutation";
 import {
   createUpdateAccountSchema,
@@ -21,6 +25,7 @@ import {
 } from "@/features/auth/shared/auth.const";
 import { PasswordInput } from "@/features/auth/shared/password-input";
 import { useAuthMeStore } from "@/store/auth-me.store";
+import { cn } from "@/lib/utils";
 
 function initialFromAnonName(anonName?: string) {
   const trimmed = anonName?.trim();
@@ -32,6 +37,10 @@ export function AccountForm() {
   const t = useTranslations("account");
   const tCommon = useTranslations("common");
   const me = useAuthMeStore((s) => s.me);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
 
   const schema = useMemo(
     () =>
@@ -75,13 +84,55 @@ export function AccountForm() {
     }
   }, [me?.anonName, reset]);
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+      }
+    };
+  }, [avatarPreviewUrl]);
+
   const mutation = useUpdateAccountMutation();
+
+  const displayAvatarUrl = avatarPreviewUrl ?? me?.avatarUrl ?? null;
+
+  function onAvatarChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    if (
+      !AVATAR_ALLOWED_MIME_TYPES.includes(
+        file.type as (typeof AVATAR_ALLOWED_MIME_TYPES)[number],
+      )
+    ) {
+      setAvatarError(t("errors.avatarType"));
+      return;
+    }
+
+    if (file.size > AVATAR_MAX_BYTES) {
+      setAvatarError(t("errors.avatarSize"));
+      return;
+    }
+
+    if (avatarPreviewUrl?.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreviewUrl);
+    }
+
+    setAvatarError(null);
+    setAvatarFile(file);
+    setAvatarPreviewUrl(URL.createObjectURL(file));
+  }
 
   function onSubmit(values: UpdateAccountFormValues) {
     const payload: {
       anonName?: string;
       currentPassword?: string;
       newPassword?: string;
+      avatar?: File;
     } = {};
 
     if (values.anonName !== me?.anonName) {
@@ -93,12 +144,22 @@ export function AccountForm() {
       payload.newPassword = values.newPassword;
     }
 
-    if (!payload.anonName && !payload.newPassword) {
+    if (avatarFile) {
+      payload.avatar = avatarFile;
+    }
+
+    if (!payload.anonName && !payload.newPassword && !payload.avatar) {
       return;
     }
 
     mutation.mutate(payload, {
       onSuccess: (data) => {
+        if (avatarPreviewUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(avatarPreviewUrl);
+        }
+        setAvatarFile(null);
+        setAvatarPreviewUrl(null);
+        setAvatarError(null);
         reset({
           anonName: data.anonName,
           currentPassword: "",
@@ -108,6 +169,8 @@ export function AccountForm() {
     });
   }
 
+  const canSubmit = (isDirty || !!avatarFile) && !mutation.isPending;
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -115,13 +178,44 @@ export function AccountForm() {
       noValidate
     >
       <div className="flex flex-col items-center gap-3">
-        <div
-          aria-hidden
-          className="flex size-20 items-center justify-center rounded-full bg-accent font-heading text-2xl font-medium text-foreground"
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className={cn(
+            "relative flex size-20 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-accent",
+            "font-heading text-2xl font-medium text-foreground",
+            "ring-offset-background transition-opacity hover:opacity-90",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          )}
+          aria-label={t("changeAvatar")}
         >
-          {initialFromAnonName(me?.anonName)}
-        </div>
-        <p className="text-sm text-muted-foreground">{t("avatarHint")}</p>
+          {displayAvatarUrl ? (
+            <img
+              src={displayAvatarUrl}
+              alt=""
+              className="size-full object-cover"
+            />
+          ) : (
+            initialFromAnonName(me?.anonName)
+          )}
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={AVATAR_ALLOWED_MIME_TYPES.join(",")}
+          className="sr-only"
+          onChange={onAvatarChange}
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="cursor-pointer text-sm text-muted-foreground underline-offset-4 hover:underline"
+        >
+          {t("changeAvatar")}
+        </button>
+        <p className="min-h-4 text-center text-xs text-destructive">
+          {avatarError ?? "\u00a0"}
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -184,11 +278,7 @@ export function AccountForm() {
       </div>
 
       <div className="flex justify-end">
-        <Button
-          type="submit"
-          size="lg"
-          disabled={mutation.isPending || !isDirty}
-        >
+        <Button type="submit" size="lg" disabled={!canSubmit}>
           {t("submit")}
         </Button>
       </div>

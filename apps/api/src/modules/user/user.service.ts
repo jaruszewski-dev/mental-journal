@@ -15,6 +15,10 @@ import {
   RESOLVE_PASSWORD_CHANGE_PORT,
   ResolvePasswordChangePort,
 } from './ports/resolve-password-change.port';
+import {
+  UPLOAD_AVATAR_PORT,
+  UploadAvatarPort,
+} from './ports/upload-avatar.port';
 import { AnonName } from './value-objects/anon-name.vo';
 
 interface RegisteredUser {
@@ -38,6 +42,9 @@ export class UserService {
 
     @Inject(forwardRef(() => RESOLVE_PASSWORD_CHANGE_PORT))
     private readonly resolvePasswordChangePort: ResolvePasswordChangePort,
+
+    @Inject(UPLOAD_AVATAR_PORT)
+    private readonly uploadAvatarPort: UploadAvatarPort,
   ) {}
 
   async registerUser(input: {
@@ -202,7 +209,7 @@ export class UserService {
     userId: string,
     input: {
       anonName?: string;
-      avatarUrl?: string;
+      avatar?: { buffer: Buffer; mimeType: string };
       currentPassword?: string;
       newPassword?: string;
     },
@@ -230,8 +237,14 @@ export class UserService {
       data.anonName = AnonName.create(input.anonName).getValue();
     }
 
-    if (input.avatarUrl !== undefined) {
-      data.avatarUrl = input.avatarUrl;
+    if (input.avatar !== undefined) {
+      const { url } = await this.uploadAvatarPort.execute({
+        userId,
+        buffer: input.avatar.buffer,
+        mimeType: input.avatar.mimeType,
+      });
+
+      data.avatarUrl = url;
     }
 
     const select = {

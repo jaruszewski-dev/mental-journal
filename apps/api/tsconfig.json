@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": ["jest", "node"],
+    "types": ["jest", "node", "multer"],
     "target": "ES2022",
     "lib": ["ES2022"],
     "outDir": "./dist",

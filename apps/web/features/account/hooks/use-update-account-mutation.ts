@@ -18,7 +18,11 @@ export function useUpdateAccountMutation() {
     onSuccess: (data) => {
       if (me) {
         useAuthMeStore.setState({
-          me: { ...me, anonName: data.anonName },
+          me: {
+            ...me,
+            anonName: data.anonName,
+            avatarUrl: data.avatarUrl,
+          },
         });
       }
       toast.success(t("success"), { position: "bottom-center" });

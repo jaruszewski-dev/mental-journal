@@ -18,7 +18,7 @@
   "account": {
     "title": "Konto",
     "anonName": "Anonimowa nazwa",
-    "avatarHint": "Zdjęcie profilowe wkrótce",
+    "changeAvatar": "Zmień zdjęcie",
     "passwordSection": "Hasło",
     "currentPassword": "Obecne hasło",
     "newPassword": "Nowe hasło",
@@ -30,7 +30,9 @@
       "anonNamePattern": "Tylko litery, cyfry i podkreślenie",
       "currentPasswordRequired": "Podaj obecne hasło, aby je zmienić",
       "passwordLength": "Hasło musi mieć od {min} do {max} znaków",
-      "passwordPattern": "Hasło musi zawierać wielką i małą literę, cyfrę oraz znak specjalny"
+      "passwordPattern": "Hasło musi zawierać wielką i małą literę, cyfrę oraz znak specjalny",
+      "avatarType": "Dozwolone formaty: JPG, PNG, WebP",
+      "avatarSize": "Zdjęcie może mieć maksymalnie 5 MB"
     }
   },
   "home": {

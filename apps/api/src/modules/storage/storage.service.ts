@@ -16,7 +16,6 @@ import {
 } from './consts/r2.const';
 import { AvatarTooLargeException } from './exceptions/avatar-too-large.exception';
 import { InvalidAvatarException } from './exceptions/invalid-avatar.exception';
-import { StorageMisconfiguredException } from './exceptions/storage-misconfigured.exception';
 
 export type UploadAvatarInput = {
   userId: string;
@@ -40,10 +39,6 @@ export class StorageService {
 
   async uploadAvatar(input: UploadAvatarInput): Promise<UploadAvatarResult> {
     this.assertAvatarValid(input);
-
-    if (!this.config.publicUrl) {
-      throw new StorageMisconfiguredException();
-    }
 
     const extension =
       AVATAR_MIME_TO_EXTENSION[input.mimeType as AvatarMimeType];

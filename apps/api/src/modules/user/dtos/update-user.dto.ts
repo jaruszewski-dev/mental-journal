@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  Allow,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -49,4 +50,9 @@ export class UpdateUserDto {
       'newPassword: must be 8–72 chars with upper, lower, digit and special char',
   })
   newPassword?: string;
+
+  @ApiPropertyOptional({ type: 'string', format: 'binary' })
+  @IsOptional()
+  @Allow()
+  avatar?: unknown;
 }

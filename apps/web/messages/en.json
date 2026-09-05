@@ -18,7 +18,7 @@
   "account": {
     "title": "Account",
     "anonName": "Anonymous name",
-    "avatarHint": "Profile photo coming soon",
+    "changeAvatar": "Change photo",
     "passwordSection": "Password",
     "currentPassword": "Current password",
     "newPassword": "New password",
@@ -30,7 +30,9 @@
       "anonNamePattern": "Letters, digits and underscore only",
       "currentPasswordRequired": "Enter your current password to change it",
       "passwordLength": "Password must be {min}–{max} characters",
-      "passwordPattern": "Password needs upper, lower, digit and a special character"
+      "passwordPattern": "Password needs upper, lower, digit and a special character",
+      "avatarType": "Allowed formats: JPG, PNG, WebP",
+      "avatarSize": "Photo must be at most 5 MB"
     }
   },
   "home": {

@@ -17,6 +17,13 @@ export const apiClient = axios.create({
   },
 });
 
+apiClient.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    config.headers.set("Content-Type", undefined);
+  }
+  return config;
+});
+
 let refreshPromise: Promise<void> | null = null;
 
 function getLoginPath(): string {

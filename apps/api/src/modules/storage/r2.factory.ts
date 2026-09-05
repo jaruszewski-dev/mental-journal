@@ -21,11 +21,13 @@ export function createR2S3Client(configService: ConfigService): S3Client {
 export function createR2StorageConfig(
   configService: ConfigService,
 ): R2StorageConfig {
-  const publicUrl = configService.get<string>('CLOUDFLARE_R2_PUBLIC_URL');
+  const publicUrl = configService
+    .getOrThrow<string>('CLOUDFLARE_R2_PUBLIC_URL')
+    .replace(/\/$/, '');
 
   return {
     bucket: configService.getOrThrow<string>('CLOUDFLARE_R2_BUCKET'),
     endpoint: configService.getOrThrow<string>('CLOUDFLARE_S3_API_ENDPOINT'),
-    publicUrl: publicUrl?.replace(/\/$/, '') || null,
+    publicUrl,
   };
 }
