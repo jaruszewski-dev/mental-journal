@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
 import type { AppLocale } from '../../common/consts/locale.const';
@@ -36,7 +36,7 @@ export class UserService {
   constructor(
     private readonly prisma: PrismaService,
 
-    @Inject(RESOLVE_PASSWORD_CHANGE_PORT)
+    @Inject(forwardRef(() => RESOLVE_PASSWORD_CHANGE_PORT))
     private readonly resolvePasswordChangePort: ResolvePasswordChangePort,
   ) {}
 

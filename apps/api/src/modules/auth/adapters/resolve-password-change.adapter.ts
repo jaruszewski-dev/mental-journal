@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 
 import {
   ResolvePasswordChangeInput,
@@ -9,7 +9,10 @@ import { AuthService } from '../auth.service';
 
 @Injectable()
 export class ResolvePasswordChangeAdapter implements ResolvePasswordChangePort {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
+  ) {}
 
   execute(
     input: ResolvePasswordChangeInput,

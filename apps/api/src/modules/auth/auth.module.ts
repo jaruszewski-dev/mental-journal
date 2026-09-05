@@ -38,9 +38,10 @@ const jwtModuleFactory = (config: ConfigService) => ({
     HashingService,
     JwtStrategy,
     AccountCanActGuard,
+    ResolvePasswordChangeAdapter,
     {
       provide: RESOLVE_PASSWORD_CHANGE_PORT,
-      useClass: ResolvePasswordChangeAdapter,
+      useExisting: forwardRef(() => ResolvePasswordChangeAdapter),
     },
   ],
   controllers: [AuthController],
