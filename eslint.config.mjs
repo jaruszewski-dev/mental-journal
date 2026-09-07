@@ -4,7 +4,9 @@ import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
 
 export default tseslint.config(
-	{ ignores: ['**/dist/**', '**/generated/**', '**/node_modules/**'] },
+	{
+		ignores: ['**/dist/**', '**/generated/**', '**/node_modules/**', '**/.next/**', '**/next-env.d.ts'],
+	},
 	js.configs.recommended,
 	...tseslint.configs.recommended,
 
