@@ -1,6 +1,6 @@
 import {
-  DEFAULT_APP_LOCALE,
   type AppLocale,
+  DEFAULT_APP_LOCALE,
 } from '../../../common/consts/locale.const';
 
 export function buildVerificationLink(
@@ -10,5 +10,5 @@ export function buildVerificationLink(
 ): string {
   const base = frontEndUrl.replace(/\/$/, '');
   const prefix = locale === 'en' ? '/en' : '';
-return `${base}${prefix}/verify-email?token=${encodeURIComponent(token)}`;
+  return `${base}${prefix}/verify-email?token=${encodeURIComponent(token)}`;
 }

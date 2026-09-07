@@ -9,11 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiConsumes,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
 import {

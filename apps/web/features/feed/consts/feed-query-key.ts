@@ -1,1 +1,1 @@
-export const feedQueryKey = ["feed"] as const;
+export const feedQueryKey = ['feed'] as const;

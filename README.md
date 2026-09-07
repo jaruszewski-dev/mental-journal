@@ -17,14 +17,14 @@ For architecture diagrams and deeper design notes, see [`AGENT.md`](./AGENT.md).
 
 ## What’s in v1
 
-| Area | Capabilities |
-|------|----------------|
-| Auth | Register, verify email, login, refresh, logout, `/me` |
-| Journal | Private CRUD + `POST /journal/:id/publish` (creates public post snapshot) |
-| Feed | List ACTIVE public posts (cursor, optional tags) |
-| Comments | Create / list / delete on ACTIVE posts |
-| Safety | Async AI moderation, trust score, temporary shadowban, moderation cases for human review later |
-| Ops | Health check, cron to lift expired shadowbans |
+| Area     | Capabilities                                                                                   |
+| -------- | ---------------------------------------------------------------------------------------------- |
+| Auth     | Register, verify email, login, refresh, logout, `/me`                                          |
+| Journal  | Private CRUD + `POST /journal/:id/publish` (creates public post snapshot)                      |
+| Feed     | List ACTIVE public posts (cursor, optional tags)                                               |
+| Comments | Create / list / delete on ACTIVE posts                                                         |
+| Safety   | Async AI moderation, trust score, temporary shadowban, moderation cases for human review later |
+| Ops      | Health check, cron to lift expired shadowbans                                                  |
 
 Prefix: `/v1`. Example: `GET /v1/feed`.
 
@@ -52,16 +52,16 @@ cp apps/api/.env.example apps/api/.env
 
 Important env vars (`apps/api/.env`):
 
-| Variable | Purpose |
-|----------|---------|
-| `DATABASE_URL` | Postgres connection |
-| `REDIS_URL` | BullMQ / Redis |
-| `FRONTEND_URL` | CORS origin + links in verification emails |
-| `JWT_ACCESS_SECRET`, `ACCESS_TOKEN_TTL`, `SESSION_REFRESH_TTL`, `EMAIL_TTL` | Auth / sessions |
-| `RESEND_API_KEY`, `MAIL_FROM` | Outbound mail |
-| `OPENAI_API_KEY` | Content moderation |
-| `SHADOWBAN_EXPIRY_CRON`, `SHADOWBAN_TIME_ZONE` | Unban cron |
-| `PORT` | API port (default `3001`) |
+| Variable                                                                    | Purpose                                    |
+| --------------------------------------------------------------------------- | ------------------------------------------ |
+| `DATABASE_URL`                                                              | Postgres connection                        |
+| `REDIS_URL`                                                                 | BullMQ / Redis                             |
+| `FRONTEND_URL`                                                              | CORS origin + links in verification emails |
+| `JWT_ACCESS_SECRET`, `ACCESS_TOKEN_TTL`, `SESSION_REFRESH_TTL`, `EMAIL_TTL` | Auth / sessions                            |
+| `RESEND_API_KEY`, `MAIL_FROM`                                               | Outbound mail                              |
+| `OPENAI_API_KEY`                                                            | Content moderation                         |
+| `SHADOWBAN_EXPIRY_CRON`, `SHADOWBAN_TIME_ZONE`                              | Unban cron                                 |
+| `PORT`                                                                      | API port (default `3001`)                  |
 
 ```sh
 pnpm docker:up
@@ -80,16 +80,16 @@ pnpm dev
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Docker up + API watch |
-| `pnpm build` | Build workspace |
-| `pnpm api:test` | API unit tests |
-| `pnpm db:migrate` | Prisma migrate (dev) |
-| `pnpm db:studio` | Prisma Studio |
-| `pnpm docker:up` / `pnpm docker:down` | Postgres + Redis |
-| `pnpm lint` / `pnpm check` | Lint / lint + format check |
-| `pnpm ci:local` | Fix + check + tests |
+| Command                               | Description                |
+| ------------------------------------- | -------------------------- |
+| `pnpm dev`                            | Docker up + API watch      |
+| `pnpm build`                          | Build workspace            |
+| `pnpm api:test`                       | API unit tests             |
+| `pnpm db:migrate`                     | Prisma migrate (dev)       |
+| `pnpm db:studio`                      | Prisma Studio              |
+| `pnpm docker:up` / `pnpm docker:down` | Postgres + Redis           |
+| `pnpm lint` / `pnpm check`            | Lint / lint + format check |
+| `pnpm ci:local`                       | Fix + check + tests        |
 
 ## Layout
 

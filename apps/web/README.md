@@ -12,8 +12,8 @@ Next.js frontend for Mental Journal.
 cp .env.example .env.local
 ```
 
-| Variable | Purpose |
-|----------|---------|
+| Variable     | Purpose                                                                         |
+| ------------ | ------------------------------------------------------------------------------- |
 | `API_ORIGIN` | Upstream API origin for rewrites (default `http://localhost:3001`, server-only) |
 
 Browser `apiClient` always uses `/v1` (same origin). Cookies from login land on `:3000`, so `proxy.ts` can see `access_token`.
@@ -67,7 +67,7 @@ Locales: `pl` (default, no URL prefix) · `en` (`/en/...`).
 Browser client: `lib/api-client.ts` — Axios `baseURL: "/v1"` + `withCredentials: true`.
 
 ```ts
-import { apiClient } from "@/lib/api-client";
+import { apiClient } from '@/lib/api-client';
 
-await apiClient.get("/auth/me");
+await apiClient.get('/auth/me');
 ```

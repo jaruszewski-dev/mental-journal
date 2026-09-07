@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from '@tanstack/react-query';
 
-import { registerUser } from "@/features/auth/register/api/register";
+import { registerUser } from '@/features/auth/register/api/register';
 
 export function useRegisterMutation() {
-  return useMutation({
-    mutationFn: registerUser,
-  });
+	return useMutation({
+		mutationFn: registerUser,
+	});
 }

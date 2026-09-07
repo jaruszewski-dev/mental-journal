@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect } from 'react';
 
-import { useAuthMeStore } from "@/store/auth-me.store";
+import { useAuthMeStore } from '@/store/auth-me.store';
 
 type AuthProviderProps = {
-  children: ReactNode;
+	children: ReactNode;
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const fetchMe = useAuthMeStore((s) => s.fetchMe);
+	const fetchMe = useAuthMeStore((s) => s.fetchMe);
 
-  useEffect(() => {
-    fetchMe();
-  }, [fetchMe]);
+	useEffect(() => {
+		fetchMe();
+	}, [fetchMe]);
 
-  return <>{children}</>;
+	return <>{children}</>;
 }

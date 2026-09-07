@@ -1,101 +1,111 @@
-"use client";
+'use client';
 
-import { CircleAlert, Link2Off, Loader2, MailCheck } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { CircleAlert, Link2Off, Loader2, MailCheck } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 
-import { buttonVariants } from "@/components/ui/button";
-import { AuthStatusMessage } from "@/features/auth/shared/auth-status-message";
-import { ResendVerificationForm } from "@/features/auth/verify-email/components/resend-verification-form";
-import { useVerifyEmailQuery } from "@/features/auth/verify-email/hooks/use-verify-email-query";
-import { Link, useRouter } from "@/i18n/navigation";
-import { resolveApiErrorMessage } from "@/lib/api-error";
-import { cn } from "@/lib/utils";
+import { buttonVariants } from '@/components/ui/button';
+import { AuthStatusMessage } from '@/features/auth/shared/auth-status-message';
+import { ResendVerificationForm } from '@/features/auth/verify-email/components/resend-verification-form';
+import { useVerifyEmailQuery } from '@/features/auth/verify-email/hooks/use-verify-email-query';
+import { Link, useRouter } from '@/i18n/navigation';
+import { resolveApiErrorMessage } from '@/lib/api-error';
+import { cn } from '@/lib/utils';
 
 type VerifyEmailStatusProps = {
-  token: string | undefined;
+	token: string | undefined;
 };
 
 export function VerifyEmailStatus({ token }: VerifyEmailStatusProps) {
-  const t = useTranslations("auth.verifyEmail");
-  const tApi = useTranslations("apiErrors");
-  const router = useRouter();
-  const query = useVerifyEmailQuery(token);
+	const t = useTranslations('auth.verifyEmail');
+	const tApi = useTranslations('apiErrors');
+	const router = useRouter();
+	const query = useVerifyEmailQuery(token);
 
-  useEffect(() => {
-    if (!query.isSuccess) {
-      return;
-    }
+	useEffect(() => {
+		if (!query.isSuccess) {
+			return;
+		}
 
-    const timeoutId = window.setTimeout(() => {
-      router.replace("/login");
-    }, 1600);
+		const timeoutId = window.setTimeout(() => {
+			router.replace('/login');
+		}, 1600);
 
-    return () => window.clearTimeout(timeoutId);
-  }, [query.isSuccess, router]);
+		return () => window.clearTimeout(timeoutId);
+	}, [query.isSuccess, router]);
 
-  if (!token) {
-    return (
-      <div className="flex flex-col items-center gap-8">
-        <AuthStatusMessage
-          icon={Link2Off}
-          tone="muted"
-          title={t("missingTitle")}
-          body={t("missingBody")}
-          action={
-            <Link
-              href="/register"
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-            >
-              {t("registerLink")}
-            </Link>
-          }
-        />
-        <ResendVerificationForm />
-      </div>
-    );
-  }
+	if (!token) {
+		return (
+			<div className="flex flex-col items-center gap-8">
+				<AuthStatusMessage
+					icon={Link2Off}
+					tone="muted"
+					title={t('missingTitle')}
+					body={t('missingBody')}
+					action={
+						<Link
+							href="/register"
+							className={cn(
+								buttonVariants({
+									variant: 'outline',
+									size: 'lg',
+								}),
+							)}
+						>
+							{t('registerLink')}
+						</Link>
+					}
+				/>
+				<ResendVerificationForm />
+			</div>
+		);
+	}
 
-  if (query.isPending) {
-    return (
-      <AuthStatusMessage
-        icon={Loader2}
-        tone="pending"
-        spin
-        title={t("pendingTitle")}
-        body={t("pendingBody")}
-      />
-    );
-  }
+	if (query.isPending) {
+		return (
+			<AuthStatusMessage
+				icon={Loader2}
+				tone="pending"
+				spin
+				title={t('pendingTitle')}
+				body={t('pendingBody')}
+			/>
+		);
+	}
 
-  if (query.isError) {
-    return (
-      <div className="flex flex-col items-center gap-8">
-        <AuthStatusMessage
-          icon={CircleAlert}
-          tone="error"
-          title={t("errorTitle")}
-          body={resolveApiErrorMessage(query.error, tApi)}
-          action={
-            <Link
-              href="/login"
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-            >
-              {t("loginLink")}
-            </Link>
-          }
-        />
-        <ResendVerificationForm />
-      </div>
-    );
-  }
+	if (query.isError) {
+		return (
+			<div className="flex flex-col items-center gap-8">
+				<AuthStatusMessage
+					icon={CircleAlert}
+					tone="error"
+					title={t('errorTitle')}
+					body={resolveApiErrorMessage(query.error, tApi)}
+					action={
+						<Link
+							href="/login"
+							className={cn(
+								buttonVariants({
+									variant: 'outline',
+									size: 'lg',
+								}),
+							)}
+						>
+							{t('loginLink')}
+						</Link>
+					}
+				/>
+				<ResendVerificationForm />
+			</div>
+		);
+	}
 
-  return (
-    <AuthStatusMessage
-      icon={MailCheck}
-      tone="success"
-      title={t("successTitle")}
-      body={t("successBody")}
-    />
-  );
+	return (
+		<AuthStatusMessage
+			icon={MailCheck}
+			tone="success"
+			title={t('successTitle')}
+			body={t('successBody')}
+		/>
+	);
 }

@@ -1,6 +1,6 @@
 import {
-  DEFAULT_APP_LOCALE,
   type AppLocale,
+  DEFAULT_APP_LOCALE,
 } from '../../../common/consts/locale.const';
 
 type VerificationEmailContent = {

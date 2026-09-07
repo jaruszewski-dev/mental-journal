@@ -1,23 +1,18 @@
-import { apiClient } from "@/lib/api-client";
-import type { AppLocale } from "@/i18n/routing";
+import type { AppLocale } from '@/i18n/routing';
+import { apiClient } from '@/lib/api-client';
 
-import type { RegisterFormValues } from "../validations/register.schema";
+import type { RegisterFormValues } from '../validations/register.schema';
 
 export type RegisterPayload = RegisterFormValues & {
-  locale: AppLocale;
+	locale: AppLocale;
 };
 
 export type RegisterResponse = {
-  id: string;
-  anonName: string;
+	id: string;
+	anonName: string;
 };
 
-export async function registerUser(
-  payload: RegisterPayload,
-): Promise<RegisterResponse> {
-  const { data } = await apiClient.post<RegisterResponse>(
-    "/auth/register",
-    payload,
-  );
-  return data;
+export async function registerUser(payload: RegisterPayload): Promise<RegisterResponse> {
+	const { data } = await apiClient.post<RegisterResponse>('/auth/register', payload);
+	return data;
 }

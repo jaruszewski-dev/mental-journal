@@ -1,5 +1,5 @@
-import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 import { ApiProperty } from '@nestjs/swagger';
+import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 import {
   IsBoolean,
   IsIn,

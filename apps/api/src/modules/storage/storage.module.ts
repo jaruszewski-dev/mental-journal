@@ -22,6 +22,11 @@ import { StorageService } from './storage.service';
     StorageService,
     { provide: UPLOAD_AVATAR_PORT, useClass: UploadAvatarAdapter },
   ],
-  exports: [R2_S3_CLIENT, R2_STORAGE_CONFIG, StorageService, UPLOAD_AVATAR_PORT],
+  exports: [
+    R2_S3_CLIENT,
+    R2_STORAGE_CONFIG,
+    StorageService,
+    UPLOAD_AVATAR_PORT,
+  ],
 })
 export class StorageModule {}

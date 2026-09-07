@@ -314,7 +314,11 @@ describe('UserService', () => {
         { id: USER_ID, emailVerified: true, preferredLocale: 'en' },
         { result: IssueEmailVerificationResult.SKIPPED },
       ],
-      ['user not found', null, { result: IssueEmailVerificationResult.SKIPPED }],
+      [
+        'user not found',
+        null,
+        { result: IssueEmailVerificationResult.SKIPPED },
+      ],
     ])('should return SKIPPED when %s', async (_, mockUser, expected) => {
       const input = createIssueInput();
 

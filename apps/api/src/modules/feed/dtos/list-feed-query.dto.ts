@@ -1,5 +1,5 @@
-import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 import { Transform, Type } from 'class-transformer';
 import { IsArray, IsDate, IsIn, IsOptional, IsString } from 'class-validator';
 

@@ -5,14 +5,14 @@ import { Queue } from 'bullmq';
 import { PostStatus } from '../../../generated/prisma/enums';
 import { PrismaService } from '../../../prisma/prisma.service';
 import {
+  PublishEntryInput,
+  PublishEntryPort,
+} from '../../journal/ports/publish-entry.port';
+import {
   ModeratePostJobData,
   MODERATION_QUEUE,
   ModerationJobName,
 } from '../../queue/consts/queue.const';
-import {
-  PublishEntryInput,
-  PublishEntryPort,
-} from '../../journal/ports/publish-entry.port';
 
 @Injectable()
 export class PublishEntryAdapter implements PublishEntryPort {

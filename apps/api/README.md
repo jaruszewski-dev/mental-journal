@@ -8,14 +8,14 @@ Monorepo root docs: [`../../README.md`](../../README.md) · architecture notes: 
 
 ## Stack
 
-| Piece | Tech |
-|-------|------|
-| Runtime | NestJS 11, TypeScript |
-| DB | PostgreSQL 16, Prisma 7 |
-| Queue | Redis + BullMQ |
-| Auth | JWT in httpOnly cookies + hashed refresh sessions |
-| Mail | Resend (async `mail` queue) |
-| Moderation | OpenAI Moderations (async `moderation` queue) |
+| Piece      | Tech                                              |
+| ---------- | ------------------------------------------------- |
+| Runtime    | NestJS 11, TypeScript                             |
+| DB         | PostgreSQL 16, Prisma 7                           |
+| Queue      | Redis + BullMQ                                    |
+| Auth       | JWT in httpOnly cookies + hashed refresh sessions |
+| Mail       | Resend (async `mail` queue)                       |
+| Moderation | OpenAI Moderations (async `moderation` queue)     |
 
 Global prefix: **`/v1`**. Swagger (non-production): **`/api`**.
 
@@ -76,12 +76,12 @@ erDiagram
   ModerationCase ||--o{ ModerationEvidence : has
 ```
 
-| Concept | Behavior |
-|---------|----------|
-| `JournalEntry` | Private; owner-only CRUD |
-| `Post` | Snapshot created on publish; `PENDING` → AI → `ACTIVE` / `HIDDEN` |
-| `Comment` | Same moderation pipeline as posts |
-| `SHADOWBANNED` | Can use journal; cannot publish/comment |
+| Concept          | Behavior                                                                |
+| ---------------- | ----------------------------------------------------------------------- |
+| `JournalEntry`   | Private; owner-only CRUD                                                |
+| `Post`           | Snapshot created on publish; `PENDING` → AI → `ACTIVE` / `HIDDEN`       |
+| `Comment`        | Same moderation pipeline as posts                                       |
+| `SHADOWBANNED`   | Can use journal; cannot publish/comment                                 |
 | `ModerationCase` | Opened on AI block while already shadowbanned (for future human review) |
 
 ### Publish / comment moderation
@@ -121,13 +121,13 @@ sequenceDiagram
 
 ## HTTP surface
 
-| Area | Routes |
-|------|--------|
-| Health | `GET /v1/health` |
-| Auth | `/v1/auth/register`, `login`, `verify-email`, `me`, `resend-verification`, `logout`, `logout-all`, `refresh` |
-| Journal | `/v1/journal` CRUD + `POST /v1/journal/:id/publish` |
-| Feed | `GET /v1/feed` |
-| Comments | `POST|GET|DELETE /v1/comments` |
+| Area     | Routes                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------ | --- | -------------------- |
+| Health   | `GET /v1/health`                                                                                             |
+| Auth     | `/v1/auth/register`, `login`, `verify-email`, `me`, `resend-verification`, `logout`, `logout-all`, `refresh` |
+| Journal  | `/v1/journal` CRUD + `POST /v1/journal/:id/publish`                                                          |
+| Feed     | `GET /v1/feed`                                                                                               |
+| Comments | `POST                                                                                                        | GET | DELETE /v1/comments` |
 
 ---
 
@@ -155,22 +155,22 @@ pnpm db:migrate
 
 See `.env.example` for required keys (`DATABASE_URL`, `REDIS_URL`, `JWT_*`, `OPENAI_API_KEY`, `RESEND_*`, …).
 
-| URL | |
-|-----|--|
-| API | http://localhost:3001/v1 |
+| URL     |                           |
+| ------- | ------------------------- |
+| API     | http://localhost:3001/v1  |
 | Swagger | http://localhost:3001/api |
 
 ---
 
 ## Scripts (package)
 
-| Script | Description |
-|--------|-------------|
-| `dev` | Nest watch (`predev`: docker + `prisma generate`) |
-| `build` / `start:prod` | Build / run `dist` |
-| `test` | Jest unit tests |
-| `check-types` | `tsc --noEmit` |
-| `db:migrate` / `db:push` / `db:studio` | Prisma |
+| Script                                 | Description                                       |
+| -------------------------------------- | ------------------------------------------------- |
+| `dev`                                  | Nest watch (`predev`: docker + `prisma generate`) |
+| `build` / `start:prod`                 | Build / run `dist`                                |
+| `test`                                 | Jest unit tests                                   |
+| `check-types`                          | `tsc --noEmit`                                    |
+| `db:migrate` / `db:push` / `db:studio` | Prisma                                            |
 
 ---
 

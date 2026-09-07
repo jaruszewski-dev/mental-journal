@@ -8,16 +8,16 @@ This file describes **what is implemented today** (API v1). Product vision lefto
 
 ## Stack
 
-| Layer | Choice |
-|--------|--------|
-| Monorepo | pnpm + Turborepo |
-| API | NestJS (`apps/api`), prefix `/v1` |
-| DB | PostgreSQL 16 + Prisma 7 |
-| Queue | Redis 7 + BullMQ |
-| Auth | JWT access + refresh in **httpOnly** cookies |
-| Mail | Resend (async via `mail` queue) |
+| Layer      | Choice                                                |
+| ---------- | ----------------------------------------------------- |
+| Monorepo   | pnpm + Turborepo                                      |
+| API        | NestJS (`apps/api`), prefix `/v1`                     |
+| DB         | PostgreSQL 16 + Prisma 7                              |
+| Queue      | Redis 7 + BullMQ                                      |
+| Auth       | JWT access + refresh in **httpOnly** cookies          |
+| Mail       | Resend (async via `mail` queue)                       |
 | Moderation | OpenAI Moderations API (async via `moderation` queue) |
-| Frontend | Next.js (`apps/web`, port 3000) |
+| Frontend   | Next.js (`apps/web`, port 3000)                       |
 
 Local infra: `docker/docker-compose.yml` (Postgres + Redis).
 
@@ -100,22 +100,22 @@ erDiagram
 
 ### Key enums
 
-| Entity | Statuses |
-|--------|----------|
-| `User` | `ACTIVE`, `SHADOWBANNED`, `BANNED`, `INACTIVE` |
-| `Post` / `Comment` | `PENDING` → `ACTIVE` or `HIDDEN` |
-| `ModerationCase` | `OPEN`, `BANNED`, `DISMISSED`, `EXPIRED` |
+| Entity                  | Statuses                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| `User`                  | `ACTIVE`, `SHADOWBANNED`, `BANNED`, `INACTIVE`                                        |
+| `Post` / `Comment`      | `PENDING` → `ACTIVE` or `HIDDEN`                                                      |
+| `ModerationCase`        | `OPEN`, `BANNED`, `DISMISSED`, `EXPIRED`                                              |
 | `ModerationCaseTrigger` | `TRUST_THRESHOLD`, `SHADOWBAN_REPEAT_BLOCK` (case created only on repeat block today) |
 
 ### Design decisions
 
-| Decision | Why |
-|----------|-----|
+| Decision                                | Why                                                                                                        |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | Private `JournalEntry` vs public `Post` | Explicit publish creates a **content snapshot**; editing the journal later does not change the public post |
-| No `commentsEnabled` flag | If a public `Post` exists and is `ACTIVE`, it is commentable |
-| Shadowban ≠ hard ban | SB can use private journal; cannot publish or comment |
-| No auto `BANNED` in worker | Second AI block while SB opens `ModerationCase` + evidence; permanent ban is human/CMS later |
-| Mail via queue | Register/resend stay fast; Resend failures retry in worker |
+| No `commentsEnabled` flag               | If a public `Post` exists and is `ACTIVE`, it is commentable                                               |
+| Shadowban ≠ hard ban                    | SB can use private journal; cannot publish or comment                                                      |
+| No auto `BANNED` in worker              | Second AI block while SB opens `ModerationCase` + evidence; permanent ban is human/CMS later               |
+| Mail via queue                          | Register/resend stay fast; Resend failures retry in worker                                                 |
 
 ---
 
@@ -194,10 +194,10 @@ Fail-closed: OpenAI/moderation errors → content not activated (`ModerationFail
 
 ## Queues
 
-| Queue | Jobs | Consumer |
-|-------|------|----------|
+| Queue        | Jobs                                | Consumer              |
+| ------------ | ----------------------------------- | --------------------- |
 | `moderation` | `moderate-post`, `moderate-comment` | `ModerationProcessor` |
-| `mail` | `send-verification-email` | `MailProcessor` |
+| `mail`       | `send-verification-email`           | `MailProcessor`       |
 
 Registered in `QueueModule` (global Bull root + Redis from `REDIS_URL`). Default job retries: 5, exponential backoff.
 
@@ -205,13 +205,13 @@ Registered in `QueueModule` (global Bull root + Redis from `REDIS_URL`). Default
 
 ## HTTP surface (`/v1`)
 
-| Area | Endpoints |
-|------|-----------|
-| Health | `GET /health` |
-| Auth | `register`, `login`, `verify-email`, `me`, `resend-verification`, `logout`, `logout-all`, `refresh` |
-| Journal | CRUD + `POST /journal/:id/publish` |
-| Feed | `GET /feed` (ACTIVE posts only, cursor pagination, optional tags) |
-| Comments | `POST /comments`, `GET /comments?postId=`, `DELETE /comments/:id` |
+| Area     | Endpoints                                                                                           |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| Health   | `GET /health`                                                                                       |
+| Auth     | `register`, `login`, `verify-email`, `me`, `resend-verification`, `logout`, `logout-all`, `refresh` |
+| Journal  | CRUD + `POST /journal/:id/publish`                                                                  |
+| Feed     | `GET /feed` (ACTIVE posts only, cursor pagination, optional tags)                                   |
+| Comments | `POST /comments`, `GET /comments?postId=`, `DELETE /comments/:id`                                   |
 
 Swagger (non-production): `/api`.
 

@@ -1,20 +1,20 @@
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from 'next-intl/server';
 
-import { FeedList } from "@/features/feed/components/feed-list";
-import { Composer } from "@/features/journal/components/composer";
+import { FeedList } from '@/features/feed/components/feed-list';
+import { Composer } from '@/features/journal/components/composer';
 
 type HomePageProps = {
-  params: Promise<{ locale: string }>;
+	params: Promise<{ locale: string }>;
 };
 
 export default async function Home({ params }: HomePageProps) {
-  const { locale } = await params;
-  setRequestLocale(locale);
+	const { locale } = await params;
+	setRequestLocale(locale);
 
-  return (
-    <main className="flex flex-1 flex-col pb-16 md:pb-0">
-      <Composer />
-      <FeedList />
-    </main>
-  );
+	return (
+		<main className="flex flex-1 flex-col pb-16 md:pb-0">
+			<Composer />
+			<FeedList />
+		</main>
+	);
 }

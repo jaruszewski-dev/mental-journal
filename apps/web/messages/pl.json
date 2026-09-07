@@ -1,209 +1,209 @@
 {
-  "common": {
-    "appName": "Mental Journal",
-    "language": "Język",
-    "logout": "Wyloguj",
-    "showPassword": "Pokaż hasło",
-    "hidePassword": "Ukryj hasło",
-    "locales": {
-      "pl": "Polski",
-      "en": "English"
-    }
-  },
-  "nav": {
-    "feed": "Tablica",
-    "journal": "Dziennik",
-    "account": "Konto"
-  },
-  "account": {
-    "title": "Konto",
-    "anonName": "Anonimowa nazwa",
-    "changeAvatar": "Zmień zdjęcie",
-    "passwordSection": "Hasło",
-    "currentPassword": "Obecne hasło",
-    "newPassword": "Nowe hasło",
-    "passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra, znak specjalny",
-    "submit": "Zapisz",
-    "success": "Zapisano zmiany",
-    "errors": {
-      "anonNameLength": "Nazwa musi mieć od {min} do {max} znaków",
-      "anonNamePattern": "Tylko litery, cyfry i podkreślenie",
-      "currentPasswordRequired": "Podaj obecne hasło, aby je zmienić",
-      "passwordLength": "Hasło musi mieć od {min} do {max} znaków",
-      "passwordPattern": "Hasło musi zawierać wielką i małą literę, cyfrę oraz znak specjalny",
-      "avatarType": "Dozwolone formaty: JPG, PNG, WebP",
-      "avatarSize": "Zdjęcie może mieć maksymalnie 5 MB"
-    }
-  },
-  "home": {
-    "title": "Mental Journal"
-  },
-  "feed": {
-    "loading": "Ładowanie tablicy…",
-    "loadingMore": "Ładowanie…",
-    "loadMore": "Załaduj więcej",
-    "empty": "Brak wpisów na tablicy. Opublikuj pierwszy.",
-    "error": "Nie udało się wczytać tablicy.",
-    "retry": "Spróbuj ponownie"
-  },
-  "composer": {
-    "placeholder": "Co masz na myśli?",
-    "submit": "Zapisz",
-    "visibility": {
-      "private": "Tylko dla mnie",
-      "public": "Publiczny"
-    },
-    "mood": {
-      "label": "Nastrój",
-      "1": "Bardzo źle",
-      "2": "Źle",
-      "3": "Neutralnie",
-      "4": "Dobrze",
-      "5": "Bardzo dobrze"
-    },
-    "tags": {
-      "label": "Tagi",
-      "categories": {
-        "emotions": "Emocje",
-        "relations": "Relacje",
-        "daily_life": "Codzienność",
-        "growth": "Rozwój",
-        "support": "Wsparcie",
-        "journal": "Dziennik"
-      },
-      "items": {
-        "sadness": "Smutek",
-        "anxiety": "Lęk",
-        "anger": "Złość",
-        "loneliness": "Samotność",
-        "stress": "Stres",
-        "unease": "Niepokój",
-        "overwhelm": "Przytłoczenie",
-        "helplessness": "Bezradność",
-        "guilt": "Poczucie winy",
-        "shame": "Wstyd",
-        "hope": "Nadzieja",
-        "gratitude": "Wdzięczność",
-        "calm": "Spokój",
-        "joy": "Radość",
-        "family": "Rodzina",
-        "relationship": "Związek",
-        "breakup": "Rozstanie",
-        "friendship": "Przyjaźń",
-        "conflict": "Konflikt",
-        "relational_loneliness": "Samotność w relacji",
-        "parenting": "Rodzicielstwo",
-        "work": "Praca",
-        "school": "Szkoła",
-        "studies": "Studia",
-        "finances": "Finanse",
-        "health": "Zdrowie",
-        "sleep": "Sen",
-        "burnout": "Wypalenie",
-        "change": "Zmiana",
-        "moving": "Przeprowadzka",
-        "therapy": "Terapia",
-        "self_development": "Rozwój osobisty",
-        "habits": "Nawyki",
-        "goals": "Cele",
-        "motivation": "Motywacja",
-        "meditation": "Medytacja",
-        "mindfulness": "Uważność",
-        "need_support": "Potrzebuję wsparcia",
-        "want_to_vent": "Chcę się wygadać",
-        "looking_for_advice": "Szukam rady",
-        "want_to_be_heard": "Chcę być wysłuchany",
-        "success": "Sukces",
-        "small_step": "Mały krok",
-        "reflection": "Refleksja",
-        "journal_gratitude": "Wdzięczność",
-        "daily_journal": "Dziennik dnia",
-        "thoughts": "Myśli",
-        "weekly_goals": "Cele tygodnia",
-        "evening_summary": "Podsumowanie wieczoru"
-      }
-    },
-    "success": "Wpis zapisany",
-    "errors": {
-      "contentRequired": "Wpisz coś",
-      "contentMax": "Za długi wpis (max 10 000 znaków)",
-      "tagsMax": "Maks. 5 tagów"
-    }
-  },
-  "auth": {
-    "register": {
-      "metaTitle": "Rejestracja | Mental Journal",
-      "metaDescription": "Załóż anonimowe konto i zacznij pisać na własnych warunkach.",
-      "title": "Mental Journal",
-      "subtitle": "Załóż anonimowe konto i zacznij pisać na własnych warunkach.",
-      "email": "Email",
-      "anonName": "Anonimowa nazwa",
-      "password": "Hasło",
-      "passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra oraz znak specjalny.",
-      "submit": "Utwórz konto",
-      "hasAccount": "Masz już konto?",
-      "loginLink": "Zaloguj się",
-      "successTitle": "Sprawdź skrzynkę",
-      "successBody": "Wysłaliśmy link weryfikacyjny. Potwierdź email, zanim się zalogujesz.",
-      "errors": {
-        "emailRequired": "Podaj adres email",
-        "emailInvalid": "Nieprawidłowy adres email",
-        "anonNameLength": "Nazwa musi mieć {min}–{max} znaków",
-        "anonNamePattern": "Tylko litery, cyfry lub _",
-        "passwordLength": "Hasło musi mieć {min}–{max} znaków",
-        "passwordPattern": "Wymagane: wielka i mała litera, cyfra oraz znak specjalny",
-        "generic": "Nie udało się utworzyć konta. Spróbuj ponownie."
-      }
-    },
-    "verifyEmail": {
-      "metaTitle": "Weryfikacja email | Mental Journal",
-      "metaDescription": "Potwierdź adres email, aby aktywować konto.",
-      "brand": "Mental Journal",
-      "subtitle": "Potwierdzamy Twój adres email.",
-      "pendingTitle": "Weryfikujemy…",
-      "pendingBody": "Chwilę, sprawdzamy link z wiadomości.",
-      "successTitle": "Email potwierdzony",
-      "successBody": "Zaraz przeniesiemy Cię do logowania.",
-      "errorTitle": "Nie udało się potwierdzić",
-      "errorGeneric": "Link jest nieprawidłowy lub wygasł.",
-      "missingTitle": "Brak linku",
-      "missingBody": "Otwórz pełny link z wiadomości email.",
-      "loginLink": "Przejdź do logowania",
-      "registerLink": "Załóż konto",
-      "email": "Email",
-      "resendPrompt": "Nie dostałeś maila albo link wygasł? Wyślemy nowy.",
-      "resendSubmit": "Wyślij ponownie",
-      "resendSuccess": "Jeśli konto wymaga weryfikacji, wysłaliśmy email.",
-      "errors": {
-        "emailRequired": "Podaj adres email",
-        "emailInvalid": "Nieprawidłowy adres email"
-      }
-    },
-    "login": {
-      "metaTitle": "Logowanie | Mental Journal",
-      "metaDescription": "Zaloguj się do anonimowego konta.",
-      "title": "Mental Journal",
-      "subtitle": "Zaloguj się i wróć do pisania.",
-      "email": "Email",
-      "password": "Hasło",
-      "submit": "Zaloguj się",
-      "noAccount": "Nie masz konta?",
-      "registerLink": "Zarejestruj się",
-      "resendVerification": "Wyślij link weryfikacyjny",
-      "errors": {
-        "emailRequired": "Podaj adres email",
-        "emailInvalid": "Nieprawidłowy adres email",
-        "passwordRequired": "Podaj hasło",
-        "generic": "Nie udało się zalogować. Sprawdź dane i spróbuj ponownie."
-      }
-    }
-  },
-  "apiErrors": {
-    "AUTH_INVALID_CREDENTIALS": "Nieprawidłowy email lub hasło",
-    "AUTH_ACCOUNT_NOT_VERIFIED": "Potwierdź email, zanim się zalogujesz",
-    "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "Link weryfikacyjny jest nieprawidłowy",
-    "AUTH_VERIFICATION_TOKEN_EXPIRED": "Link weryfikacyjny wygasł",
-    "USER_ALREADY_EXISTS": "Konto z tym emailem lub nazwą już istnieje",
-    "generic": "Coś poszło nie tak. Spróbuj ponownie."
-  }
+	"common": {
+		"appName": "Mental Journal",
+		"language": "Język",
+		"logout": "Wyloguj",
+		"showPassword": "Pokaż hasło",
+		"hidePassword": "Ukryj hasło",
+		"locales": {
+			"pl": "Polski",
+			"en": "English"
+		}
+	},
+	"nav": {
+		"feed": "Tablica",
+		"journal": "Dziennik",
+		"account": "Konto"
+	},
+	"account": {
+		"title": "Konto",
+		"anonName": "Anonimowa nazwa",
+		"changeAvatar": "Zmień zdjęcie",
+		"passwordSection": "Hasło",
+		"currentPassword": "Obecne hasło",
+		"newPassword": "Nowe hasło",
+		"passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra, znak specjalny",
+		"submit": "Zapisz",
+		"success": "Zapisano zmiany",
+		"errors": {
+			"anonNameLength": "Nazwa musi mieć od {min} do {max} znaków",
+			"anonNamePattern": "Tylko litery, cyfry i podkreślenie",
+			"currentPasswordRequired": "Podaj obecne hasło, aby je zmienić",
+			"passwordLength": "Hasło musi mieć od {min} do {max} znaków",
+			"passwordPattern": "Hasło musi zawierać wielką i małą literę, cyfrę oraz znak specjalny",
+			"avatarType": "Dozwolone formaty: JPG, PNG, WebP",
+			"avatarSize": "Zdjęcie może mieć maksymalnie 5 MB"
+		}
+	},
+	"home": {
+		"title": "Mental Journal"
+	},
+	"feed": {
+		"loading": "Ładowanie tablicy…",
+		"loadingMore": "Ładowanie…",
+		"loadMore": "Załaduj więcej",
+		"empty": "Brak wpisów na tablicy. Opublikuj pierwszy.",
+		"error": "Nie udało się wczytać tablicy.",
+		"retry": "Spróbuj ponownie"
+	},
+	"composer": {
+		"placeholder": "Co masz na myśli?",
+		"submit": "Zapisz",
+		"visibility": {
+			"private": "Tylko dla mnie",
+			"public": "Publiczny"
+		},
+		"mood": {
+			"label": "Nastrój",
+			"1": "Bardzo źle",
+			"2": "Źle",
+			"3": "Neutralnie",
+			"4": "Dobrze",
+			"5": "Bardzo dobrze"
+		},
+		"tags": {
+			"label": "Tagi",
+			"categories": {
+				"emotions": "Emocje",
+				"relations": "Relacje",
+				"daily_life": "Codzienność",
+				"growth": "Rozwój",
+				"support": "Wsparcie",
+				"journal": "Dziennik"
+			},
+			"items": {
+				"sadness": "Smutek",
+				"anxiety": "Lęk",
+				"anger": "Złość",
+				"loneliness": "Samotność",
+				"stress": "Stres",
+				"unease": "Niepokój",
+				"overwhelm": "Przytłoczenie",
+				"helplessness": "Bezradność",
+				"guilt": "Poczucie winy",
+				"shame": "Wstyd",
+				"hope": "Nadzieja",
+				"gratitude": "Wdzięczność",
+				"calm": "Spokój",
+				"joy": "Radość",
+				"family": "Rodzina",
+				"relationship": "Związek",
+				"breakup": "Rozstanie",
+				"friendship": "Przyjaźń",
+				"conflict": "Konflikt",
+				"relational_loneliness": "Samotność w relacji",
+				"parenting": "Rodzicielstwo",
+				"work": "Praca",
+				"school": "Szkoła",
+				"studies": "Studia",
+				"finances": "Finanse",
+				"health": "Zdrowie",
+				"sleep": "Sen",
+				"burnout": "Wypalenie",
+				"change": "Zmiana",
+				"moving": "Przeprowadzka",
+				"therapy": "Terapia",
+				"self_development": "Rozwój osobisty",
+				"habits": "Nawyki",
+				"goals": "Cele",
+				"motivation": "Motywacja",
+				"meditation": "Medytacja",
+				"mindfulness": "Uważność",
+				"need_support": "Potrzebuję wsparcia",
+				"want_to_vent": "Chcę się wygadać",
+				"looking_for_advice": "Szukam rady",
+				"want_to_be_heard": "Chcę być wysłuchany",
+				"success": "Sukces",
+				"small_step": "Mały krok",
+				"reflection": "Refleksja",
+				"journal_gratitude": "Wdzięczność",
+				"daily_journal": "Dziennik dnia",
+				"thoughts": "Myśli",
+				"weekly_goals": "Cele tygodnia",
+				"evening_summary": "Podsumowanie wieczoru"
+			}
+		},
+		"success": "Wpis zapisany",
+		"errors": {
+			"contentRequired": "Wpisz coś",
+			"contentMax": "Za długi wpis (max 10 000 znaków)",
+			"tagsMax": "Maks. 5 tagów"
+		}
+	},
+	"auth": {
+		"register": {
+			"metaTitle": "Rejestracja | Mental Journal",
+			"metaDescription": "Załóż anonimowe konto i zacznij pisać na własnych warunkach.",
+			"title": "Mental Journal",
+			"subtitle": "Załóż anonimowe konto i zacznij pisać na własnych warunkach.",
+			"email": "Email",
+			"anonName": "Anonimowa nazwa",
+			"password": "Hasło",
+			"passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra oraz znak specjalny.",
+			"submit": "Utwórz konto",
+			"hasAccount": "Masz już konto?",
+			"loginLink": "Zaloguj się",
+			"successTitle": "Sprawdź skrzynkę",
+			"successBody": "Wysłaliśmy link weryfikacyjny. Potwierdź email, zanim się zalogujesz.",
+			"errors": {
+				"emailRequired": "Podaj adres email",
+				"emailInvalid": "Nieprawidłowy adres email",
+				"anonNameLength": "Nazwa musi mieć {min}–{max} znaków",
+				"anonNamePattern": "Tylko litery, cyfry lub _",
+				"passwordLength": "Hasło musi mieć {min}–{max} znaków",
+				"passwordPattern": "Wymagane: wielka i mała litera, cyfra oraz znak specjalny",
+				"generic": "Nie udało się utworzyć konta. Spróbuj ponownie."
+			}
+		},
+		"verifyEmail": {
+			"metaTitle": "Weryfikacja email | Mental Journal",
+			"metaDescription": "Potwierdź adres email, aby aktywować konto.",
+			"brand": "Mental Journal",
+			"subtitle": "Potwierdzamy Twój adres email.",
+			"pendingTitle": "Weryfikujemy…",
+			"pendingBody": "Chwilę, sprawdzamy link z wiadomości.",
+			"successTitle": "Email potwierdzony",
+			"successBody": "Zaraz przeniesiemy Cię do logowania.",
+			"errorTitle": "Nie udało się potwierdzić",
+			"errorGeneric": "Link jest nieprawidłowy lub wygasł.",
+			"missingTitle": "Brak linku",
+			"missingBody": "Otwórz pełny link z wiadomości email.",
+			"loginLink": "Przejdź do logowania",
+			"registerLink": "Załóż konto",
+			"email": "Email",
+			"resendPrompt": "Nie dostałeś maila albo link wygasł? Wyślemy nowy.",
+			"resendSubmit": "Wyślij ponownie",
+			"resendSuccess": "Jeśli konto wymaga weryfikacji, wysłaliśmy email.",
+			"errors": {
+				"emailRequired": "Podaj adres email",
+				"emailInvalid": "Nieprawidłowy adres email"
+			}
+		},
+		"login": {
+			"metaTitle": "Logowanie | Mental Journal",
+			"metaDescription": "Zaloguj się do anonimowego konta.",
+			"title": "Mental Journal",
+			"subtitle": "Zaloguj się i wróć do pisania.",
+			"email": "Email",
+			"password": "Hasło",
+			"submit": "Zaloguj się",
+			"noAccount": "Nie masz konta?",
+			"registerLink": "Zarejestruj się",
+			"resendVerification": "Wyślij link weryfikacyjny",
+			"errors": {
+				"emailRequired": "Podaj adres email",
+				"emailInvalid": "Nieprawidłowy adres email",
+				"passwordRequired": "Podaj hasło",
+				"generic": "Nie udało się zalogować. Sprawdź dane i spróbuj ponownie."
+			}
+		}
+	},
+	"apiErrors": {
+		"AUTH_INVALID_CREDENTIALS": "Nieprawidłowy email lub hasło",
+		"AUTH_ACCOUNT_NOT_VERIFIED": "Potwierdź email, zanim się zalogujesz",
+		"AUTH_VERIFICATION_TOKEN_NOT_FOUND": "Link weryfikacyjny jest nieprawidłowy",
+		"AUTH_VERIFICATION_TOKEN_EXPIRED": "Link weryfikacyjny wygasł",
+		"USER_ALREADY_EXISTS": "Konto z tym emailem lub nazwą już istnieje",
+		"generic": "Coś poszło nie tak. Spróbuj ponownie."
+	}
 }

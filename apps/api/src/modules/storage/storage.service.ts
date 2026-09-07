@@ -69,12 +69,8 @@ export class StorageService {
       throw new AvatarTooLargeException();
     }
 
-    if (
-      !AVATAR_ALLOWED_MIME_TYPES.includes(input.mimeType as AvatarMimeType)
-    ) {
-      throw new InvalidAvatarException(
-        'avatar must be jpg, jpeg, png or webp',
-      );
+    if (!AVATAR_ALLOWED_MIME_TYPES.includes(input.mimeType as AvatarMimeType)) {
+      throw new InvalidAvatarException('avatar must be jpg, jpeg, png or webp');
     }
   }
 }

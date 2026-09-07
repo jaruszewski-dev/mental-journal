@@ -1,209 +1,209 @@
 {
-  "common": {
-    "appName": "Mental Journal",
-    "language": "Language",
-    "logout": "Log out",
-    "showPassword": "Show password",
-    "hidePassword": "Hide password",
-    "locales": {
-      "pl": "Polski",
-      "en": "English"
-    }
-  },
-  "nav": {
-    "feed": "Feed",
-    "journal": "Journal",
-    "account": "Account"
-  },
-  "account": {
-    "title": "Account",
-    "anonName": "Anonymous name",
-    "changeAvatar": "Change photo",
-    "passwordSection": "Password",
-    "currentPassword": "Current password",
-    "newPassword": "New password",
-    "passwordHint": "Min. 8 chars: upper, lower, digit, special character",
-    "submit": "Save",
-    "success": "Changes saved",
-    "errors": {
-      "anonNameLength": "Name must be {min}–{max} characters",
-      "anonNamePattern": "Letters, digits and underscore only",
-      "currentPasswordRequired": "Enter your current password to change it",
-      "passwordLength": "Password must be {min}–{max} characters",
-      "passwordPattern": "Password needs upper, lower, digit and a special character",
-      "avatarType": "Allowed formats: JPG, PNG, WebP",
-      "avatarSize": "Photo must be at most 5 MB"
-    }
-  },
-  "home": {
-    "title": "Mental Journal"
-  },
-  "feed": {
-    "loading": "Loading feed…",
-    "loadingMore": "Loading…",
-    "loadMore": "Load more",
-    "empty": "No posts yet. Publish the first one.",
-    "error": "Could not load the feed.",
-    "retry": "Try again"
-  },
-  "composer": {
-    "placeholder": "What's on your mind?",
-    "submit": "Save",
-    "visibility": {
-      "private": "Only me",
-      "public": "Public"
-    },
-    "mood": {
-      "label": "Mood",
-      "1": "Very bad",
-      "2": "Bad",
-      "3": "Neutral",
-      "4": "Good",
-      "5": "Very good"
-    },
-    "tags": {
-      "label": "Tags",
-      "categories": {
-        "emotions": "Emotions",
-        "relations": "Relations",
-        "daily_life": "Daily life",
-        "growth": "Growth",
-        "support": "Support",
-        "journal": "Journal"
-      },
-      "items": {
-        "sadness": "Sadness",
-        "anxiety": "Anxiety",
-        "anger": "Anger",
-        "loneliness": "Loneliness",
-        "stress": "Stress",
-        "unease": "Unease",
-        "overwhelm": "Overwhelm",
-        "helplessness": "Helplessness",
-        "guilt": "Guilt",
-        "shame": "Shame",
-        "hope": "Hope",
-        "gratitude": "Gratitude",
-        "calm": "Calm",
-        "joy": "Joy",
-        "family": "Family",
-        "relationship": "Relationship",
-        "breakup": "Breakup",
-        "friendship": "Friendship",
-        "conflict": "Conflict",
-        "relational_loneliness": "Relational loneliness",
-        "parenting": "Parenting",
-        "work": "Work",
-        "school": "School",
-        "studies": "Studies",
-        "finances": "Finances",
-        "health": "Health",
-        "sleep": "Sleep",
-        "burnout": "Burnout",
-        "change": "Change",
-        "moving": "Moving",
-        "therapy": "Therapy",
-        "self_development": "Self-development",
-        "habits": "Habits",
-        "goals": "Goals",
-        "motivation": "Motivation",
-        "meditation": "Meditation",
-        "mindfulness": "Mindfulness",
-        "need_support": "Need support",
-        "want_to_vent": "Want to vent",
-        "looking_for_advice": "Looking for advice",
-        "want_to_be_heard": "Want to be heard",
-        "success": "Success",
-        "small_step": "Small step",
-        "reflection": "Reflection",
-        "journal_gratitude": "Gratitude",
-        "daily_journal": "Daily journal",
-        "thoughts": "Thoughts",
-        "weekly_goals": "Weekly goals",
-        "evening_summary": "Evening summary"
-      }
-    },
-    "success": "Entry saved",
-    "errors": {
-      "contentRequired": "Write something",
-      "contentMax": "Too long (max 10,000 characters)",
-      "tagsMax": "Max 5 tags"
-    }
-  },
-  "auth": {
-    "register": {
-      "metaTitle": "Sign up | Mental Journal",
-      "metaDescription": "Create an anonymous account and start writing on your own terms.",
-      "title": "Mental Journal",
-      "subtitle": "Create an anonymous account and start writing on your own terms.",
-      "email": "Email",
-      "anonName": "Anonymous name",
-      "password": "Password",
-      "passwordHint": "At least 8 characters: upper, lower, digit, and special character.",
-      "submit": "Create account",
-      "hasAccount": "Already have an account?",
-      "loginLink": "Log in",
-      "successTitle": "Check your inbox",
-      "successBody": "We sent a verification link. Confirm your email before logging in.",
-      "errors": {
-        "emailRequired": "Enter your email",
-        "emailInvalid": "Invalid email address",
-        "anonNameLength": "Name must be {min}–{max} characters",
-        "anonNamePattern": "Only letters, digits, or _",
-        "passwordLength": "Password must be {min}–{max} characters",
-        "passwordPattern": "Required: upper, lower, digit, and special character",
-        "generic": "Could not create the account. Please try again."
-      }
-    },
-    "verifyEmail": {
-      "metaTitle": "Verify email | Mental Journal",
-      "metaDescription": "Confirm your email address to activate your account.",
-      "brand": "Mental Journal",
-      "subtitle": "Confirming your email address.",
-      "pendingTitle": "Verifying…",
-      "pendingBody": "One moment — checking the link from your email.",
-      "successTitle": "Email confirmed",
-      "successBody": "Redirecting you to log in.",
-      "errorTitle": "Could not verify",
-      "errorGeneric": "The link is invalid or has expired.",
-      "missingTitle": "Missing link",
-      "missingBody": "Open the full link from your email message.",
-      "loginLink": "Go to log in",
-      "registerLink": "Create an account",
-      "email": "Email",
-      "resendPrompt": "Didn't get the email or did the link expire? We'll send a new one.",
-      "resendSubmit": "Resend email",
-      "resendSuccess": "If an account needs verification, we sent an email.",
-      "errors": {
-        "emailRequired": "Enter your email",
-        "emailInvalid": "Invalid email address"
-      }
-    },
-    "login": {
-      "metaTitle": "Log in | Mental Journal",
-      "metaDescription": "Sign in to your anonymous account.",
-      "title": "Mental Journal",
-      "subtitle": "Sign in and get back to writing.",
-      "email": "Email",
-      "password": "Password",
-      "submit": "Log in",
-      "noAccount": "Don't have an account?",
-      "registerLink": "Sign up",
-      "resendVerification": "Send verification link",
-      "errors": {
-        "emailRequired": "Enter your email",
-        "emailInvalid": "Invalid email address",
-        "passwordRequired": "Enter your password",
-        "generic": "Could not log in. Check your details and try again."
-      }
-    }
-  },
-  "apiErrors": {
-    "AUTH_INVALID_CREDENTIALS": "Invalid email or password",
-    "AUTH_ACCOUNT_NOT_VERIFIED": "Confirm your email before logging in",
-    "AUTH_VERIFICATION_TOKEN_NOT_FOUND": "The verification link is invalid",
-    "AUTH_VERIFICATION_TOKEN_EXPIRED": "The verification link has expired",
-    "USER_ALREADY_EXISTS": "An account with this email or name already exists",
-    "generic": "Something went wrong. Please try again."
-  }
+	"common": {
+		"appName": "Mental Journal",
+		"language": "Language",
+		"logout": "Log out",
+		"showPassword": "Show password",
+		"hidePassword": "Hide password",
+		"locales": {
+			"pl": "Polski",
+			"en": "English"
+		}
+	},
+	"nav": {
+		"feed": "Feed",
+		"journal": "Journal",
+		"account": "Account"
+	},
+	"account": {
+		"title": "Account",
+		"anonName": "Anonymous name",
+		"changeAvatar": "Change photo",
+		"passwordSection": "Password",
+		"currentPassword": "Current password",
+		"newPassword": "New password",
+		"passwordHint": "Min. 8 chars: upper, lower, digit, special character",
+		"submit": "Save",
+		"success": "Changes saved",
+		"errors": {
+			"anonNameLength": "Name must be {min}–{max} characters",
+			"anonNamePattern": "Letters, digits and underscore only",
+			"currentPasswordRequired": "Enter your current password to change it",
+			"passwordLength": "Password must be {min}–{max} characters",
+			"passwordPattern": "Password needs upper, lower, digit and a special character",
+			"avatarType": "Allowed formats: JPG, PNG, WebP",
+			"avatarSize": "Photo must be at most 5 MB"
+		}
+	},
+	"home": {
+		"title": "Mental Journal"
+	},
+	"feed": {
+		"loading": "Loading feed…",
+		"loadingMore": "Loading…",
+		"loadMore": "Load more",
+		"empty": "No posts yet. Publish the first one.",
+		"error": "Could not load the feed.",
+		"retry": "Try again"
+	},
+	"composer": {
+		"placeholder": "What's on your mind?",
+		"submit": "Save",
+		"visibility": {
+			"private": "Only me",
+			"public": "Public"
+		},
+		"mood": {
+			"label": "Mood",
+			"1": "Very bad",
+			"2": "Bad",
+			"3": "Neutral",
+			"4": "Good",
+			"5": "Very good"
+		},
+		"tags": {
+			"label": "Tags",
+			"categories": {
+				"emotions": "Emotions",
+				"relations": "Relations",
+				"daily_life": "Daily life",
+				"growth": "Growth",
+				"support": "Support",
+				"journal": "Journal"
+			},
+			"items": {
+				"sadness": "Sadness",
+				"anxiety": "Anxiety",
+				"anger": "Anger",
+				"loneliness": "Loneliness",
+				"stress": "Stress",
+				"unease": "Unease",
+				"overwhelm": "Overwhelm",
+				"helplessness": "Helplessness",
+				"guilt": "Guilt",
+				"shame": "Shame",
+				"hope": "Hope",
+				"gratitude": "Gratitude",
+				"calm": "Calm",
+				"joy": "Joy",
+				"family": "Family",
+				"relationship": "Relationship",
+				"breakup": "Breakup",
+				"friendship": "Friendship",
+				"conflict": "Conflict",
+				"relational_loneliness": "Relational loneliness",
+				"parenting": "Parenting",
+				"work": "Work",
+				"school": "School",
+				"studies": "Studies",
+				"finances": "Finances",
+				"health": "Health",
+				"sleep": "Sleep",
+				"burnout": "Burnout",
+				"change": "Change",
+				"moving": "Moving",
+				"therapy": "Therapy",
+				"self_development": "Self-development",
+				"habits": "Habits",
+				"goals": "Goals",
+				"motivation": "Motivation",
+				"meditation": "Meditation",
+				"mindfulness": "Mindfulness",
+				"need_support": "Need support",
+				"want_to_vent": "Want to vent",
+				"looking_for_advice": "Looking for advice",
+				"want_to_be_heard": "Want to be heard",
+				"success": "Success",
+				"small_step": "Small step",
+				"reflection": "Reflection",
+				"journal_gratitude": "Gratitude",
+				"daily_journal": "Daily journal",
+				"thoughts": "Thoughts",
+				"weekly_goals": "Weekly goals",
+				"evening_summary": "Evening summary"
+			}
+		},
+		"success": "Entry saved",
+		"errors": {
+			"contentRequired": "Write something",
+			"contentMax": "Too long (max 10,000 characters)",
+			"tagsMax": "Max 5 tags"
+		}
+	},
+	"auth": {
+		"register": {
+			"metaTitle": "Sign up | Mental Journal",
+			"metaDescription": "Create an anonymous account and start writing on your own terms.",
+			"title": "Mental Journal",
+			"subtitle": "Create an anonymous account and start writing on your own terms.",
+			"email": "Email",
+			"anonName": "Anonymous name",
+			"password": "Password",
+			"passwordHint": "At least 8 characters: upper, lower, digit, and special character.",
+			"submit": "Create account",
+			"hasAccount": "Already have an account?",
+			"loginLink": "Log in",
+			"successTitle": "Check your inbox",
+			"successBody": "We sent a verification link. Confirm your email before logging in.",
+			"errors": {
+				"emailRequired": "Enter your email",
+				"emailInvalid": "Invalid email address",
+				"anonNameLength": "Name must be {min}–{max} characters",
+				"anonNamePattern": "Only letters, digits, or _",
+				"passwordLength": "Password must be {min}–{max} characters",
+				"passwordPattern": "Required: upper, lower, digit, and special character",
+				"generic": "Could not create the account. Please try again."
+			}
+		},
+		"verifyEmail": {
+			"metaTitle": "Verify email | Mental Journal",
+			"metaDescription": "Confirm your email address to activate your account.",
+			"brand": "Mental Journal",
+			"subtitle": "Confirming your email address.",
+			"pendingTitle": "Verifying…",
+			"pendingBody": "One moment — checking the link from your email.",
+			"successTitle": "Email confirmed",
+			"successBody": "Redirecting you to log in.",
+			"errorTitle": "Could not verify",
+			"errorGeneric": "The link is invalid or has expired.",
+			"missingTitle": "Missing link",
+			"missingBody": "Open the full link from your email message.",
+			"loginLink": "Go to log in",
+			"registerLink": "Create an account",
+			"email": "Email",
+			"resendPrompt": "Didn't get the email or did the link expire? We'll send a new one.",
+			"resendSubmit": "Resend email",
+			"resendSuccess": "If an account needs verification, we sent an email.",
+			"errors": {
+				"emailRequired": "Enter your email",
+				"emailInvalid": "Invalid email address"
+			}
+		},
+		"login": {
+			"metaTitle": "Log in | Mental Journal",
+			"metaDescription": "Sign in to your anonymous account.",
+			"title": "Mental Journal",
+			"subtitle": "Sign in and get back to writing.",
+			"email": "Email",
+			"password": "Password",
+			"submit": "Log in",
+			"noAccount": "Don't have an account?",
+			"registerLink": "Sign up",
+			"resendVerification": "Send verification link",
+			"errors": {
+				"emailRequired": "Enter your email",
+				"emailInvalid": "Invalid email address",
+				"passwordRequired": "Enter your password",
+				"generic": "Could not log in. Check your details and try again."
+			}
+		}
+	},
+	"apiErrors": {
+		"AUTH_INVALID_CREDENTIALS": "Invalid email or password",
+		"AUTH_ACCOUNT_NOT_VERIFIED": "Confirm your email before logging in",
+		"AUTH_VERIFICATION_TOKEN_NOT_FOUND": "The verification link is invalid",
+		"AUTH_VERIFICATION_TOKEN_EXPIRED": "The verification link has expired",
+		"USER_ALREADY_EXISTS": "An account with this email or name already exists",
+		"generic": "Something went wrong. Please try again."
+	}
 }
