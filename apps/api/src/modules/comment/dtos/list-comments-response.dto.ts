@@ -26,6 +26,9 @@ export class CommentItemDto {
   @ApiProperty()
   anonName!: string;
 
+  @ApiProperty({ nullable: true })
+  avatarUrl!: string | null;
+
   @ApiProperty()
   createdAt!: Date;
 

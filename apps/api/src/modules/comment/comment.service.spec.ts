@@ -38,15 +38,22 @@ const makeComment = (
     createdAt: Date;
     updatedAt: Date;
     anonName: string;
+    avatarUrl: string | null;
   }> = {},
-) => ({
-  id: COMMENT_ID,
-  content: 'Supportive comment',
-  createdAt: new Date('2026-01-01T00:00:00.000Z'),
-  updatedAt: new Date('2026-01-01T00:00:00.000Z'),
-  author: { anonName: overrides.anonName ?? 'Anon' },
-  ...overrides,
-});
+) => {
+  const { anonName, avatarUrl, ...rest } = overrides;
+  return {
+    id: COMMENT_ID,
+    content: 'Supportive comment',
+    createdAt: new Date('2026-01-01T00:00:00.000Z'),
+    updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    author: {
+      anonName: anonName ?? 'Anon',
+      avatarUrl: avatarUrl === undefined ? null : avatarUrl,
+    },
+    ...rest,
+  };
+};
 
 describe('CommentService', () => {
   let commentService: CommentService;
@@ -159,11 +166,41 @@ describe('CommentService', () => {
         },
         select: { id: true },
       });
+      expect(prismaService.comment.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: {
+            author: {
+              select: { anonName: true, avatarUrl: true },
+            },
+          },
+        }),
+      );
       expect(result.items).toHaveLength(COMMENTS_LIST_TAKE);
+      expect(result.items[0]).toMatchObject({
+        anonName: 'Anon',
+        avatarUrl: null,
+      });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({
         id: comments[COMMENTS_LIST_TAKE - 1].id,
         createdAt: comments[COMMENTS_LIST_TAKE - 1].createdAt,
+      });
+    });
+
+    it('should map author avatarUrl onto comment items', async () => {
+      prismaService.post.findFirst.mockResolvedValue({ id: POST_ID });
+      prismaService.comment.findMany.mockResolvedValue([
+        makeComment({
+          anonName: 'CichyWiatr',
+          avatarUrl: 'https://cdn.example/avatar.webp',
+        }),
+      ]);
+
+      const result = await commentService.findAll({ postId: POST_ID });
+
+      expect(result.items[0]).toMatchObject({
+        anonName: 'CichyWiatr',
+        avatarUrl: 'https://cdn.example/avatar.webp',
       });
     });
 

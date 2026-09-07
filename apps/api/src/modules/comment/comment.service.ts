@@ -82,7 +82,7 @@ export class CommentService {
       },
       include: {
         author: {
-          select: { anonName: true },
+          select: { anonName: true, avatarUrl: true },
         },
       },
       take: COMMENTS_LIST_TAKE + 1,

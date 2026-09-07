@@ -44,7 +44,25 @@
 		"loadMore": "Load more",
 		"empty": "No posts yet. Publish the first one.",
 		"error": "Could not load the feed.",
-		"retry": "Try again"
+		"retry": "Try again",
+		"comments": {
+			"toggle": "Comments"
+		}
+	},
+	"comments": {
+		"loading": "Loading comments…",
+		"loadingMore": "Loading…",
+		"loadMore": "Load more",
+		"empty": "No comments yet. Write the first one.",
+		"error": "Could not load comments.",
+		"retry": "Try again",
+		"placeholder": "Write a comment…",
+		"submit": "Send",
+		"success": "Comment is awaiting moderation",
+		"errors": {
+			"contentRequired": "Enter a comment",
+			"contentMax": "Comment can be at most {max} characters"
+		}
 	},
 	"composer": {
 		"placeholder": "What's on your mind?",

@@ -44,7 +44,25 @@
 		"loadMore": "Załaduj więcej",
 		"empty": "Brak wpisów na tablicy. Opublikuj pierwszy.",
 		"error": "Nie udało się wczytać tablicy.",
-		"retry": "Spróbuj ponownie"
+		"retry": "Spróbuj ponownie",
+		"comments": {
+			"toggle": "Komentarze"
+		}
+	},
+	"comments": {
+		"loading": "Ładowanie komentarzy…",
+		"loadingMore": "Ładowanie…",
+		"loadMore": "Załaduj więcej",
+		"empty": "Brak komentarzy. Napisz pierwszy.",
+		"error": "Nie udało się wczytać komentarzy.",
+		"retry": "Spróbuj ponownie",
+		"placeholder": "Napisz komentarz…",
+		"submit": "Wyślij",
+		"success": "Komentarz czeka na moderację",
+		"errors": {
+			"contentRequired": "Wpisz treść komentarza",
+			"contentMax": "Komentarz może mieć max. {max} znaków"
+		}
 	},
 	"composer": {
 		"placeholder": "Co masz na myśli?",
