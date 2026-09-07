@@ -61,6 +61,7 @@
 		"placeholder": "Write a comment…",
 		"submit": "Send",
 		"success": "Comment is awaiting moderation",
+		"pendingReview": "Under review",
 		"errors": {
 			"contentRequired": "Enter a comment",
 			"contentMax": "Comment can be at most {max} characters"

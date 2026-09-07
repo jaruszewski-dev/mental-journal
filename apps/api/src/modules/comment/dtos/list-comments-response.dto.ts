@@ -23,6 +23,9 @@ export class CommentItemDto {
   @ApiProperty()
   content!: string;
 
+  @ApiProperty({ enum: ['ACTIVE', 'PENDING'] })
+  status!: 'ACTIVE' | 'PENDING';
+
   @ApiProperty()
   anonName!: string;
 

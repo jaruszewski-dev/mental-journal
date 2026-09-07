@@ -20,6 +20,7 @@ import { CommentNotFoundException } from './exceptions/comment-not-found.excepti
 import { PostNotCommentableException } from './exceptions/post-not-commentable.exception';
 
 const AUTHOR_ID = 'user-1';
+const VIEWER_ID = 'viewer-1';
 const POST_ID = 'post-1';
 const COMMENT_ID = 'comment-1';
 
@@ -35,6 +36,7 @@ const makeComment = (
   overrides: Partial<{
     id: string;
     content: string;
+    status: CommentStatus;
     createdAt: Date;
     updatedAt: Date;
     anonName: string;
@@ -45,6 +47,7 @@ const makeComment = (
   return {
     id: COMMENT_ID,
     content: 'Supportive comment',
+    status: CommentStatus.ACTIVE,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     author: {
@@ -94,12 +97,15 @@ describe('CommentService', () => {
   describe('create', () => {
     it('should create comment and enqueue moderation', async () => {
       const dto = makeCreateDto();
+      const created = makeComment({
+        status: CommentStatus.PENDING,
+      });
 
       prismaService.user.findUnique.mockResolvedValue({
         status: UserStatus.ACTIVE,
       });
       prismaService.post.findFirst.mockResolvedValue({ id: POST_ID });
-      prismaService.comment.create.mockResolvedValue({ id: COMMENT_ID });
+      prismaService.comment.create.mockResolvedValue(created);
       moderationQueue.add.mockResolvedValue(undefined);
 
       const result = await commentService.create(dto, AUTHOR_ID);
@@ -111,13 +117,23 @@ describe('CommentService', () => {
           content: dto.content,
           status: CommentStatus.PENDING,
         },
-        select: { id: true },
+        include: {
+          author: {
+            select: { anonName: true, avatarUrl: true },
+          },
+        },
       });
       expect(moderationQueue.add).toHaveBeenCalledWith(
         ModerationJobName.MODERATE_COMMENT,
         { commentId: COMMENT_ID, authorId: AUTHOR_ID },
       );
-      expect(result).toEqual({ id: COMMENT_ID });
+      expect(result).toMatchObject({
+        id: COMMENT_ID,
+        content: dto.content,
+        status: CommentStatus.PENDING,
+        anonName: 'Anon',
+        avatarUrl: null,
+      });
     });
 
     it('should throw when author is shadowbanned', async () => {
@@ -156,7 +172,7 @@ describe('CommentService', () => {
       prismaService.post.findFirst.mockResolvedValue({ id: POST_ID });
       prismaService.comment.findMany.mockResolvedValue(comments);
 
-      const result = await commentService.findAll(dto);
+      const result = await commentService.findAll(VIEWER_ID, dto);
 
       expect(prismaService.post.findFirst).toHaveBeenCalledWith({
         where: {
@@ -168,6 +184,14 @@ describe('CommentService', () => {
       });
       expect(prismaService.comment.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
+          where: {
+            postId: POST_ID,
+            deletedAt: null,
+            OR: [
+              { status: CommentStatus.ACTIVE },
+              { status: CommentStatus.PENDING, authorId: VIEWER_ID },
+            ],
+          },
           include: {
             author: {
               select: { anonName: true, avatarUrl: true },
@@ -179,6 +203,7 @@ describe('CommentService', () => {
       expect(result.items[0]).toMatchObject({
         anonName: 'Anon',
         avatarUrl: null,
+        status: CommentStatus.ACTIVE,
       });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({
@@ -196,7 +221,9 @@ describe('CommentService', () => {
         }),
       ]);
 
-      const result = await commentService.findAll({ postId: POST_ID });
+      const result = await commentService.findAll(VIEWER_ID, {
+        postId: POST_ID,
+      });
 
       expect(result.items[0]).toMatchObject({
         anonName: 'CichyWiatr',
@@ -207,9 +234,9 @@ describe('CommentService', () => {
     it('should throw when post is not commentable', async () => {
       prismaService.post.findFirst.mockResolvedValue(null);
 
-      await expect(commentService.findAll({ postId: POST_ID })).rejects.toThrow(
-        PostNotCommentableException,
-      );
+      await expect(
+        commentService.findAll(VIEWER_ID, { postId: POST_ID }),
+      ).rejects.toThrow(PostNotCommentableException);
     });
   });
 

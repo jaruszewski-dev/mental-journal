@@ -1,9 +1,10 @@
 'use client';
 
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { UserAvatar } from '@/components/user-avatar';
 import { formatFeedTime } from '@/features/feed/utils/format-feed-time';
+import { cn } from '@/lib/utils';
 
 import type { CommentItem as CommentItemType } from '../api/get-comments';
 
@@ -13,10 +14,14 @@ type CommentItemProps = {
 
 export function CommentItem({ item }: CommentItemProps) {
 	const locale = useLocale();
+	const t = useTranslations('comments');
 	const time = formatFeedTime(item.createdAt, locale);
+	const isPending = item.status === 'PENDING';
 
 	return (
-		<li className="flex gap-2.5">
+		<li
+			className={cn('flex gap-2.5 transition-opacity', isPending && 'opacity-50')}
+		>
 			<UserAvatar
 				anonName={item.anonName}
 				avatarUrl={item.avatarUrl}
@@ -27,6 +32,11 @@ export function CommentItem({ item }: CommentItemProps) {
 					<p className="truncate text-sm font-medium text-foreground">
 						{item.anonName}
 					</p>
+					{isPending ? (
+						<span className="text-xs text-muted-foreground">
+							{t('pendingReview')}
+						</span>
+					) : null}
 					<time
 						dateTime={item.createdAt}
 						className="shrink-0 text-xs text-muted-foreground"

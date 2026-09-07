@@ -48,9 +48,10 @@ export class CommentController {
 
   @Get()
   findAll(
+    @CurrentUser() user: AuthUser,
     @Query() dto: ListCommentsQueryDto,
   ): Promise<ListCommentsResponseDto> {
-    return this.commentService.findAll(dto);
+    return this.commentService.findAll(user.userId, dto);
   }
 
   @Delete(':id')

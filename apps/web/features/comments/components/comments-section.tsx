@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
 import { useCommentsInfiniteQuery } from '../hooks/use-comments-infinite-query';
+import { useCommentRealtime } from '../hooks/use-comment-realtime';
 import { useDelayedPending } from '../hooks/use-delayed-pending';
 import { CommentComposer } from './comment-composer';
 import { CommentItem } from './comment-item';
@@ -17,6 +18,7 @@ type CommentsSectionProps = {
 export function CommentsSection({ postId }: CommentsSectionProps) {
 	const t = useTranslations('comments');
 	const query = useCommentsInfiniteQuery(postId, true);
+	useCommentRealtime(postId);
 	const items = query.data?.pages.flatMap((page) => page.items) ?? [];
 	const showSkeleton = useDelayedPending(query.isPending);
 

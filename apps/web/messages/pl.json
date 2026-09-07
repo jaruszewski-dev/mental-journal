@@ -61,6 +61,7 @@
 		"placeholder": "Napisz komentarz…",
 		"submit": "Wyślij",
 		"success": "Komentarz czeka na moderację",
+		"pendingReview": "Weryfikacja…",
 		"errors": {
 			"contentRequired": "Wpisz treść komentarza",
 			"contentMax": "Komentarz może mieć max. {max} znaków"

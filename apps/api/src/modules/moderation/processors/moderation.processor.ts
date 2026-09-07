@@ -27,6 +27,10 @@ import {
   ModerateContentPort,
 } from '../ports/moderate-content.port';
 import {
+  NOTIFY_COMMENT_PORT,
+  NotifyCommentPort,
+} from '../ports/notify-comment.port';
+import {
   NOTIFY_FEED_POST_PORT,
   NotifyFeedPostPort,
 } from '../ports/notify-feed-post.port';
@@ -49,6 +53,8 @@ export class ModerationProcessor extends WorkerHost {
     private readonly moderateContentPort: ModerateContentPort,
     @Inject(NOTIFY_FEED_POST_PORT)
     private readonly notifyFeedPostPort: NotifyFeedPostPort,
+    @Inject(NOTIFY_COMMENT_PORT)
+    private readonly notifyCommentPort: NotifyCommentPort,
   ) {
     super();
   }
@@ -118,7 +124,7 @@ export class ModerationProcessor extends WorkerHost {
         status: CommentStatus.PENDING,
         deletedAt: null,
       },
-      select: { id: true, content: true, authorId: true },
+      select: { id: true, postId: true, content: true, authorId: true },
     });
 
     if (!comment) {
@@ -137,6 +143,20 @@ export class ModerationProcessor extends WorkerHost {
         status: result.allow ? CommentStatus.ACTIVE : CommentStatus.HIDDEN,
       },
     });
+
+    if (result.allow) {
+      this.notifyCommentPort.notifyActive({
+        commentId: comment.id,
+        postId: comment.postId,
+        authorId: comment.authorId,
+      });
+    } else {
+      this.notifyCommentPort.notifyHidden({
+        commentId: comment.id,
+        postId: comment.postId,
+        authorId: comment.authorId,
+      });
+    }
 
     await this.applyTrustScore(comment.authorId, result.allow, result.reason, {
       commentId: comment.id,

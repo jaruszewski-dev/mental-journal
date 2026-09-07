@@ -10,6 +10,8 @@ import { Server, Socket } from 'socket.io';
 
 import type { AuthUser } from '../../common/decorators/current-user.decorator';
 import {
+  CommentActivePayload,
+  CommentHiddenPayload,
   FeedNewPostPayload,
   FeedPostHiddenPayload,
   RealtimeEvent,
@@ -80,5 +82,13 @@ export class RealtimeGateway
 
   emitFeedPostHidden(payload: FeedPostHiddenPayload): void {
     this.server.emit(RealtimeEvent.FEED_POST_HIDDEN, payload);
+  }
+
+  emitCommentActive(payload: CommentActivePayload): void {
+    this.server.emit(RealtimeEvent.COMMENT_ACTIVE, payload);
+  }
+
+  emitCommentHidden(payload: CommentHiddenPayload): void {
+    this.server.emit(RealtimeEvent.COMMENT_HIDDEN, payload);
   }
 }

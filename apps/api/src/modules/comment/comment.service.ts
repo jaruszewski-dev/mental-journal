@@ -43,25 +43,32 @@ export class CommentService {
     await this.assertAuthorCanComment(authorId);
     await this.assertPostIsCommentable(dto.postId);
 
-    const { id } = await this.prisma.comment.create({
+    const comment = await this.prisma.comment.create({
       data: {
         postId: dto.postId,
         authorId,
         content: dto.content,
         status: CommentStatus.PENDING,
       },
-      select: { id: true },
+      include: {
+        author: {
+          select: { anonName: true, avatarUrl: true },
+        },
+      },
     });
 
     await this.moderationQueue.add(ModerationJobName.MODERATE_COMMENT, {
-      commentId: id,
+      commentId: comment.id,
       authorId,
     });
 
-    return { id };
+    return CommentMapper.toCommentItemDto(comment);
   }
 
-  async findAll(dto: ListCommentsQueryDto): Promise<ListCommentsResponseDto> {
+  async findAll(
+    viewerId: string,
+    dto: ListCommentsQueryDto,
+  ): Promise<ListCommentsResponseDto> {
     await this.assertPostIsCommentable(dto.postId);
 
     const { postId, lastCursorId, lastCreatedAt } = dto;
@@ -69,13 +76,20 @@ export class CommentService {
     const comments = await this.prisma.comment.findMany({
       where: {
         postId,
-        status: CommentStatus.ACTIVE,
         deletedAt: null,
+        OR: [
+          { status: CommentStatus.ACTIVE },
+          { status: CommentStatus.PENDING, authorId: viewerId },
+        ],
         ...(lastCursorId && lastCreatedAt
           ? {
-              OR: [
-                { createdAt: { lt: lastCreatedAt } },
-                { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
+              AND: [
+                {
+                  OR: [
+                    { createdAt: { lt: lastCreatedAt } },
+                    { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
+                  ],
+                },
               ],
             }
           : {}),

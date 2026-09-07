@@ -3,6 +3,7 @@ import { apiClient } from '@/lib/api-client';
 export type CommentItem = {
 	id: string;
 	content: string;
+	status: 'ACTIVE' | 'PENDING';
 	anonName: string;
 	avatarUrl: string | null;
 	createdAt: string;
