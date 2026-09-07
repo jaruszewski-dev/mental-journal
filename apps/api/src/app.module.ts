@@ -18,6 +18,7 @@ import { HealthModule } from './modules/health/health.module';
 import { JournalModule } from './modules/journal/journal.module';
 import { ModerationModule } from './modules/moderation/moderation.module';
 import { QueueModule } from './modules/queue/queue.module';
+import { RealtimeModule } from './modules/realtime/realtime.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UserModule } from './modules/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -69,6 +70,7 @@ const i18nModuleResolvers = [
     JournalModule,
     FeedModule,
     CommentModule,
+    RealtimeModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
