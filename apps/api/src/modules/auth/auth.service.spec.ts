@@ -8,9 +8,11 @@ import { VerifyEmailResult } from '../../common/enums/verify-email-result.enum';
 import { AccountNotAllowedException } from '../../common/exceptions/custom/account-not-allowed.exception';
 import { AccountNotVerifiedException } from '../../common/exceptions/custom/account-not-verified.exception';
 import { UnauthorizedUserException } from '../../common/exceptions/custom/unauthorized-user.exception';
+import { UserNotFoundException } from '../../common/exceptions/custom/user-not-found.exception';
 import { HashingService } from '../../common/services/hashing.service';
 import { Prisma } from '../../generated/prisma/client';
 import { UserStatus } from '../../generated/prisma/enums';
+import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
@@ -20,6 +22,7 @@ import { DELETE_ALL_SESSIONS_PORT } from './ports/delete-all-sessions.port';
 import { DELETE_SESSION_PORT } from './ports/delete-session.port';
 import { FIND_BY_REFRESH_TOKEN_HASH_PORT } from './ports/find-by-refresh-token-hash.port';
 import { FIND_USER_BY_EMAIL_PORT } from './ports/find-user-by-email.port';
+import { GET_AUTH_ME_PORT } from './ports/get-auth-me.port';
 import { ISSUE_EMAIL_VERIFICATION_PORT } from './ports/issue-email-verification.port';
 import { REGISTER_USER_PORT } from './ports/register-user.port';
 import { SAVE_SESSION_PORT } from './ports/save-session.port';
@@ -27,7 +30,6 @@ import { SEND_VERIFICATION_EMAIL_PORT } from './ports/send-verification-email.po
 import { UPDATE_SESSION_PORT } from './ports/update-session.port';
 import { VERIFY_EMAIL_PORT } from './ports/verify-email.port';
 import { parseTtlMs } from './utils/parse-ttl-ms.util';
-import { AuthService } from './auth.service';
 
 const ACCESS_TOKEN_TTL = '15m';
 const SESSION_REFRESH_TTL = '7d';
@@ -102,6 +104,7 @@ describe('AuthService', () => {
 
   const registerUserPort = { execute: jest.fn() };
   const findUserByEmailPort = { execute: jest.fn() };
+  const getAuthMePort = { execute: jest.fn() };
   const sendVerificationEmailPort = { execute: jest.fn() };
   const verifyEmailPort = { execute: jest.fn() };
   const issueEmailVerificationPort = { execute: jest.fn() };
@@ -143,6 +146,7 @@ describe('AuthService', () => {
         { provide: JwtService, useValue: jwtService },
         { provide: REGISTER_USER_PORT, useValue: registerUserPort },
         { provide: FIND_USER_BY_EMAIL_PORT, useValue: findUserByEmailPort },
+        { provide: GET_AUTH_ME_PORT, useValue: getAuthMePort },
         {
           provide: SEND_VERIFICATION_EMAIL_PORT,
           useValue: sendVerificationEmailPort,
@@ -164,6 +168,31 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get(AuthService);
+  });
+
+  describe('getMe', () => {
+    it('should return userId, anonName and avatarUrl', async () => {
+      const me = {
+        userId: 'user-1',
+        anonName: 'TestUser',
+        avatarUrl: 'https://cdn.example/avatar.webp',
+      };
+      getAuthMePort.execute.mockResolvedValue(me);
+
+      const result = await authService.getMe('user-1');
+
+      expect(getAuthMePort.execute).toHaveBeenCalledWith('user-1');
+      expect(result).toEqual(me);
+    });
+
+    it('should throw UserNotFoundException when user missing', async () => {
+      getAuthMePort.execute.mockResolvedValue(null);
+
+      await expect(authService.getMe('user-1')).rejects.toBeInstanceOf(
+        UserNotFoundException,
+      );
+      expect(getAuthMePort.execute).toHaveBeenCalledWith('user-1');
+    });
   });
 
   describe('login', () => {
@@ -352,9 +381,7 @@ describe('AuthService', () => {
       );
       expect(sendVerificationEmailPort.execute).toHaveBeenCalledWith({
         to: registerDto.email.trim().toLowerCase(),
-        verificationLink: expect.stringMatching(
-          /\/verify-email\?token=[^&]+$/,
-        ),
+        verificationLink: expect.stringMatching(/\/verify-email\?token=[^&]+$/),
         locale: 'pl',
       });
       expect(result).toEqual({ id: 'user-1', anonName: registerDto.anonName });

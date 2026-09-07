@@ -10,7 +10,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 
@@ -22,17 +22,18 @@ import {
 import { SetErrorPath } from '../../common/decorators/set-error-path.decorator';
 import { AccountCanActGuard } from '../../common/guards/account-can-act.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { AuthService } from './auth.service';
 import { IssueEmailVerificationDto } from './dtos/issue-email-verification.dto';
 import { IssueEmailVerificationResponseDto } from './dtos/issue-email-verification-response.dto';
 import { LoginDto } from './dtos/login.dto';
 import { LoginResponseDto } from './dtos/login-response.dto';
 import { LogoutResponseDto } from './dtos/logout-response.dto';
+import { MeResponseDto } from './dtos/me-response.dto';
 import { RefreshResponseDto } from './dtos/refresh-response.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { RegisterResponseDto } from './dtos/register-response.dto';
 import { VerifyEmailQueryDto } from './dtos/verify-email-query.dto';
 import { VerifyEmailResponseDto } from './dtos/verify-email-response.dto';
-import { AuthService } from './auth.service';
 
 @SetErrorPath(ErrorPath.AUTH)
 @Controller('auth')
@@ -67,8 +68,10 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard, AccountCanActGuard)
   @Get('me')
-  me(@CurrentUser() currentUser: AuthUser) {
-    return currentUser;
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: MeResponseDto })
+  me(@CurrentUser() currentUser: AuthUser): Promise<MeResponseDto> {
+    return this.authService.getMe(currentUser.userId);
   }
 
   @Throttle({ default: { limit: 3, ttl: 60_000 } })

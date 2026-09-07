@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
 import type { AppLocale } from '../../common/consts/locale.const';
@@ -202,6 +202,29 @@ export class UserService {
       id: user.id,
       emailVerified: user.emailVerified,
       status: user.status,
+    };
+  }
+
+  async getAuthMe(userId: string): Promise<{
+    userId: string;
+    anonName: string;
+    avatarUrl: string | null;
+  } | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        anonName: true,
+        avatarUrl: true,
+      },
+    });
+
+    if (!user) return null;
+
+    return {
+      userId: user.id,
+      anonName: user.anonName,
+      avatarUrl: user.avatarUrl,
     };
   }
 

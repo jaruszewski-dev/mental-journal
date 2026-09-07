@@ -9,6 +9,7 @@ import { IssueEmailVerificationResult } from '../../common/enums/issue-email-ver
 import { VerifyEmailResult } from '../../common/enums/verify-email-result.enum';
 import { AccountNotAllowedException } from '../../common/exceptions/custom/account-not-allowed.exception';
 import { UnauthorizedUserException } from '../../common/exceptions/custom/unauthorized-user.exception';
+import { UserNotFoundException } from '../../common/exceptions/custom/user-not-found.exception';
 import { HashingService } from '../../common/services/hashing.service';
 import { assertAccountCanAct } from '../../common/utils/assert-account-can-act.util';
 import { Prisma } from '../../generated/prisma/client';
@@ -17,6 +18,7 @@ import { IssueEmailVerificationResponseDto } from './dtos/issue-email-verificati
 import { LoginDto } from './dtos/login.dto';
 import { LoginResponseDto } from './dtos/login-response.dto';
 import { LogoutResponseDto } from './dtos/logout-response.dto';
+import { MeResponseDto } from './dtos/me-response.dto';
 import { RefreshResponseDto } from './dtos/refresh-response.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { RegisterResponseDto } from './dtos/register-response.dto';
@@ -41,6 +43,7 @@ import {
   FIND_USER_BY_EMAIL_PORT,
   FindUserByEmailPort,
 } from './ports/find-user-by-email.port';
+import { GET_AUTH_ME_PORT, GetAuthMePort } from './ports/get-auth-me.port';
 import {
   ISSUE_EMAIL_VERIFICATION_PORT,
   IssueEmailVerificationPort,
@@ -50,7 +53,6 @@ import {
   RegisterUserPort,
 } from './ports/register-user.port';
 import { SAVE_SESSION_PORT, SaveSessionPort } from './ports/save-session.port';
-import { buildVerificationLink } from './utils/build-verification-link.util';
 import {
   SEND_VERIFICATION_EMAIL_PORT,
   SendVerificationEmailPort,
@@ -60,6 +62,7 @@ import {
   UpdateSessionPort,
 } from './ports/update-session.port';
 import { VERIFY_EMAIL_PORT, VerifyEmailPort } from './ports/verify-email.port';
+import { buildVerificationLink } from './utils/build-verification-link.util';
 import { createRandomToken } from './utils/create-random-token.util';
 import { parseTtlMs } from './utils/parse-ttl-ms.util';
 import { Password } from './value-objects/password.vo';
@@ -103,6 +106,9 @@ export class AuthService {
     @Inject(FIND_USER_BY_EMAIL_PORT)
     private readonly findUserByEmailPort: FindUserByEmailPort,
 
+    @Inject(GET_AUTH_ME_PORT)
+    private readonly getAuthMePort: GetAuthMePort,
+
     @Inject(SEND_VERIFICATION_EMAIL_PORT)
     private readonly sendVerificationEmailPort: SendVerificationEmailPort,
 
@@ -140,6 +146,16 @@ export class AuthService {
       this.configService.getOrThrow<string>('ACCESS_TOKEN_TTL'),
       'ACCESS_TOKEN_TTL',
     );
+  }
+
+  async getMe(userId: string): Promise<MeResponseDto> {
+    const me = await this.getAuthMePort.execute(userId);
+
+    if (!me) {
+      throw new UserNotFoundException(ErrorPath.AUTH);
+    }
+
+    return me;
   }
 
   async register(dto: RegisterDto): Promise<RegisterResponseDto> {
