@@ -86,6 +86,8 @@ pnpm dev
 | `pnpm build`                          | Build workspace            |
 | `pnpm api:test`                       | API unit tests             |
 | `pnpm db:migrate`                     | Prisma migrate (dev)       |
+| `pnpm db:seed`                        | Push schema + fill seed DB |
+| `pnpm db:wipe`                        | Wipe seed DB only          |
 | `pnpm db:studio`                      | Prisma Studio              |
 | `pnpm docker:up` / `pnpm docker:down` | Postgres + Redis           |
 | `pnpm lint` / `pnpm check`            | Lint / lint + format check |
@@ -96,6 +98,7 @@ pnpm dev
 ```
 apps/api/     NestJS API, Prisma schema & migrations
 apps/web/     Next.js frontend (port 3000)
+apps/seed/    Faker seed + wipe CLI (mental_journal_seed DB)
 docker/       Postgres + Redis compose
 packages/     Shared ESLint / TypeScript configs
 AGENT.md      Technical architecture (diagrams, flows)

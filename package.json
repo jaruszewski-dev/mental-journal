@@ -11,6 +11,8 @@
 		"db:migrate": "turbo run db:migrate --filter=api",
 		"db:push": "turbo run db:push --filter=api",
 		"db:studio": "turbo run db:studio --filter=api",
+		"db:wipe": "pnpm --filter seed wipe",
+		"db:seed": "pnpm --filter seed push-schema && pnpm --filter seed seed",
 		"api:test": "turbo run test --filter=api",
 		"prisma:format": "pnpm --filter api prisma:format",
 		"format": "prettier . --write",
