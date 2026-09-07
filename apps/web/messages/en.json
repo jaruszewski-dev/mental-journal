@@ -62,6 +62,7 @@
 		"submit": "Send",
 		"success": "Comment is awaiting moderation",
 		"pendingReview": "Under review",
+		"rejected": "Your comment was not approved",
 		"errors": {
 			"contentRequired": "Enter a comment",
 			"contentMax": "Comment can be at most {max} characters"

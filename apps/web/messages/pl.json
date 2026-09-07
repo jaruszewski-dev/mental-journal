@@ -62,6 +62,7 @@
 		"submit": "Wyślij",
 		"success": "Komentarz czeka na moderację",
 		"pendingReview": "Weryfikacja…",
+		"rejected": "Twój komentarz nie został zaakceptowany",
 		"errors": {
 			"contentRequired": "Wpisz treść komentarza",
 			"contentMax": "Komentarz może mieć max. {max} znaków"
