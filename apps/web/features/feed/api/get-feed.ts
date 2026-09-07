@@ -6,6 +6,7 @@ export type FeedItem = {
 	mood?: number;
 	tags: string[];
 	anonName: string;
+	avatarUrl: string | null;
 	createdAt: string;
 	updatedAt: string | null;
 };

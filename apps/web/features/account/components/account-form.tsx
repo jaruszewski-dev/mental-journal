@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { UserAvatar } from '@/components/user-avatar';
 import { AVATAR_ALLOWED_MIME_TYPES, AVATAR_MAX_BYTES } from '@/features/account/consts/avatar.const';
 import { useUpdateAccountMutation } from '@/features/account/hooks/use-update-account-mutation';
 import {
@@ -23,12 +24,6 @@ import {
 import { PasswordInput } from '@/features/auth/shared/password-input';
 import { cn } from '@/lib/utils';
 import { useAuthMeStore } from '@/store/auth-me.store';
-
-function initialFromAnonName(anonName?: string) {
-	const trimmed = anonName?.trim();
-	if (!trimmed) return '?';
-	return trimmed.charAt(0).toUpperCase();
-}
 
 export function AccountForm() {
 	const t = useTranslations('account');
@@ -178,15 +173,11 @@ export function AccountForm() {
 					)}
 					aria-label={t('changeAvatar')}
 				>
-					{displayAvatarUrl ? (
-						<img
-							src={displayAvatarUrl}
-							alt=""
-							className="size-full object-cover"
-						/>
-					) : (
-						initialFromAnonName(me?.anonName)
-					)}
+					<UserAvatar
+						anonName={me?.anonName ?? ''}
+						avatarUrl={displayAvatarUrl}
+						className="size-full text-2xl"
+					/>
 				</button>
 				<input
 					ref={fileInputRef}

@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 
+import { UserAvatar } from '@/components/user-avatar';
 import { cn } from '@/lib/utils';
 
 import type { FeedItem as FeedItemType } from '../api/get-feed';
@@ -27,8 +28,17 @@ export function FeedItem({ item }: FeedItemProps) {
 
 	return (
 		<article className="border-b border-border px-4 py-4">
-			<div className="flex items-baseline justify-between gap-3">
-				<p className="truncate text-sm font-medium text-foreground">{item.anonName}</p>
+			<div className="flex items-center justify-between gap-3">
+				<div className="flex min-w-0 items-center gap-2.5">
+					<UserAvatar
+						anonName={item.anonName}
+						avatarUrl={item.avatarUrl}
+						className="size-8 text-sm"
+					/>
+					<p className="truncate text-sm font-medium text-foreground">
+						{item.anonName}
+					</p>
+				</div>
 				<time
 					dateTime={item.createdAt}
 					className="shrink-0 text-xs text-muted-foreground"

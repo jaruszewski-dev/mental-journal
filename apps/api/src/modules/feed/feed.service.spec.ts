@@ -15,17 +15,24 @@ const makePost = (
     createdAt: Date;
     updatedAt: Date;
     anonName: string;
+    avatarUrl: string | null;
   }> = {},
-) => ({
-  id: 'post-1',
-  content: 'Public post',
-  mood: 4,
-  tags: ['therapy'],
-  createdAt: new Date('2026-01-01T00:00:00.000Z'),
-  updatedAt: new Date('2026-01-01T00:00:00.000Z'),
-  author: { anonName: overrides.anonName ?? 'Anon' },
-  ...overrides,
-});
+) => {
+  const { anonName, avatarUrl, ...rest } = overrides;
+  return {
+    id: 'post-1',
+    content: 'Public post',
+    mood: 4,
+    tags: ['therapy'],
+    createdAt: new Date('2026-01-01T00:00:00.000Z'),
+    updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    author: {
+      anonName: anonName ?? 'Anon',
+      avatarUrl: avatarUrl === undefined ? null : avatarUrl,
+    },
+    ...rest,
+  };
+};
 
 describe('FeedService', () => {
   let feedService: FeedService;
@@ -67,17 +74,37 @@ describe('FeedService', () => {
         },
         include: {
           author: {
-            select: { anonName: true },
+            select: { anonName: true, avatarUrl: true },
           },
         },
         take: FEED_LIST_TAKE + 1,
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       });
       expect(result.items).toHaveLength(FEED_LIST_TAKE);
+      expect(result.items[0]).toMatchObject({
+        anonName: 'Anon',
+        avatarUrl: null,
+      });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({
         id: posts[FEED_LIST_TAKE - 1].id,
         createdAt: posts[FEED_LIST_TAKE - 1].createdAt,
+      });
+    });
+
+    it('should map author avatarUrl onto feed items', async () => {
+      prismaService.post.findMany.mockResolvedValue([
+        makePost({
+          anonName: 'CichyWiatr',
+          avatarUrl: 'https://cdn.example/avatar.webp',
+        }),
+      ]);
+
+      const result = await feedService.feed({});
+
+      expect(result.items[0]).toMatchObject({
+        anonName: 'CichyWiatr',
+        avatarUrl: 'https://cdn.example/avatar.webp',
       });
     });
 

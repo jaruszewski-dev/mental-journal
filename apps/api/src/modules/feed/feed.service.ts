@@ -30,7 +30,7 @@ export class FeedService {
       },
       include: {
         author: {
-          select: { anonName: true },
+          select: { anonName: true, avatarUrl: true },
         },
       },
       take: FEED_LIST_TAKE + 1,
