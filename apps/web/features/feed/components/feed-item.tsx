@@ -111,7 +111,7 @@ export function FeedItem({ item }: FeedItemProps) {
 			</div>
 
 			{commentsOpen ? (
-				<div className="mt-3 border-t border-border pt-1">
+				<div className="mt-3 border-t border-border/60 pt-3">
 					<CommentsSection postId={item.id} />
 				</div>
 			) : null}

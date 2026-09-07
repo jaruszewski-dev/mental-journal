@@ -12,7 +12,10 @@ import { useAuthMeStore } from '@/store/auth-me.store';
 
 import { MAX_COMMENT_CONTENT_LENGTH } from '../consts/comment.const';
 import { useCreateCommentMutation } from '../hooks/use-create-comment-mutation';
-import { type CreateCommentFormValues, createCommentSchema } from '../validations/create-comment.schema';
+import {
+	type CreateCommentFormValues,
+	createCommentSchema,
+} from '../validations/create-comment.schema';
 
 type CommentComposerProps = {
 	postId: string;
@@ -71,14 +74,17 @@ export function CommentComposer({ postId }: CommentComposerProps) {
 	}
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="pb-3">
-			<div className="flex items-start gap-2">
+		<form
+			onSubmit={handleSubmit(onSubmit)}
+			className="border-t border-border/60 pt-3"
+		>
+			<div className="flex items-end gap-2">
 				<UserAvatar
 					anonName={me?.anonName ?? ''}
 					avatarUrl={me?.avatarUrl}
-					className="mt-0.5 size-7 text-xs"
+					className="mb-1 size-7 text-xs"
 				/>
-				<div className="min-w-0 flex-1 rounded-xl bg-background/40 p-2.5 ring-1 ring-border">
+				<div className="min-w-0 flex-1">
 					<textarea
 						{...contentRest}
 						ref={(el) => {
@@ -90,28 +96,26 @@ export function CommentComposer({ postId }: CommentComposerProps) {
 						rows={1}
 						placeholder={t('placeholder')}
 						maxLength={MAX_COMMENT_CONTENT_LENGTH}
-						className="max-h-40 min-h-[1.5rem] w-full resize-none bg-transparent text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none"
+						className="max-h-40 min-h-9 w-full resize-none overflow-y-auto border-0 border-b border-border/60 bg-transparent px-0 py-2 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:border-foreground/40 focus:outline-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
 						onInput={handleTextareaInput}
 						onKeyDown={handleKeyDown}
 					/>
-					<div className="mt-1.5 flex justify-end">
-						<Button
-							type="submit"
-							size="sm"
-							disabled={!content?.trim() || mutation.isPending}
-							className="cursor-pointer gap-1.5"
-						>
-							<SendIcon className="size-3.5" />
-							{t('submit')}
-						</Button>
-					</div>
+					{formState.errors.content ? (
+						<p className="mt-1 text-xs text-destructive">
+							{formState.errors.content.message}
+						</p>
+					) : null}
 				</div>
+				<Button
+					type="submit"
+					size="icon-sm"
+					disabled={!content?.trim() || mutation.isPending}
+					className="mb-1 cursor-pointer"
+					aria-label={t('submit')}
+				>
+					<SendIcon className="size-3.5" />
+				</Button>
 			</div>
-			{formState.errors.content ? (
-				<p className="mt-1.5 pl-9 text-xs text-destructive">
-					{formState.errors.content.message}
-				</p>
-			) : null}
 		</form>
 	);
 }

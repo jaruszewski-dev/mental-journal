@@ -16,29 +16,29 @@ export function CommentItem({ item }: CommentItemProps) {
 	const time = formatFeedTime(item.createdAt, locale);
 
 	return (
-		<li className="py-3">
-			<div className="flex items-center justify-between gap-3">
-				<div className="flex min-w-0 items-center gap-2">
-					<UserAvatar
-						anonName={item.anonName}
-						avatarUrl={item.avatarUrl}
-						className="size-7 text-xs"
-					/>
+		<li className="flex gap-2.5">
+			<UserAvatar
+				anonName={item.anonName}
+				avatarUrl={item.avatarUrl}
+				className="mt-0.5 size-7 text-xs"
+			/>
+			<div className="min-w-0 flex-1">
+				<div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
 					<p className="truncate text-sm font-medium text-foreground">
 						{item.anonName}
 					</p>
+					<time
+						dateTime={item.createdAt}
+						className="shrink-0 text-xs text-muted-foreground"
+						title={new Date(item.createdAt).toLocaleString(locale)}
+					>
+						{time}
+					</time>
 				</div>
-				<time
-					dateTime={item.createdAt}
-					className="shrink-0 text-xs text-muted-foreground"
-					title={new Date(item.createdAt).toLocaleString(locale)}
-				>
-					{time}
-				</time>
+				<p className="mt-0.5 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+					{item.content}
+				</p>
 			</div>
-			<p className="mt-1.5 pl-9 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-				{item.content}
-			</p>
 		</li>
 	);
 }
