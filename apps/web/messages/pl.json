@@ -45,6 +45,8 @@
 		"empty": "Brak wpisów na tablicy. Opublikuj pierwszy.",
 		"error": "Nie udało się wczytać tablicy.",
 		"retry": "Spróbuj ponownie",
+		"newPosts": "Nowe wpisy",
+		"pendingReview": "Weryfikacja…",
 		"comments": {
 			"toggle": "Komentarze"
 		}

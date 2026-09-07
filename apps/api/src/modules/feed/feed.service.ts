@@ -11,19 +11,29 @@ import { FeedMapper } from './mappers/feed.mapper';
 export class FeedService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async feed(dto: ListFeedQueryDto): Promise<ListFeedResponseDto> {
+  async feed(
+    viewerId: string,
+    dto: ListFeedQueryDto,
+  ): Promise<ListFeedResponseDto> {
     const { lastCreatedAt, lastCursorId, tags } = dto;
 
     const posts = await this.prisma.post.findMany({
       where: {
-        status: PostStatus.ACTIVE,
         deletedAt: null,
+        OR: [
+          { status: PostStatus.ACTIVE },
+          { status: PostStatus.PENDING, authorId: viewerId },
+        ],
         ...(tags?.length ? { tags: { hasSome: tags } } : {}),
         ...(lastCursorId && lastCreatedAt
           ? {
-              OR: [
-                { createdAt: { lt: lastCreatedAt } },
-                { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
+              AND: [
+                {
+                  OR: [
+                    { createdAt: { lt: lastCreatedAt } },
+                    { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
+                  ],
+                },
               ],
             }
           : {}),

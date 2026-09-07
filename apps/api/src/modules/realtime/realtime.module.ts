@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import type { JwtSignOptions } from '@nestjs/jwt';
 import { JwtModule } from '@nestjs/jwt';
 
+import { NOTIFY_FEED_POST_PORT } from '../moderation/ports/notify-feed-post.port';
+import { NotifyFeedPostAdapter } from './adapters/notify-feed-post.adapter';
 import { WsJwtGuard } from './guards/ws-jwt.guard';
 import { RealtimeGateway } from './realtime.gateway';
 
@@ -20,7 +22,15 @@ const jwtModuleFactory = (config: ConfigService) => ({
       useFactory: jwtModuleFactory,
     }),
   ],
-  providers: [RealtimeGateway, WsJwtGuard],
-  exports: [RealtimeGateway, WsJwtGuard],
+  providers: [
+    RealtimeGateway,
+    WsJwtGuard,
+    NotifyFeedPostAdapter,
+    {
+      provide: NOTIFY_FEED_POST_PORT,
+      useExisting: NotifyFeedPostAdapter,
+    },
+  ],
+  exports: [RealtimeGateway, WsJwtGuard, NOTIFY_FEED_POST_PORT],
 })
 export class RealtimeModule {}

@@ -29,6 +29,9 @@ export class FeedItemDto {
   @ApiProperty()
   tags!: string[];
 
+  @ApiProperty({ enum: ['ACTIVE', 'PENDING'] })
+  status!: 'ACTIVE' | 'PENDING';
+
   @ApiProperty()
   anonName!: string;
 

@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 
 import { FeedList } from '@/features/feed/components/feed-list';
+import { FeedNewPostsButton } from '@/features/feed/components/feed-new-posts-button';
 import { Composer } from '@/features/journal/components/composer';
 
 type HomePageProps = {
@@ -13,6 +14,7 @@ export default async function Home({ params }: HomePageProps) {
 
 	return (
 		<main className="flex flex-1 flex-col pb-16 md:pb-0">
+			<FeedNewPostsButton />
 			<Composer />
 			<FeedList />
 		</main>

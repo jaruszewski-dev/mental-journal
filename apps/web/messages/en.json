@@ -45,6 +45,8 @@
 		"empty": "No posts yet. Publish the first one.",
 		"error": "Could not load the feed.",
 		"retry": "Try again",
+		"newPosts": "New posts",
+		"pendingReview": "Under review",
 		"comments": {
 			"toggle": "Comments"
 		}

@@ -6,12 +6,15 @@ import { FEED_LIST_TAKE } from './consts/feed.const';
 import { ListFeedQueryDto } from './dtos/list-feed-query.dto';
 import { FeedService } from './feed.service';
 
+const VIEWER_ID = 'viewer-1';
+
 const makePost = (
   overrides: Partial<{
     id: string;
     content: string;
     mood: number | null;
     tags: string[];
+    status: PostStatus;
     createdAt: Date;
     updatedAt: Date;
     anonName: string;
@@ -24,6 +27,7 @@ const makePost = (
     content: 'Public post',
     mood: 4,
     tags: ['therapy'],
+    status: PostStatus.ACTIVE,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     author: {
@@ -65,12 +69,15 @@ describe('FeedService', () => {
 
       prismaService.post.findMany.mockResolvedValue(posts);
 
-      const result = await feedService.feed(dto);
+      const result = await feedService.feed(VIEWER_ID, dto);
 
       expect(prismaService.post.findMany).toHaveBeenCalledWith({
         where: {
-          status: PostStatus.ACTIVE,
           deletedAt: null,
+          OR: [
+            { status: PostStatus.ACTIVE },
+            { status: PostStatus.PENDING, authorId: VIEWER_ID },
+          ],
         },
         include: {
           author: {
@@ -84,6 +91,7 @@ describe('FeedService', () => {
       expect(result.items[0]).toMatchObject({
         anonName: 'Anon',
         avatarUrl: null,
+        status: PostStatus.ACTIVE,
       });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({
@@ -100,7 +108,7 @@ describe('FeedService', () => {
         }),
       ]);
 
-      const result = await feedService.feed({});
+      const result = await feedService.feed(VIEWER_ID, {});
 
       expect(result.items[0]).toMatchObject({
         anonName: 'CichyWiatr',
@@ -111,7 +119,7 @@ describe('FeedService', () => {
     it('should filter by tags when provided', async () => {
       prismaService.post.findMany.mockResolvedValue([makePost()]);
 
-      await feedService.feed({ tags: ['therapy'] });
+      await feedService.feed(VIEWER_ID, { tags: ['therapy'] });
 
       expect(prismaService.post.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -128,7 +136,7 @@ describe('FeedService', () => {
 
       prismaService.post.findMany.mockResolvedValue([]);
 
-      const result = await feedService.feed({
+      const result = await feedService.feed(VIEWER_ID, {
         lastCreatedAt,
         lastCursorId,
       });
@@ -136,9 +144,13 @@ describe('FeedService', () => {
       expect(prismaService.post.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            OR: [
-              { createdAt: { lt: lastCreatedAt } },
-              { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
+            AND: [
+              {
+                OR: [
+                  { createdAt: { lt: lastCreatedAt } },
+                  { createdAt: lastCreatedAt, id: { lt: lastCursorId } },
+                ],
+              },
             ],
           }),
         }),

@@ -9,6 +9,11 @@ import {
 import { Server, Socket } from 'socket.io';
 
 import type { AuthUser } from '../../common/decorators/current-user.decorator';
+import {
+  FeedNewPostPayload,
+  FeedPostHiddenPayload,
+  RealtimeEvent,
+} from './consts/realtime-events.const';
 import type { AuthenticatedSocketData } from './types/authenticated-socket-data.type';
 import { extractAccessTokenFromSocket } from './utils/extract-access-token-from-socket.util';
 
@@ -67,5 +72,13 @@ export class RealtimeGateway
   handleDisconnect(client: Socket): void {
     const userId = (client as AuthedSocket).data?.user?.userId ?? 'unknown';
     this.logger.debug(`disconnected ${client.id} userId=${userId}`);
+  }
+
+  emitFeedNewPost(payload: FeedNewPostPayload): void {
+    this.server.emit(RealtimeEvent.FEED_NEW_POST, payload);
+  }
+
+  emitFeedPostHidden(payload: FeedPostHiddenPayload): void {
+    this.server.emit(RealtimeEvent.FEED_POST_HIDDEN, payload);
   }
 }

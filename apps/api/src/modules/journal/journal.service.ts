@@ -6,6 +6,7 @@ import { EntryStatus, UserStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ENTRIES_LIST_TAKE } from './consts/entry.const';
 import { CreateEntryDto } from './dtos/create-entry.dto';
+import { CreateEntryResponseDto } from './dtos/create-entry-response.dto';
 import { ListEntriesQueryDto } from './dtos/list-entries-query.dto';
 import {
   EntryItemDto,
@@ -30,7 +31,10 @@ export class JournalService {
     private readonly publishEntryPort: PublishEntryPort,
   ) {}
 
-  async create(dto: CreateEntryDto, userId: string): Promise<{ id: string }> {
+  async create(
+    dto: CreateEntryDto,
+    userId: string,
+  ): Promise<CreateEntryResponseDto> {
     const { content, mood, tags, publish } = dto;
 
     if (publish) {
@@ -41,17 +45,32 @@ export class JournalService {
       data: { userId, content, mood, tags },
     });
 
-    if (publish) {
-      await this.publishEntryPort.execute({
-        authorId: userId,
-        journalEntryId: entry.id,
-        content,
-        mood,
-        tags: tags ?? [],
-      });
+    if (!publish) {
+      return { id: entry.id };
     }
 
-    return { id: entry.id };
+    const post = await this.publishEntryPort.execute({
+      authorId: userId,
+      journalEntryId: entry.id,
+      content,
+      mood,
+      tags: tags ?? [],
+    });
+
+    return {
+      id: entry.id,
+      post: {
+        id: post.id,
+        content: post.content,
+        mood: post.mood ?? undefined,
+        tags: post.tags,
+        status: post.status,
+        anonName: post.anonName,
+        avatarUrl: post.avatarUrl,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      },
+    };
   }
 
   async findAll(
@@ -179,7 +198,10 @@ export class JournalService {
     return { id };
   }
 
-  async publish(userId: string, entryId: string): Promise<{ id: string }> {
+  async publish(
+    userId: string,
+    entryId: string,
+  ): Promise<CreateEntryResponseDto> {
     await this.assertAuthorCanPublish(userId);
 
     const entry = await this.assertEntryExists(entryId, userId);
@@ -191,13 +213,28 @@ export class JournalService {
 
     if (existingPost) throw new EntryAlreadyPublishedException();
 
-    return this.publishEntryPort.execute({
+    const post = await this.publishEntryPort.execute({
       authorId: userId,
       journalEntryId: entryId,
       content: entry.content,
       mood: entry.mood,
       tags: entry.tags,
     });
+
+    return {
+      id: entry.id,
+      post: {
+        id: post.id,
+        content: post.content,
+        mood: post.mood ?? undefined,
+        tags: post.tags,
+        status: post.status,
+        anonName: post.anonName,
+        avatarUrl: post.avatarUrl,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      },
+    };
   }
 
   private async assertAuthorCanPublish(userId: string): Promise<void> {

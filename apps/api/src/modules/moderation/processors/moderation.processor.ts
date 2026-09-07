@@ -26,6 +26,10 @@ import {
   MODERATE_CONTENT_PORT,
   ModerateContentPort,
 } from '../ports/moderate-content.port';
+import {
+  NOTIFY_FEED_POST_PORT,
+  NotifyFeedPostPort,
+} from '../ports/notify-feed-post.port';
 
 type ModerationJobData = ModeratePostJobData | ModerateCommentJobData;
 
@@ -43,6 +47,8 @@ export class ModerationProcessor extends WorkerHost {
     private readonly prisma: PrismaService,
     @Inject(MODERATE_CONTENT_PORT)
     private readonly moderateContentPort: ModerateContentPort,
+    @Inject(NOTIFY_FEED_POST_PORT)
+    private readonly notifyFeedPostPort: NotifyFeedPostPort,
   ) {
     super();
   }
@@ -86,6 +92,18 @@ export class ModerationProcessor extends WorkerHost {
         status: result.allow ? PostStatus.ACTIVE : PostStatus.HIDDEN,
       },
     });
+
+    if (result.allow) {
+      this.notifyFeedPostPort.notifyActive({
+        postId: post.id,
+        authorId: post.authorId,
+      });
+    } else {
+      this.notifyFeedPostPort.notifyHidden({
+        postId: post.id,
+        authorId: post.authorId,
+      });
+    }
 
     await this.applyTrustScore(post.authorId, result.allow, result.reason, {
       postId: post.id,

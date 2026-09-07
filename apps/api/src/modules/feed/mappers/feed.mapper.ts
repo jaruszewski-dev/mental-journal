@@ -1,6 +1,7 @@
 import { ALL_JOURNAL_TAGS, type JournalTag } from '@repo/api-types';
 
 import type { Post, User } from '../../../generated/prisma/client';
+import { PostStatus } from '../../../generated/prisma/enums';
 import { FeedItemDto } from '../dtos/list-feed-response.dto';
 
 type PostWithAuthor = Post & {
@@ -16,6 +17,10 @@ export class FeedMapper {
       tags: post.tags.filter((t): t is JournalTag =>
         (ALL_JOURNAL_TAGS as readonly string[]).includes(t),
       ),
+      status:
+        post.status === PostStatus.PENDING
+          ? PostStatus.PENDING
+          : PostStatus.ACTIVE,
       anonName: post.author.anonName,
       avatarUrl: post.author.avatarUrl,
       createdAt: post.createdAt,

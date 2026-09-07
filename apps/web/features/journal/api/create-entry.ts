@@ -1,5 +1,7 @@
 import { apiClient } from '@/lib/api-client';
 
+import type { FeedItem } from '@/features/feed/api/get-feed';
+
 export type CreateEntryPayload = {
 	content: string;
 	mood?: number;
@@ -7,8 +9,9 @@ export type CreateEntryPayload = {
 	publish?: boolean;
 };
 
-type CreateEntryResponse = {
+export type CreateEntryResponse = {
 	id: string;
+	post?: FeedItem;
 };
 
 export async function createEntry(payload: CreateEntryPayload): Promise<CreateEntryResponse> {

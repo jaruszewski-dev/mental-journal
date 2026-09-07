@@ -26,13 +26,20 @@ type FeedItemProps = {
 export function FeedItem({ item }: FeedItemProps) {
 	const locale = useLocale();
 	const t = useTranslations('feed.comments');
+	const tFeed = useTranslations('feed');
 	const tTags = useTranslations('composer.tags.items');
 	const tMood = useTranslations('composer.mood');
 	const time = formatFeedTime(item.createdAt, locale);
 	const [commentsOpen, setCommentsOpen] = useState(false);
+	const isPending = item.status === 'PENDING';
 
 	return (
-		<article className="border-b border-border px-4 py-4">
+		<article
+			className={cn(
+				'border-b border-border px-4 py-4 transition-opacity',
+				isPending && 'opacity-50',
+			)}
+		>
 			<div className="flex items-center justify-between gap-3">
 				<div className="flex min-w-0 items-center gap-2.5">
 					<UserAvatar
@@ -44,13 +51,20 @@ export function FeedItem({ item }: FeedItemProps) {
 						{item.anonName}
 					</p>
 				</div>
-				<time
-					dateTime={item.createdAt}
-					className="shrink-0 text-xs text-muted-foreground"
-					title={new Date(item.createdAt).toLocaleString(locale)}
-				>
-					{time}
-				</time>
+				<div className="flex shrink-0 items-center gap-2">
+					{isPending ? (
+						<span className="text-xs text-muted-foreground">
+							{tFeed('pendingReview')}
+						</span>
+					) : null}
+					<time
+						dateTime={item.createdAt}
+						className="text-xs text-muted-foreground"
+						title={new Date(item.createdAt).toLocaleString(locale)}
+					>
+						{time}
+					</time>
+				</div>
 			</div>
 
 			<p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
@@ -88,32 +102,36 @@ export function FeedItem({ item }: FeedItemProps) {
 				</div>
 			)}
 
-			<div className="mt-3 flex items-center">
-				<button
-					type="button"
-					aria-expanded={commentsOpen}
-					onClick={() => setCommentsOpen((open) => !open)}
-					className={cn(
-						'inline-flex cursor-pointer items-center gap-1 text-xs text-muted-foreground',
-						'transition-colors hover:text-foreground',
-						'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-						commentsOpen && 'text-foreground',
-					)}
-				>
-					{t('toggle')}
-					<ChevronDownIcon
-						className={cn(
-							'size-3.5 stroke-[1.5] transition-transform duration-150',
-							commentsOpen && 'rotate-180',
-						)}
-					/>
-				</button>
-			</div>
+			{!isPending ? (
+				<>
+					<div className="mt-3 flex items-center">
+						<button
+							type="button"
+							aria-expanded={commentsOpen}
+							onClick={() => setCommentsOpen((open) => !open)}
+							className={cn(
+								'inline-flex cursor-pointer items-center gap-1 text-xs text-muted-foreground',
+								'transition-colors hover:text-foreground',
+								'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+								commentsOpen && 'text-foreground',
+							)}
+						>
+							{t('toggle')}
+							<ChevronDownIcon
+								className={cn(
+									'size-3.5 stroke-[1.5] transition-transform duration-150',
+									commentsOpen && 'rotate-180',
+								)}
+							/>
+						</button>
+					</div>
 
-			{commentsOpen ? (
-				<div className="mt-3 border-t border-border/60 pt-3">
-					<CommentsSection postId={item.id} />
-				</div>
+					{commentsOpen ? (
+						<div className="mt-3 border-t border-border/60 pt-3">
+							<CommentsSection postId={item.id} />
+						</div>
+					) : null}
+				</>
 			) : null}
 		</article>
 	);

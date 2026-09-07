@@ -5,6 +5,7 @@ export type FeedItem = {
 	content: string;
 	mood?: number;
 	tags: string[];
+	status: 'ACTIVE' | 'PENDING';
 	anonName: string;
 	avatarUrl: string | null;
 	createdAt: string;

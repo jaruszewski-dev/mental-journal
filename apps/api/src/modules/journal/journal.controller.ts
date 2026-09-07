@@ -23,6 +23,7 @@ import { SetErrorPath } from '../../common/decorators/set-error-path.decorator';
 import { AccountCanActGuard } from '../../common/guards/account-can-act.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CreateEntryDto } from './dtos/create-entry.dto';
+import { CreateEntryResponseDto } from './dtos/create-entry-response.dto';
 import { ListEntriesQueryDto } from './dtos/list-entries-query.dto';
 import {
   EntryItemDto,
@@ -43,7 +44,7 @@ export class JournalController {
   create(
     @CurrentUser() user: AuthUser,
     @Body() dto: CreateEntryDto,
-  ): Promise<{ id: string }> {
+  ): Promise<CreateEntryResponseDto> {
     return this.journalService.create(dto, user.userId);
   }
 
@@ -68,7 +69,7 @@ export class JournalController {
   publish(
     @Param('id', ParseUUIDPipe) entryId: string,
     @CurrentUser() user: AuthUser,
-  ): Promise<{ id: string }> {
+  ): Promise<CreateEntryResponseDto> {
     return this.journalService.publish(user.userId, entryId);
   }
 

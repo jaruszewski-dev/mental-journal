@@ -2,6 +2,10 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ErrorPath } from '../../common/consts/error-path.const';
+import {
+  AuthUser,
+  CurrentUser,
+} from '../../common/decorators/current-user.decorator';
 import { SetErrorPath } from '../../common/decorators/set-error-path.decorator';
 import { AccountCanActGuard } from '../../common/guards/account-can-act.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -17,7 +21,10 @@ export class FeedController {
 
   @Get()
   @UseGuards(JwtAuthGuard, AccountCanActGuard)
-  feed(@Query() dto: ListFeedQueryDto): Promise<ListFeedResponseDto> {
-    return this.feedService.feed(dto);
+  feed(
+    @CurrentUser() user: AuthUser,
+    @Query() dto: ListFeedQueryDto,
+  ): Promise<ListFeedResponseDto> {
+    return this.feedService.feed(user.userId, dto);
   }
 }

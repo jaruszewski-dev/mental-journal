@@ -2,7 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
-import { feedQueryKey } from '@/features/feed/consts/feed-query-key';
+import {
+	feedItemFromCreateResponse,
+	prependFeedItem,
+} from '@/features/feed/utils/feed-cache';
 import { resolveApiErrorMessage } from '@/lib/api-error';
 
 import { createEntry } from '../api/create-entry';
@@ -13,9 +16,9 @@ export function useCreateEntryMutation(options?: { onSuccess?: () => void }) {
 
 	return useMutation({
 		mutationFn: createEntry,
-		onSuccess: (_data, variables) => {
-			if (variables.publish) {
-				void queryClient.invalidateQueries({ queryKey: feedQueryKey });
+		onSuccess: (data, variables) => {
+			if (variables.publish && data.post) {
+				prependFeedItem(queryClient, feedItemFromCreateResponse(data.post));
 			}
 			options?.onSuccess?.();
 		},

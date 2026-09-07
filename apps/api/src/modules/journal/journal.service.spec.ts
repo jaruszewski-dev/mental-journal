@@ -1,15 +1,14 @@
-import { getQueueToken } from '@nestjs/bullmq';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { EntryStatus } from '../../generated/prisma/enums';
 import { PrismaService } from '../../prisma/prisma.service';
-import { MODERATION_QUEUE } from '../queue/consts/queue.const';
 import { ENTRIES_LIST_TAKE } from './consts/entry.const';
 import { CreateEntryDto } from './dtos/create-entry.dto';
 import { ListEntriesQueryDto } from './dtos/list-entries-query.dto';
 import { UpdateEntryDto } from './dtos/update-entry.dto';
 import { EntryNotFoundException } from './exceptions/entry-not-found.exception';
 import { JournalService } from './journal.service';
+import { PUBLISH_ENTRY_PORT } from './ports/publish-entry.port';
 
 const USER_ID = 'user-1';
 const ENTRY_ID = 'entry-1';
@@ -73,8 +72,8 @@ describe('journalService', () => {
     },
   };
 
-  const moderationQueue = {
-    add: jest.fn(),
+  const publishEntryPort = {
+    execute: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -84,7 +83,7 @@ describe('journalService', () => {
       providers: [
         JournalService,
         { provide: PrismaService, useValue: prismaService },
-        { provide: getQueueToken(MODERATION_QUEUE), useValue: moderationQueue },
+        { provide: PUBLISH_ENTRY_PORT, useValue: publishEntryPort },
       ],
     }).compile();
 
