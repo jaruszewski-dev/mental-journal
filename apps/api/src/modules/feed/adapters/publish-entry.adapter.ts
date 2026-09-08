@@ -37,6 +37,7 @@ export class PublishEntryAdapter implements PublishEntryPort {
       },
       select: {
         id: true,
+        journalEntryId: true,
         content: true,
         mood: true,
         tags: true,
@@ -55,6 +56,7 @@ export class PublishEntryAdapter implements PublishEntryPort {
 
     return {
       id: post.id,
+      journalEntryId: post.journalEntryId,
       content: post.content,
       mood: post.mood,
       tags: post.tags,

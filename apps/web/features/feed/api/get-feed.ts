@@ -9,6 +9,7 @@ export type FeedItem = {
 	anonName: string;
 	avatarUrl: string | null;
 	isMine: boolean;
+	journalEntryId: string;
 	createdAt: string;
 	updatedAt: string | null;
 };

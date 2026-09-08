@@ -24,6 +24,7 @@ export class FeedMapper {
       anonName: post.author.anonName,
       avatarUrl: post.author.avatarUrl,
       isMine: post.authorId === viewerId,
+      journalEntryId: post.journalEntryId,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     };

@@ -41,7 +41,8 @@
 	"entryActions": {
 		"menu": "More options",
 		"edit": "Edit entry",
-		"delete": "Delete entry"
+		"delete": "Delete entry",
+		"deleteSuccess": "Entry deleted"
 	},
 	"feed": {
 		"loading": "Loading feed…",

@@ -9,14 +9,22 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useDeleteEntryMutation } from '@/features/journal/hooks/use-delete-entry-mutation';
 import { cn } from '@/lib/utils';
 
 type EntryActionsMenuProps = {
+	entryId: string;
+	canEdit?: boolean;
 	className?: string;
 };
 
-export function EntryActionsMenu({ className }: EntryActionsMenuProps) {
+export function EntryActionsMenu({
+	entryId,
+	canEdit = false,
+	className,
+}: EntryActionsMenuProps) {
 	const t = useTranslations('entryActions');
+	const deleteMutation = useDeleteEntryMutation();
 
 	return (
 		<DropdownMenu>
@@ -33,13 +41,17 @@ export function EntryActionsMenu({ className }: EntryActionsMenuProps) {
 				<MoreHorizontalIcon className="size-4 stroke-[1.5]" />
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" sideOffset={4} className="min-w-40">
-				<DropdownMenuItem className="cursor-pointer gap-2">
-					<PencilIcon className="size-3.5 stroke-[1.5]" />
-					{t('edit')}
-				</DropdownMenuItem>
+				{canEdit ? (
+					<DropdownMenuItem className="cursor-pointer gap-2">
+						<PencilIcon className="size-3.5 stroke-[1.5]" />
+						{t('edit')}
+					</DropdownMenuItem>
+				) : null}
 				<DropdownMenuItem
 					variant="destructive"
+					disabled={deleteMutation.isPending}
 					className="cursor-pointer gap-2"
+					onClick={() => deleteMutation.mutate(entryId)}
 				>
 					<Trash2Icon className="size-3.5 stroke-[1.5]" />
 					{t('delete')}

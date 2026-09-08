@@ -68,6 +68,7 @@ export class JournalService {
         anonName: post.anonName,
         avatarUrl: post.avatarUrl,
         isMine: true,
+        journalEntryId: post.journalEntryId,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
       },
@@ -190,16 +191,21 @@ export class JournalService {
   async delete(userId: string, entryId: string): Promise<{ id: string }> {
     await this.assertEntryExists(entryId, userId);
 
-    const { id } = await this.prisma.journalEntry.update({
-      where: { id: entryId },
+    const deletedAt = new Date();
 
-      data: {
-        deletedAt: new Date(),
-      },
+    const { id } = await this.prisma.$transaction(async (tx) => {
+      const entry = await tx.journalEntry.update({
+        where: { id: entryId },
+        data: { deletedAt },
+        select: { id: true },
+      });
 
-      select: {
-        id: true,
-      },
+      await tx.post.updateMany({
+        where: { journalEntryId: entryId, deletedAt: null },
+        data: { deletedAt },
+      });
+
+      return entry;
     });
 
     return { id };
@@ -239,6 +245,7 @@ export class JournalService {
         anonName: post.anonName,
         avatarUrl: post.avatarUrl,
         isMine: true,
+        journalEntryId: post.journalEntryId,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
       },

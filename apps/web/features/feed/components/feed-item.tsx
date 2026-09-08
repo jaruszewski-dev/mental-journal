@@ -58,7 +58,9 @@ export function FeedItem({ item }: FeedItemProps) {
 					>
 						{time}
 					</time>
-					{item.isMine ? <EntryActionsMenu /> : null}
+					{item.isMine ? (
+						<EntryActionsMenu entryId={item.journalEntryId} />
+					) : null}
 				</div>
 			</div>
 

@@ -71,7 +71,9 @@ describe('journalService', () => {
     post: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      updateMany: jest.fn(),
     },
+    $transaction: jest.fn(),
   };
 
   const publishEntryPort = {
@@ -286,11 +288,16 @@ describe('journalService', () => {
   });
 
   describe('delete', () => {
-    it('should update deletedAt entry field', async () => {
+    it('should soft-delete entry and related post', async () => {
       prismaService.journalEntry.findFirst.mockResolvedValue(
         makeEntry({ id: ENTRY_ID }),
       );
+      prismaService.$transaction.mockImplementation(
+        async (fn: (tx: typeof prismaService) => Promise<{ id: string }>) =>
+          fn(prismaService),
+      );
       prismaService.journalEntry.update.mockResolvedValue({ id: ENTRY_ID });
+      prismaService.post.updateMany.mockResolvedValue({ count: 1 });
 
       const result = await journalService.delete(USER_ID, ENTRY_ID);
 
@@ -301,6 +308,12 @@ describe('journalService', () => {
         },
         select: {
           id: true,
+        },
+      });
+      expect(prismaService.post.updateMany).toHaveBeenCalledWith({
+        where: { journalEntryId: ENTRY_ID, deletedAt: null },
+        data: {
+          deletedAt: expect.any(Date),
         },
       });
       expect(result).toEqual({ id: ENTRY_ID });

@@ -41,7 +41,8 @@
 	"entryActions": {
 		"menu": "Więcej opcji",
 		"edit": "Edytuj wpis",
-		"delete": "Usuń wpis"
+		"delete": "Usuń wpis",
+		"deleteSuccess": "Wpis usunięty"
 	},
 	"feed": {
 		"loading": "Ładowanie tablicy…",

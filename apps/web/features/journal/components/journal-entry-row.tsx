@@ -77,7 +77,10 @@ export function JournalEntryRow({
 							{time}
 						</time>
 					</div>
-					<EntryActionsMenu />
+					<EntryActionsMenu
+						entryId={entry.id}
+						canEdit={isPrivate}
+					/>
 				</div>
 
 				<p className="mt-2 line-clamp-3 whitespace-pre-wrap text-sm leading-relaxed text-foreground">

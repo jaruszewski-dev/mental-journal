@@ -42,6 +42,9 @@ export class FeedItemDto {
   isMine!: boolean;
 
   @ApiProperty()
+  journalEntryId!: string;
+
+  @ApiProperty()
   createdAt!: Date;
 
   @ApiProperty({ nullable: true })

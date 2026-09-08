@@ -8,6 +8,7 @@ export interface PublishEntryInput {
 
 export type PublishEntryResult = {
   id: string;
+  journalEntryId: string;
   content: string;
   mood: number | null;
   tags: string[];

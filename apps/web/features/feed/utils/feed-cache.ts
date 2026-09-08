@@ -81,6 +81,7 @@ export function feedItemFromCreateResponse(post: {
 	anonName: string;
 	avatarUrl: string | null;
 	isMine?: boolean;
+	journalEntryId: string;
 	createdAt: string | Date;
 	updatedAt: string | Date | null;
 }): FeedItem {
@@ -93,6 +94,7 @@ export function feedItemFromCreateResponse(post: {
 		anonName: post.anonName,
 		avatarUrl: post.avatarUrl,
 		isMine: post.isMine ?? true,
+		journalEntryId: post.journalEntryId,
 		createdAt: toIso(post.createdAt),
 		updatedAt: post.updatedAt == null ? null : toIso(post.updatedAt),
 	};

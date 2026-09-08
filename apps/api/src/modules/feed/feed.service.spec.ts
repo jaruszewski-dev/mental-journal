@@ -16,6 +16,7 @@ const makePost = (
     tags: string[];
     status: PostStatus;
     authorId: string;
+    journalEntryId: string;
     createdAt: Date;
     updatedAt: Date;
     anonName: string;
@@ -30,6 +31,7 @@ const makePost = (
     tags: ['therapy'],
     status: PostStatus.ACTIVE,
     authorId: VIEWER_ID,
+    journalEntryId: 'entry-1',
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     author: {
@@ -95,6 +97,7 @@ describe('FeedService', () => {
         avatarUrl: null,
         status: PostStatus.ACTIVE,
         isMine: true,
+        journalEntryId: expect.any(String),
       });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({
