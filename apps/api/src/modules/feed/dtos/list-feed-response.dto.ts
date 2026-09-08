@@ -39,6 +39,9 @@ export class FeedItemDto {
   avatarUrl!: string | null;
 
   @ApiProperty()
+  isMine!: boolean;
+
+  @ApiProperty()
   createdAt!: Date;
 
   @ApiProperty({ nullable: true })

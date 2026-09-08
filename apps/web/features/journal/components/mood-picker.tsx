@@ -3,14 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils';
-
-const MOODS = [
-	{ value: 1, emoji: '😞' },
-	{ value: 2, emoji: '😕' },
-	{ value: 3, emoji: '😐' },
-	{ value: 4, emoji: '🙂' },
-	{ value: 5, emoji: '😊' },
-] as const;
+import { MOODS } from '@/shared/consts/mood.const';
 
 type MoodPickerProps = {
 	value?: number;

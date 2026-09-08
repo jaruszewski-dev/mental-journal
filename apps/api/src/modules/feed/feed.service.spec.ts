@@ -15,6 +15,7 @@ const makePost = (
     mood: number | null;
     tags: string[];
     status: PostStatus;
+    authorId: string;
     createdAt: Date;
     updatedAt: Date;
     anonName: string;
@@ -28,6 +29,7 @@ const makePost = (
     mood: 4,
     tags: ['therapy'],
     status: PostStatus.ACTIVE,
+    authorId: VIEWER_ID,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     author: {
@@ -92,6 +94,7 @@ describe('FeedService', () => {
         anonName: 'Anon',
         avatarUrl: null,
         status: PostStatus.ACTIVE,
+        isMine: true,
       });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({

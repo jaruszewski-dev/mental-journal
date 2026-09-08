@@ -38,6 +38,11 @@
 	"home": {
 		"title": "Mental Journal"
 	},
+	"entryActions": {
+		"menu": "More options",
+		"edit": "Edit entry",
+		"delete": "Delete entry"
+	},
 	"feed": {
 		"loading": "Loading feed…",
 		"loadingMore": "Loading…",
@@ -49,6 +54,19 @@
 		"pendingReview": "Under review",
 		"comments": {
 			"toggle": "Comments"
+		}
+	},
+	"journal": {
+		"loading": "Loading journal…",
+		"loadingMore": "Loading…",
+		"empty": "No entries yet. Write the first one above.",
+		"error": "Could not load the journal.",
+		"retry": "Try again",
+		"visibility": {
+			"private": "Only me",
+			"public": "Published",
+			"pending": "Under review",
+			"hidden": "Not approved"
 		}
 	},
 	"comments": {

@@ -7,17 +7,11 @@ import { useState } from 'react';
 import { UserAvatar } from '@/components/user-avatar';
 import { CommentsSection } from '@/features/comments/components/comments-section';
 import { cn } from '@/lib/utils';
+import { EntryActionsMenu } from '@/shared/components/entry-actions-menu';
+import { MOOD_EMOJI } from '@/shared/consts/mood.const';
 
 import type { FeedItem as FeedItemType } from '../api/get-feed';
 import { formatFeedTime } from '../utils/format-feed-time';
-
-const MOOD_EMOJI: Record<number, string> = {
-	1: '😞',
-	2: '😕',
-	3: '😐',
-	4: '🙂',
-	5: '😊',
-};
 
 type FeedItemProps = {
 	item: FeedItemType;
@@ -51,7 +45,7 @@ export function FeedItem({ item }: FeedItemProps) {
 						{item.anonName}
 					</p>
 				</div>
-				<div className="flex shrink-0 items-center gap-2">
+				<div className="flex shrink-0 items-center gap-1.5">
 					{isPending ? (
 						<span className="text-xs text-muted-foreground">
 							{tFeed('pendingReview')}
@@ -64,6 +58,7 @@ export function FeedItem({ item }: FeedItemProps) {
 					>
 						{time}
 					</time>
+					{item.isMine ? <EntryActionsMenu /> : null}
 				</div>
 			</div>
 

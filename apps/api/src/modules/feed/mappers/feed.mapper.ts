@@ -9,7 +9,7 @@ type PostWithAuthor = Post & {
 };
 
 export class FeedMapper {
-  static toFeedItemDto(post: PostWithAuthor): FeedItemDto {
+  static toFeedItemDto(post: PostWithAuthor, viewerId: string): FeedItemDto {
     return {
       id: post.id,
       content: post.content,
@@ -23,6 +23,7 @@ export class FeedMapper {
           : PostStatus.ACTIVE,
       anonName: post.author.anonName,
       avatarUrl: post.author.avatarUrl,
+      isMine: post.authorId === viewerId,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     };

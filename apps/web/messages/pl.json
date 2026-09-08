@@ -38,6 +38,11 @@
 	"home": {
 		"title": "Mental Journal"
 	},
+	"entryActions": {
+		"menu": "Więcej opcji",
+		"edit": "Edytuj wpis",
+		"delete": "Usuń wpis"
+	},
 	"feed": {
 		"loading": "Ładowanie tablicy…",
 		"loadingMore": "Ładowanie…",
@@ -49,6 +54,19 @@
 		"pendingReview": "Weryfikacja…",
 		"comments": {
 			"toggle": "Komentarze"
+		}
+	},
+	"journal": {
+		"loading": "Ładowanie dziennika…",
+		"loadingMore": "Ładowanie…",
+		"empty": "Brak wpisów. Napisz pierwszy powyżej.",
+		"error": "Nie udało się wczytać dziennika.",
+		"retry": "Spróbuj ponownie",
+		"visibility": {
+			"private": "Tylko ja",
+			"public": "Opublikowany",
+			"pending": "Weryfikacja…",
+			"hidden": "Niezaakceptowany"
 		}
 	},
 	"comments": {

@@ -36,6 +36,7 @@ const makeEntry = (
     tags: string[];
     createdAt: Date;
     updatedAt: Date;
+    post: { status: string; deletedAt: Date | null } | null;
   }> = {},
 ) => ({
   id: 'entry-1',
@@ -44,6 +45,7 @@ const makeEntry = (
   tags: ['therapy'],
   createdAt: new Date('2026-01-01T00:00:00.000Z'),
   updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+  post: null,
   ...overrides,
 });
 
@@ -130,9 +132,17 @@ describe('journalService', () => {
             userId: USER_ID,
             deletedAt: null,
           }),
+          include: {
+            post: {
+              select: { status: true, deletedAt: true },
+            },
+          },
         }),
       );
       expect(result.items).toHaveLength(ENTRIES_LIST_TAKE);
+      expect(result.items[0]).toMatchObject({
+        visibility: 'private',
+      });
       expect(result.meta.hasMore).toBe(true);
       expect(result.meta.nextCursor).toEqual({
         id: entries[ENTRIES_LIST_TAKE - 1].id,
@@ -222,12 +232,19 @@ describe('journalService', () => {
           status: EntryStatus.ACTIVE,
           deletedAt: null,
         },
+        include: {
+          post: {
+            select: { status: true, deletedAt: true },
+          },
+        },
       });
       expect(result).toEqual({
         id: entry.id,
         content: entry.content,
         mood: entry.mood,
         tags: entry.tags,
+        visibility: 'private',
+        postStatus: undefined,
         createdAt: entry.createdAt,
         updatedAt: entry.updatedAt,
       });

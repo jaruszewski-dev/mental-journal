@@ -52,7 +52,7 @@ export class FeedService {
     const last = page[page.length - 1];
 
     return {
-      items: page.map(FeedMapper.toFeedItemDto),
+      items: page.map((post) => FeedMapper.toFeedItemDto(post, viewerId)),
       meta: {
         hasMore,
         nextCursor:

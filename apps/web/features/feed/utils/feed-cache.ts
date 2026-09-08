@@ -80,6 +80,7 @@ export function feedItemFromCreateResponse(post: {
 	status: 'ACTIVE' | 'PENDING';
 	anonName: string;
 	avatarUrl: string | null;
+	isMine?: boolean;
 	createdAt: string | Date;
 	updatedAt: string | Date | null;
 }): FeedItem {
@@ -91,6 +92,7 @@ export function feedItemFromCreateResponse(post: {
 		status: post.status,
 		anonName: post.anonName,
 		avatarUrl: post.avatarUrl,
+		isMine: post.isMine ?? true,
 		createdAt: toIso(post.createdAt),
 		updatedAt: post.updatedAt == null ? null : toIso(post.updatedAt),
 	};

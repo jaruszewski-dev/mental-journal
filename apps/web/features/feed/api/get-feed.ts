@@ -8,6 +8,7 @@ export type FeedItem = {
 	status: 'ACTIVE' | 'PENDING';
 	anonName: string;
 	avatarUrl: string | null;
+	isMine: boolean;
 	createdAt: string;
 	updatedAt: string | null;
 };

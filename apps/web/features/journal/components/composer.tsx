@@ -15,7 +15,11 @@ import { MoodPicker } from './mood-picker';
 import { TagPicker } from './tag-picker';
 import { VisibilityToggle } from './visibility-toggle';
 
-export function Composer() {
+type ComposerProps = {
+	showVisibilityToggle?: boolean;
+};
+
+export function Composer({ showVisibilityToggle = true }: ComposerProps) {
 	const t = useTranslations('composer');
 	const [expanded, setExpanded] = useState(false);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -85,7 +89,7 @@ export function Composer() {
 			content: values.content.trim(),
 			mood: values.mood,
 			tags: values.tags.length > 0 ? values.tags : undefined,
-			publish: values.publish || undefined,
+			publish: showVisibilityToggle && values.publish ? true : undefined,
 		});
 	}
 
@@ -168,19 +172,21 @@ export function Composer() {
 												)
 											}
 										/>
-										<VisibilityToggle
-											isPublic={
-												publish
-											}
-											onChange={(
-												v,
-											) =>
-												setValue(
-													'publish',
+										{showVisibilityToggle ? (
+											<VisibilityToggle
+												isPublic={
+													publish
+												}
+												onChange={(
 													v,
-												)
-											}
-										/>
+												) =>
+													setValue(
+														'publish',
+														v,
+													)
+												}
+											/>
+										) : null}
 									</div>
 
 									<Button

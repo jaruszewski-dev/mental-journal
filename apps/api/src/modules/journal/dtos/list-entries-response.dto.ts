@@ -32,6 +32,12 @@ export class EntryItemDto {
   @ApiProperty()
   tags!: string[];
 
+  @ApiProperty({ enum: ['private', 'public'] })
+  visibility!: 'private' | 'public';
+
+  @ApiProperty({ enum: ['ACTIVE', 'PENDING', 'HIDDEN'], required: false })
+  postStatus?: 'ACTIVE' | 'PENDING' | 'HIDDEN';
+
   @ApiProperty()
   createdAt!: Date;
 

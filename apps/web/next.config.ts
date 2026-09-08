@@ -7,6 +7,11 @@ const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:3001';
 
 const nextConfig: NextConfig = {
 	transpilePackages: ['@repo/api-types'],
+	turbopack: {
+		resolveAlias: {
+			'@repo/api-types': '../packages/api-types/src/index.ts',
+		},
+	},
 	async rewrites() {
 		return [
 			{

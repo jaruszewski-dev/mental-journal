@@ -9,6 +9,7 @@ import {
 import { resolveApiErrorMessage } from '@/lib/api-error';
 
 import { createEntry } from '../api/create-entry';
+import { journalQueryKey } from '../consts/journal-query-key';
 
 export function useCreateEntryMutation(options?: { onSuccess?: () => void }) {
 	const tApi = useTranslations('apiErrors');
@@ -17,6 +18,7 @@ export function useCreateEntryMutation(options?: { onSuccess?: () => void }) {
 	return useMutation({
 		mutationFn: createEntry,
 		onSuccess: (data, variables) => {
+			void queryClient.invalidateQueries({ queryKey: journalQueryKey });
 			if (variables.publish && data.post) {
 				prependFeedItem(queryClient, feedItemFromCreateResponse(data.post));
 			}

@@ -67,6 +67,7 @@ export class JournalService {
         status: post.status,
         anonName: post.anonName,
         avatarUrl: post.avatarUrl,
+        isMine: true,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
       },
@@ -122,6 +123,12 @@ export class JournalService {
                     ],
               }
             : {}),
+      },
+
+      include: {
+        post: {
+          select: { status: true, deletedAt: true },
+        },
       },
 
       orderBy:
@@ -231,6 +238,7 @@ export class JournalService {
         status: post.status,
         anonName: post.anonName,
         avatarUrl: post.avatarUrl,
+        isMine: true,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
       },
@@ -256,6 +264,11 @@ export class JournalService {
         userId,
         status: EntryStatus.ACTIVE,
         deletedAt: null,
+      },
+      include: {
+        post: {
+          select: { status: true, deletedAt: true },
+        },
       },
     });
 
