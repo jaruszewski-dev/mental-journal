@@ -42,7 +42,12 @@
 		"menu": "More options",
 		"edit": "Edit entry",
 		"delete": "Delete entry",
-		"deleteSuccess": "Entry deleted"
+		"deleteSuccess": "Entry deleted",
+		"editTitle": "Edit entry",
+		"editDescription": "Update content, mood, or tags.",
+		"editSuccess": "Entry updated",
+		"save": "Save",
+		"cancel": "Cancel"
 	},
 	"feed": {
 		"loading": "Loading feed…",

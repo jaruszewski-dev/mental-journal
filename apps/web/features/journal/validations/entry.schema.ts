@@ -18,7 +18,20 @@ export function createEntrySchema(errors: { contentRequired: string; contentMax:
 	});
 }
 
+export function updateEntrySchema(errors: {
+	contentRequired: string;
+	contentMax: string;
+	tagsMax: string;
+}) {
+	return z.object({
+		content: z.string().min(MIN_CONTENT, errors.contentRequired).max(MAX_CONTENT, errors.contentMax),
+		mood: z.number().int().min(MIN_MOOD).max(MAX_MOOD).optional(),
+		tags: z.array(journalTagSchema).max(MAX_TAGS, errors.tagsMax),
+	});
+}
+
 export type EntryFormValues = z.infer<ReturnType<typeof createEntrySchema>>;
+export type UpdateEntryFormValues = z.infer<ReturnType<typeof updateEntrySchema>>;
 
 export { JOURNAL_TAG_CATALOG, MAX_TAGS };
 export type { JournalTag };

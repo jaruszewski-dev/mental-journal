@@ -272,6 +272,15 @@ describe('journalService', () => {
 
       const result = await journalService.update(USER_ID, ENTRY_ID, dto);
 
+      expect(prismaService.journalEntry.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            id: ENTRY_ID,
+            userId: USER_ID,
+            deletedAt: null,
+          }),
+        }),
+      );
       expect(prismaService.journalEntry.update).toHaveBeenCalledWith({
         where: { id: ENTRY_ID },
         data: {
@@ -284,6 +293,16 @@ describe('journalService', () => {
         },
       });
       expect(result).toEqual({ id: ENTRY_ID });
+    });
+
+    it('should reject soft-deleted journal entries', async () => {
+      const dto = makeUpdateEntryDto();
+      prismaService.journalEntry.findFirst.mockResolvedValue(null);
+
+      await expect(
+        journalService.update(USER_ID, ENTRY_ID, dto),
+      ).rejects.toThrow(EntryNotFoundException);
+      expect(prismaService.journalEntry.update).not.toHaveBeenCalled();
     });
   });
 

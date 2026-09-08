@@ -80,6 +80,15 @@ export function JournalEntryRow({
 					<EntryActionsMenu
 						entryId={entry.id}
 						canEdit={isPrivate}
+						entry={
+							isPrivate
+								? {
+										content: entry.content,
+										mood: entry.mood,
+										tags: entry.tags,
+									}
+								: undefined
+						}
 					/>
 				</div>
 

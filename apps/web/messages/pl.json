@@ -42,7 +42,12 @@
 		"menu": "Więcej opcji",
 		"edit": "Edytuj wpis",
 		"delete": "Usuń wpis",
-		"deleteSuccess": "Wpis usunięty"
+		"deleteSuccess": "Wpis usunięty",
+		"editTitle": "Edytuj wpis",
+		"editDescription": "Zmień treść, nastrój lub tagi.",
+		"editSuccess": "Wpis zaktualizowany",
+		"save": "Zapisz",
+		"cancel": "Anuluj"
 	},
 	"feed": {
 		"loading": "Ładowanie tablicy…",
