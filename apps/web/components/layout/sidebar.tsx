@@ -21,8 +21,8 @@ export function Sidebar() {
 	const logoutMutation = useLogoutMutation();
 
 	return (
-		<aside className="hidden md:flex md:w-56 lg:w-64 md:flex-col md:border-r md:border-border md:bg-card">
-			<div className="flex flex-1 flex-col gap-1 px-3 py-6">
+		<aside className="sticky top-0 hidden h-dvh self-start md:flex md:w-56 lg:w-64 md:flex-col md:border-r md:border-border md:bg-card">
+			<div className="flex h-full flex-col gap-1 px-3 py-6">
 				<Link
 					href="/"
 					className="mb-6 px-3 font-heading text-lg font-medium tracking-tight text-foreground"
