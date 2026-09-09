@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getJournalEntries } from '../api/get-entries';
-import { journalListQueryKey,type JournalListSort } from '../consts/journal-query-key';
+import { journalListQueryKey, type JournalListSort } from '../consts/journal-query-key';
 
 export function useJournalInfiniteQuery(sort: JournalListSort) {
 	return useInfiniteQuery({

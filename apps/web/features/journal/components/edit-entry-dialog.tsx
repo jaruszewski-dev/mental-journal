@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { useUpdateEntryMutation } from '../hooks/use-update-entry-mutation';
-import { type JournalTag, type UpdateEntryFormValues,updateEntrySchema } from '../validations/entry.schema';
+import { type JournalTag, type UpdateEntryFormValues, updateEntrySchema } from '../validations/entry.schema';
 import { MoodPicker } from './mood-picker';
 import { TagPicker } from './tag-picker';
 
