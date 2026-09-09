@@ -59,10 +59,15 @@
 		"loadingMore": "Ładowanie…",
 		"loadMore": "Załaduj więcej",
 		"empty": "Brak wpisów na tablicy. Opublikuj pierwszy.",
+		"emptyFiltered": "Brak wpisów z wybranymi tagami.",
 		"error": "Nie udało się wczytać tablicy.",
 		"retry": "Spróbuj ponownie",
 		"newPosts": "Nowe wpisy",
 		"pendingReview": "Weryfikacja…",
+		"filters": {
+			"tags": "Tagi",
+			"clear": "Wyczyść"
+		},
 		"comments": {
 			"toggle": "Komentarze"
 		}
@@ -79,7 +84,14 @@
 			"pending": "Weryfikacja…",
 			"hidden": "Niezaakceptowany"
 		},
-		"postRejected": "Twój wpis nie został zaakceptowany"
+		"postRejected": "Twój wpis nie został zaakceptowany",
+		"sort": {
+			"label": "Sortuj",
+			"dateDesc": "Od najnowszych",
+			"dateAsc": "Od najstarszych",
+			"moodDesc": "Nastrój: od wysokiego",
+			"moodAsc": "Nastrój: od niskiego"
+		}
 	},
 	"comments": {
 		"loading": "Ładowanie komentarzy…",

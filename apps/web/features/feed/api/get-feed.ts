@@ -28,6 +28,7 @@ export type ListFeedResponse = {
 };
 
 export type ListFeedParams = {
+	tags?: string[];
 	lastCursorId?: string;
 	lastCreatedAt?: string;
 };
@@ -35,8 +36,12 @@ export type ListFeedParams = {
 export async function getFeed(params: ListFeedParams = {}): Promise<ListFeedResponse> {
 	const { data } = await apiClient.get<ListFeedResponse>('/feed', {
 		params: {
+			...(params.tags?.length ? { tags: params.tags } : {}),
 			...(params.lastCursorId ? { lastCursorId: params.lastCursorId } : {}),
 			...(params.lastCreatedAt ? { lastCreatedAt: params.lastCreatedAt } : {}),
+		},
+		paramsSerializer: {
+			indexes: null,
 		},
 	});
 	return data;

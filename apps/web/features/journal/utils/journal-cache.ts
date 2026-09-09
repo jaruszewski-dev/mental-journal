@@ -26,7 +26,7 @@ export function setJournalEntryPost(
 	entryId: string,
 	post: { postId: string; postStatus: 'ACTIVE' | 'PENDING' | 'HIDDEN' },
 ): void {
-	queryClient.setQueryData<JournalInfiniteData>(journalQueryKey, (old) => {
+	queryClient.setQueriesData<JournalInfiniteData>({ queryKey: journalQueryKey }, (old) => {
 		if (!old) return old;
 
 		return mapJournalItems(old, (item) =>
@@ -46,7 +46,7 @@ export function activateJournalPost(
 	queryClient: QueryClient,
 	postId: string,
 ): void {
-	queryClient.setQueryData<JournalInfiniteData>(journalQueryKey, (old) => {
+	queryClient.setQueriesData<JournalInfiniteData>({ queryKey: journalQueryKey }, (old) => {
 		if (!old) return old;
 
 		return mapJournalItems(old, (item) =>
@@ -58,7 +58,7 @@ export function activateJournalPost(
 }
 
 export function hideJournalPost(queryClient: QueryClient, postId: string): void {
-	queryClient.setQueryData<JournalInfiniteData>(journalQueryKey, (old) => {
+	queryClient.setQueriesData<JournalInfiniteData>({ queryKey: journalQueryKey }, (old) => {
 		if (!old) return old;
 
 		return mapJournalItems(old, (item) =>

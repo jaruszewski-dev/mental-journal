@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import { useJournalInfiniteQuery } from '../hooks/use-journal-infinite-query';
+import type { JournalListSort } from '../consts/journal-query-key';
 import {
 	formatJournalDayLabel,
 	journalDayKey,
 } from '../utils/format-journal-day';
 import { JournalEntryRow } from './journal-entry-row';
+import { JournalSortSelect } from './journal-sort-select';
 
 const ESTIMATED_ITEM_SIZE = 96;
 const ESTIMATED_ITEM_WITH_DAY = 132;
@@ -40,7 +42,11 @@ function JournalSkeleton({
 export function JournalList() {
 	const t = useTranslations('journal');
 	const locale = useLocale();
-	const query = useJournalInfiniteQuery();
+	const [sort, setSort] = useState<JournalListSort>({
+		sortBy: 'date',
+		orderBy: 'desc',
+	});
+	const query = useJournalInfiniteQuery(sort);
 	const items = query.data?.pages.flatMap((page) => page.items) ?? [];
 	const listRef = useRef<HTMLDivElement>(null);
 	const [scrollMargin, setScrollMargin] = useState(0);
@@ -78,7 +84,7 @@ export function JournalList() {
 	useLayoutEffect(() => {
 		if (!listRef.current) return;
 		setScrollMargin(listRef.current.offsetTop);
-	}, [items.length, query.isPending]);
+	}, [items.length, query.isPending, sort]);
 
 	const virtualItems = virtualizer.getVirtualItems();
 	const lastVirtualIndex = virtualItems.at(-1)?.index;
@@ -102,87 +108,83 @@ export function JournalList() {
 		query.fetchNextPage,
 	]);
 
-	if (query.isPending) {
-		return (
-			<div aria-busy="true" aria-label={t('loading')}>
-				<JournalSkeleton />
-			</div>
-		);
-	}
-
-	if (query.isError) {
-		return (
-			<div className="flex flex-col items-start gap-3 px-4 py-8">
-				<p className="text-sm text-destructive">{t('error')}</p>
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					className="cursor-pointer"
-					onClick={() => query.refetch()}
-				>
-					{t('retry')}
-				</Button>
-			</div>
-		);
-	}
-
-	if (items.length === 0) {
-		return (
-			<p className="px-4 py-8 text-sm text-muted-foreground">{t('empty')}</p>
-		);
-	}
-
 	return (
-		<div ref={listRef} className="relative w-full">
-			<div
-				className="relative w-full"
-				style={{ height: `${virtualizer.getTotalSize()}px` }}
-			>
-				{virtualItems.map((virtualRow) => {
-					const isLoaderRow = virtualRow.index >= items.length;
-					const item = items[virtualRow.index];
-					const meta = dayMeta[virtualRow.index];
+		<div className="flex flex-col">
+			<JournalSortSelect value={sort} onChange={setSort} />
 
-					return (
-						<div
-							key={virtualRow.key}
-							data-index={virtualRow.index}
-							ref={virtualizer.measureElement}
-							className="absolute top-0 left-0 w-full"
-							style={{
-								transform: `translateY(${
-									virtualRow.start -
-									virtualizer.options.scrollMargin
-								}px)`,
-							}}
-						>
-							{isLoaderRow ? (
+			{query.isPending ? (
+				<div aria-busy="true" aria-label={t('loading')}>
+					<JournalSkeleton />
+				</div>
+			) : query.isError ? (
+				<div className="flex flex-col items-start gap-3 px-4 py-8">
+					<p className="text-sm text-destructive">{t('error')}</p>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						className="cursor-pointer"
+						onClick={() => query.refetch()}
+					>
+						{t('retry')}
+					</Button>
+				</div>
+			) : items.length === 0 ? (
+				<p className="px-4 py-8 text-sm text-muted-foreground">
+					{t('empty')}
+				</p>
+			) : (
+				<div ref={listRef} className="relative w-full">
+					<div
+						className="relative w-full"
+						style={{ height: `${virtualizer.getTotalSize()}px` }}
+					>
+						{virtualItems.map((virtualRow) => {
+							const isLoaderRow = virtualRow.index >= items.length;
+							const item = items[virtualRow.index];
+							const meta = dayMeta[virtualRow.index];
+
+							return (
 								<div
-									aria-busy={query.isFetchingNextPage}
-									aria-label={t('loadingMore')}
+									key={virtualRow.key}
+									data-index={virtualRow.index}
+									ref={virtualizer.measureElement}
+									className="absolute top-0 left-0 w-full"
+									style={{
+										transform: `translateY(${
+											virtualRow.start -
+											virtualizer.options.scrollMargin
+										}px)`,
+									}}
 								>
-									<JournalSkeleton
-										count={2}
-										className={
-											query.isFetchingNextPage
-												? 'opacity-100'
-												: 'opacity-55'
-										}
-									/>
+									{isLoaderRow ? (
+										<div
+											aria-busy={query.isFetchingNextPage}
+											aria-label={t('loadingMore')}
+										>
+											<JournalSkeleton
+												count={2}
+												className={
+													query.isFetchingNextPage
+														? 'opacity-100'
+														: 'opacity-55'
+												}
+											/>
+										</div>
+									) : item && meta ? (
+										<JournalEntryRow
+											entry={item}
+											showDayLabel={meta.showDayLabel}
+											dayLabel={meta.dayLabel}
+											showBorderBottom={meta.showBorderBottom}
+										/>
+									) : null}
 								</div>
-							) : item && meta ? (
-								<JournalEntryRow
-									entry={item}
-									showDayLabel={meta.showDayLabel}
-									dayLabel={meta.dayLabel}
-									showBorderBottom={meta.showBorderBottom}
-								/>
-							) : null}
-						</div>
-					);
-				})}
-			</div>
+							);
+						})}
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

@@ -59,10 +59,15 @@
 		"loadingMore": "Loading…",
 		"loadMore": "Load more",
 		"empty": "No posts yet. Publish the first one.",
+		"emptyFiltered": "No posts match the selected tags.",
 		"error": "Could not load the feed.",
 		"retry": "Try again",
 		"newPosts": "New posts",
 		"pendingReview": "Under review",
+		"filters": {
+			"tags": "Tags",
+			"clear": "Clear"
+		},
 		"comments": {
 			"toggle": "Comments"
 		}
@@ -79,7 +84,14 @@
 			"pending": "Under review",
 			"hidden": "Not approved"
 		},
-		"postRejected": "Your post was not approved"
+		"postRejected": "Your post was not approved",
+		"sort": {
+			"label": "Sort",
+			"dateDesc": "Newest first",
+			"dateAsc": "Oldest first",
+			"moodDesc": "Mood: high to low",
+			"moodAsc": "Mood: low to high"
+		}
 	},
 	"comments": {
 		"loading": "Loading comments…",

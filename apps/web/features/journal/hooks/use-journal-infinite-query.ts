@@ -1,21 +1,34 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 import { getJournalEntries } from '../api/get-entries';
-import { journalQueryKey } from '../consts/journal-query-key';
+import {
+	type JournalListSort,
+	journalListQueryKey,
+} from '../consts/journal-query-key';
 
-export function useJournalInfiniteQuery() {
+export function useJournalInfiniteQuery(sort: JournalListSort) {
 	return useInfiniteQuery({
-		queryKey: journalQueryKey,
+		queryKey: journalListQueryKey(sort),
 		queryFn: ({ pageParam }) =>
 			getJournalEntries(
 				pageParam
 					? {
+							sortBy: sort.sortBy,
+							orderBy: sort.orderBy,
 							lastCursorId: pageParam.id,
 							lastCreatedAt: pageParam.createdAt,
+							lastMood: pageParam.mood,
 						}
-					: {},
+					: {
+							sortBy: sort.sortBy,
+							orderBy: sort.orderBy,
+						},
 			),
-		initialPageParam: null as { id: string; createdAt?: string } | null,
+		initialPageParam: null as {
+			id: string;
+			createdAt?: string;
+			mood?: number;
+		} | null,
 		getNextPageParam: (lastPage) => {
 			if (!lastPage.meta.hasMore || !lastPage.meta.nextCursor) {
 				return undefined;
@@ -23,6 +36,7 @@ export function useJournalInfiniteQuery() {
 			return {
 				id: lastPage.meta.nextCursor.id,
 				createdAt: lastPage.meta.nextCursor.createdAt,
+				mood: lastPage.meta.nextCursor.mood,
 			};
 		},
 	});

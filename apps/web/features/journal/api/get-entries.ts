@@ -27,8 +27,11 @@ export type ListJournalResponse = {
 };
 
 export type ListJournalParams = {
+	sortBy?: 'date' | 'mood';
+	orderBy?: 'asc' | 'desc';
 	lastCursorId?: string;
 	lastCreatedAt?: string;
+	lastMood?: number;
 };
 
 export async function getJournalEntries(
@@ -36,8 +39,11 @@ export async function getJournalEntries(
 ): Promise<ListJournalResponse> {
 	const { data } = await apiClient.get<ListJournalResponse>('/journal', {
 		params: {
+			...(params.sortBy ? { sortBy: params.sortBy } : {}),
+			...(params.orderBy ? { orderBy: params.orderBy } : {}),
 			...(params.lastCursorId ? { lastCursorId: params.lastCursorId } : {}),
 			...(params.lastCreatedAt ? { lastCreatedAt: params.lastCreatedAt } : {}),
+			...(params.lastMood != null ? { lastMood: params.lastMood } : {}),
 		},
 	});
 	return data;
