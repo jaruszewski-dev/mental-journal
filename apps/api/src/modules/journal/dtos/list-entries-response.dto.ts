@@ -38,6 +38,9 @@ export class EntryItemDto {
   @ApiProperty({ enum: ['ACTIVE', 'PENDING', 'HIDDEN'], required: false })
   postStatus?: 'ACTIVE' | 'PENDING' | 'HIDDEN';
 
+  @ApiProperty({ required: false })
+  postId?: string;
+
   @ApiProperty()
   createdAt!: Date;
 

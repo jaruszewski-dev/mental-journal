@@ -3,7 +3,7 @@ import { PostStatus } from '../../../generated/prisma/enums';
 import { EntryItemDto } from '../dtos/list-entries-response.dto';
 
 export type EntryWithPost = JournalEntry & {
-  post: Pick<Post, 'status' | 'deletedAt'> | null;
+  post: Pick<Post, 'id' | 'status' | 'deletedAt'> | null;
 };
 
 export type Entry = EntryWithPost;
@@ -26,6 +26,7 @@ export class JournalMapper {
             ? PostStatus.HIDDEN
             : PostStatus.ACTIVE
         : undefined,
+      postId: post?.id,
       createdAt: entry.createdAt,
       updatedAt: entry.updatedAt,
     };

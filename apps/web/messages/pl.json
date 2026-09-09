@@ -25,6 +25,9 @@
 		"passwordHint": "Min. 8 znaków: wielka i mała litera, cyfra, znak specjalny",
 		"submit": "Zapisz",
 		"success": "Zapisano zmiany",
+		"logoutAllTitle": "Sesje",
+		"logoutAllDescription": "Wyloguj ze wszystkich urządzeń. Będziesz musiał zalogować się ponownie.",
+		"logoutAll": "Wyloguj wszędzie",
 		"errors": {
 			"anonNameLength": "Nazwa musi mieć od {min} do {max} znaków",
 			"anonNamePattern": "Tylko litery, cyfry i podkreślenie",
@@ -41,6 +44,8 @@
 	"entryActions": {
 		"menu": "Więcej opcji",
 		"edit": "Edytuj wpis",
+		"publish": "Upublicznij",
+		"publishSuccess": "Wpis opublikowany",
 		"delete": "Usuń wpis",
 		"deleteSuccess": "Wpis usunięty",
 		"editTitle": "Edytuj wpis",
@@ -73,7 +78,8 @@
 			"public": "Opublikowany",
 			"pending": "Weryfikacja…",
 			"hidden": "Niezaakceptowany"
-		}
+		},
+		"postRejected": "Twój wpis nie został zaakceptowany"
 	},
 	"comments": {
 		"loading": "Ładowanie komentarzy…",

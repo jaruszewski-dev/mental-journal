@@ -1,6 +1,6 @@
 'use client';
 
-import { MoreHorizontalIcon, PencilIcon, Trash2Icon } from 'lucide-react';
+import { GlobeIcon, MoreHorizontalIcon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -15,11 +15,13 @@ import {
 	type EditEntryValues,
 } from '@/features/journal/components/edit-entry-dialog';
 import { useDeleteEntryMutation } from '@/features/journal/hooks/use-delete-entry-mutation';
+import { usePublishEntryMutation } from '@/features/journal/hooks/use-publish-entry-mutation';
 import { cn } from '@/lib/utils';
 
 type EntryActionsMenuProps = {
 	entryId: string;
 	canEdit?: boolean;
+	canPublish?: boolean;
 	entry?: EditEntryValues;
 	className?: string;
 };
@@ -27,11 +29,13 @@ type EntryActionsMenuProps = {
 export function EntryActionsMenu({
 	entryId,
 	canEdit = false,
+	canPublish = false,
 	entry,
 	className,
 }: EntryActionsMenuProps) {
 	const t = useTranslations('entryActions');
 	const deleteMutation = useDeleteEntryMutation();
+	const publishMutation = usePublishEntryMutation();
 	const [editOpen, setEditOpen] = useState(false);
 
 	return (
@@ -57,6 +61,16 @@ export function EntryActionsMenu({
 						>
 							<PencilIcon className="size-3.5 stroke-[1.5]" />
 							{t('edit')}
+						</DropdownMenuItem>
+					) : null}
+					{canPublish ? (
+						<DropdownMenuItem
+							disabled={publishMutation.isPending}
+							className="cursor-pointer gap-2"
+							onClick={() => publishMutation.mutate(entryId)}
+						>
+							<GlobeIcon className="size-3.5 stroke-[1.5]" />
+							{t('publish')}
 						</DropdownMenuItem>
 					) : null}
 					<DropdownMenuItem

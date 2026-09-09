@@ -8,18 +8,19 @@ import {
 } from '@/features/feed/utils/feed-cache';
 import { resolveApiErrorMessage } from '@/lib/api-error';
 
-import { createEntry } from '../api/create-entry';
+import { publishEntry } from '../api/publish-entry';
 import { journalQueryKey } from '../consts/journal-query-key';
 import { setJournalEntryPost } from '../utils/journal-cache';
 
-export function useCreateEntryMutation(options?: { onSuccess?: () => void }) {
+export function usePublishEntryMutation() {
+	const t = useTranslations('entryActions');
 	const tApi = useTranslations('apiErrors');
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: createEntry,
-		onSuccess: (data, variables) => {
-			if (variables.publish && data.post) {
+		mutationFn: publishEntry,
+		onSuccess: (data) => {
+			if (data.post) {
 				setJournalEntryPost(queryClient, data.id, {
 					postId: data.post.id,
 					postStatus: data.post.status,
@@ -27,7 +28,7 @@ export function useCreateEntryMutation(options?: { onSuccess?: () => void }) {
 				prependFeedItem(queryClient, feedItemFromCreateResponse(data.post));
 			}
 			void queryClient.invalidateQueries({ queryKey: journalQueryKey });
-			options?.onSuccess?.();
+			toast.success(t('publishSuccess'), { position: 'bottom-center' });
 		},
 		onError: (error) => {
 			toast.error(resolveApiErrorMessage(error, tApi));

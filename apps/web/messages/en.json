@@ -25,6 +25,9 @@
 		"passwordHint": "Min. 8 chars: upper, lower, digit, special character",
 		"submit": "Save",
 		"success": "Changes saved",
+		"logoutAllTitle": "Sessions",
+		"logoutAllDescription": "Sign out on all devices. You will need to log in again.",
+		"logoutAll": "Log out everywhere",
 		"errors": {
 			"anonNameLength": "Name must be {min}–{max} characters",
 			"anonNamePattern": "Letters, digits and underscore only",
@@ -41,6 +44,8 @@
 	"entryActions": {
 		"menu": "More options",
 		"edit": "Edit entry",
+		"publish": "Publish",
+		"publishSuccess": "Entry published",
 		"delete": "Delete entry",
 		"deleteSuccess": "Entry deleted",
 		"editTitle": "Edit entry",
@@ -73,7 +78,8 @@
 			"public": "Published",
 			"pending": "Under review",
 			"hidden": "Not approved"
-		}
+		},
+		"postRejected": "Your post was not approved"
 	},
 	"comments": {
 		"loading": "Loading comments…",

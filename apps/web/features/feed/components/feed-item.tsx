@@ -4,10 +4,10 @@ import { ChevronDownIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { EntryActionsMenu } from '@/components/entry-actions-menu';
 import { UserAvatar } from '@/components/user-avatar';
 import { CommentsSection } from '@/features/comments/components/comments-section';
 import { cn } from '@/lib/utils';
-import { EntryActionsMenu } from '@/shared/components/entry-actions-menu';
 import { MOOD_EMOJI } from '@/shared/consts/mood.const';
 
 import type { FeedItem as FeedItemType } from '../api/get-feed';

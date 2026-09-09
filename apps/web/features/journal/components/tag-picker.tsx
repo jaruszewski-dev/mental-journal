@@ -22,9 +22,11 @@ export function TagPicker({ value, onChange }: TagPickerProps) {
 		if (!open) return;
 
 		function handleClickOutside(e: MouseEvent) {
-			if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-				setOpen(false);
-			}
+			const target = e.target;
+			if (!(target instanceof Element)) return;
+			if (rootRef.current?.contains(target)) return;
+			if (target.closest('button[type="submit"]')) return;
+			setOpen(false);
 		}
 
 		document.addEventListener('mousedown', handleClickOutside);

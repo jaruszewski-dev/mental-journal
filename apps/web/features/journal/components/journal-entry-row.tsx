@@ -3,9 +3,9 @@
 import { GlobeIcon, LockIcon } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 
+import { EntryActionsMenu } from '@/components/entry-actions-menu';
 import { formatFeedTime } from '@/features/feed/utils/format-feed-time';
 import { cn } from '@/lib/utils';
-import { EntryActionsMenu } from '@/shared/components/entry-actions-menu';
 import { MOOD_EMOJI } from '@/shared/consts/mood.const';
 
 import type { JournalEntry } from '../api/get-entries';
@@ -14,12 +14,14 @@ type JournalEntryRowProps = {
 	entry: JournalEntry;
 	showDayLabel: boolean;
 	dayLabel: string;
+	showBorderBottom: boolean;
 };
 
 export function JournalEntryRow({
 	entry,
 	showDayLabel,
 	dayLabel,
+	showBorderBottom,
 }: JournalEntryRowProps) {
 	const locale = useLocale();
 	const t = useTranslations('journal');
@@ -43,8 +45,12 @@ export function JournalEntryRow({
 				</div>
 			) : null}
 
-			<article className="border-b border-border px-4 py-3.5">
-				<div className="flex items-start justify-between gap-2">
+			<article
+				className={cn(
+					'px-4 py-3.5',
+					showBorderBottom && 'border-b border-border',
+				)}
+			>				<div className="flex items-start justify-between gap-2">
 					<div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
 						<span
 							className={cn(
@@ -80,6 +86,7 @@ export function JournalEntryRow({
 					<EntryActionsMenu
 						entryId={entry.id}
 						canEdit={isPrivate}
+						canPublish={isPrivate}
 						entry={
 							isPrivate
 								? {

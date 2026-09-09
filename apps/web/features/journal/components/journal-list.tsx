@@ -49,9 +49,14 @@ export function JournalList() {
 		return items.map((entry, index) => {
 			const key = journalDayKey(entry.createdAt);
 			const prevKey = index > 0 ? journalDayKey(items[index - 1]!.createdAt) : null;
+			const nextKey =
+				index < items.length - 1
+					? journalDayKey(items[index + 1]!.createdAt)
+					: null;
 			return {
 				showDayLabel: key !== prevKey,
 				dayLabel: formatJournalDayLabel(entry.createdAt, locale),
+				showBorderBottom: nextKey === key,
 			};
 		});
 	}, [items, locale]);
@@ -171,6 +176,7 @@ export function JournalList() {
 									entry={item}
 									showDayLabel={meta.showDayLabel}
 									dayLabel={meta.dayLabel}
+									showBorderBottom={meta.showBorderBottom}
 								/>
 							) : null}
 						</div>

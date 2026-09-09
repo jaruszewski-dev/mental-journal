@@ -27,6 +27,7 @@
 	--color-card-foreground: var(--card-foreground);
 	--color-card: var(--card);
 	--color-sand: var(--sand);
+	--max-width-shell: 980px;
 	--max-width-feed: 42rem;
 	--radius-sm: calc(var(--radius) * 0.6);
 	--radius-md: calc(var(--radius) * 0.8);

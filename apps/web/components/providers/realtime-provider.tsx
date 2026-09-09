@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect } from 'react';
 
+import { useOwnPostModerationRealtime } from '@/features/realtime/hooks/use-own-post-moderation-realtime';
 import {
 	connectRealtimeSocket,
 	disconnectRealtimeSocket,
@@ -11,6 +12,11 @@ import { useAuthMeStore } from '@/store/auth-me.store';
 type RealtimeProviderProps = {
 	children: ReactNode;
 };
+
+function OwnPostModerationRealtime() {
+	useOwnPostModerationRealtime();
+	return null;
+}
 
 export function RealtimeProvider({ children }: RealtimeProviderProps) {
 	const status = useAuthMeStore((s) => s.status);
@@ -35,5 +41,10 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
 		};
 	}, [status]);
 
-	return <>{children}</>;
+	return (
+		<>
+			{status === 'authenticated' ? <OwnPostModerationRealtime /> : null}
+			{children}
+		</>
+	);
 }

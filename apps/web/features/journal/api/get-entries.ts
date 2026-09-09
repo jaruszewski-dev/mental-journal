@@ -7,6 +7,7 @@ export type JournalEntry = {
 	tags: string[];
 	visibility: 'private' | 'public';
 	postStatus?: 'ACTIVE' | 'PENDING' | 'HIDDEN';
+	postId?: string;
 	createdAt: string;
 	updatedAt: string | null;
 };

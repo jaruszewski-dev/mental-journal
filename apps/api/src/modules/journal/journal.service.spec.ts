@@ -136,7 +136,7 @@ describe('journalService', () => {
           }),
           include: {
             post: {
-              select: { status: true, deletedAt: true },
+              select: { id: true, status: true, deletedAt: true },
             },
           },
         }),
@@ -236,7 +236,7 @@ describe('journalService', () => {
         },
         include: {
           post: {
-            select: { status: true, deletedAt: true },
+            select: { id: true, status: true, deletedAt: true },
           },
         },
       });

@@ -7,7 +7,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	type FeedNewPostPayload,
-	type FeedPostHiddenPayload,
 	RealtimeEvent,
 } from '@/features/realtime/consts/realtime-events.const';
 import {
@@ -17,7 +16,6 @@ import {
 import { useAuthMeStore } from '@/store/auth-me.store';
 
 import { feedQueryKey } from '../consts/feed-query-key';
-import { activateFeedItem, removeFeedItem } from '../utils/feed-cache';
 
 export function FeedNewPostsButton() {
 	const t = useTranslations('feed');
@@ -30,24 +28,14 @@ export function FeedNewPostsButton() {
 		let cancelled = false;
 
 		const onNewPost = (payload: FeedNewPostPayload) => {
-			if (payload.authorId === meUserId) {
-				activateFeedItem(queryClient, payload.postId);
-				return;
-			}
+			if (payload.authorId === meUserId) return;
 			setHasNewPosts(true);
-		};
-
-		const onPostHidden = (payload: FeedPostHiddenPayload) => {
-			if (payload.authorId === meUserId) {
-				removeFeedItem(queryClient, payload.postId);
-			}
 		};
 
 		void connectRealtimeSocket()
 			.then((socket) => {
 				if (cancelled) return;
 				socket.on(RealtimeEvent.FEED_NEW_POST, onNewPost);
-				socket.on(RealtimeEvent.FEED_POST_HIDDEN, onPostHidden);
 			})
 			.catch(() => undefined);
 
@@ -55,9 +43,8 @@ export function FeedNewPostsButton() {
 			cancelled = true;
 			const socket = getRealtimeSocket();
 			socket?.off(RealtimeEvent.FEED_NEW_POST, onNewPost);
-			socket?.off(RealtimeEvent.FEED_POST_HIDDEN, onPostHidden);
 		};
-	}, [meUserId, queryClient]);
+	}, [meUserId]);
 
 	const handleClick = useCallback(async () => {
 		setIsRefreshing(true);
