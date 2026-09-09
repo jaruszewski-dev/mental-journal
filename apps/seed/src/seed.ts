@@ -1,13 +1,7 @@
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
 
-import {
-	CommentStatus,
-	PostStatus,
-	PreferredLocale,
-	UserRole,
-	UserStatus,
-} from '../../api/src/generated/prisma/enums';
+import { CommentStatus, PostStatus, PreferredLocale, UserRole, UserStatus } from '../../api/src/generated/prisma/enums';
 import {
 	BCRYPT_SALT_ROUNDS,
 	COMMENTS_PER_ACTIVE_POST_MAX,
@@ -20,12 +14,7 @@ import {
 } from './consts';
 import type { SeedPrisma } from './db';
 import { makeAnonName } from './helpers/anon-name';
-import {
-	fakeCommentContent,
-	fakeJournalContent,
-	fakeMood,
-	fakeTags,
-} from './helpers/content';
+import { fakeCommentContent, fakeJournalContent, fakeMood, fakeTags } from './helpers/content';
 
 function pickPostStatus(): (typeof PostStatus)[keyof typeof PostStatus] {
 	const roll = faker.number.float({ min: 0, max: 1 });
@@ -110,9 +99,7 @@ export async function seedDatabase(prisma: SeedPrisma): Promise<void> {
 		})),
 	});
 
-	const publishCandidates = entryRows.filter(() =>
-		faker.datatype.boolean({ probability: PUBLISH_RATIO }),
-	);
+	const publishCandidates = entryRows.filter(() => faker.datatype.boolean({ probability: PUBLISH_RATIO }));
 
 	console.log(`Creating ${publishCandidates.length} posts…`);
 	const postRows: Array<{
@@ -172,9 +159,8 @@ export async function seedDatabase(prisma: SeedPrisma): Promise<void> {
 
 		for (let i = 0; i < commentCount; i += 1) {
 			const author =
-				faker.helpers.arrayElement(
-					users.filter((user) => user.id !== post.authorId),
-				) ?? users[0]!;
+				faker.helpers.arrayElement(users.filter((user) => user.id !== post.authorId)) ??
+				users[0]!;
 
 			commentRows.push({
 				postId: post.id,

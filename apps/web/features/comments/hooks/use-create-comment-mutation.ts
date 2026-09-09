@@ -5,10 +5,7 @@ import { toast } from 'sonner';
 import { resolveApiErrorMessage } from '@/lib/api-error';
 
 import { createComment } from '../api/create-comment';
-import {
-	commentItemFromCreateResponse,
-	prependCommentItem,
-} from '../utils/comments-cache';
+import { commentItemFromCreateResponse, prependCommentItem } from '../utils/comments-cache';
 
 export function useCreateCommentMutation(options?: { onSuccess?: () => void }) {
 	const t = useTranslations('comments');
@@ -18,11 +15,7 @@ export function useCreateCommentMutation(options?: { onSuccess?: () => void }) {
 	return useMutation({
 		mutationFn: createComment,
 		onSuccess: (data, variables) => {
-			prependCommentItem(
-				queryClient,
-				variables.postId,
-				commentItemFromCreateResponse(data),
-			);
+			prependCommentItem(queryClient, variables.postId, commentItemFromCreateResponse(data));
 			toast.success(t('success'), { position: 'bottom-center' });
 			options?.onSuccess?.();
 		},

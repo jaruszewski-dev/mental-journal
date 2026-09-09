@@ -1,6 +1,5 @@
-import { apiClient } from '@/lib/api-client';
-
 import type { FeedItem } from '@/features/feed/api/get-feed';
+import { apiClient } from '@/lib/api-client';
 
 export type CreateEntryPayload = {
 	content: string;

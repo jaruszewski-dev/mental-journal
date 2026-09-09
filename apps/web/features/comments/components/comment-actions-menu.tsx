@@ -18,11 +18,7 @@ type CommentActionsMenuProps = {
 	className?: string;
 };
 
-export function CommentActionsMenu({
-	commentId,
-	postId,
-	className,
-}: CommentActionsMenuProps) {
+export function CommentActionsMenu({ commentId, postId, className }: CommentActionsMenuProps) {
 	const t = useTranslations('comments');
 	const deleteMutation = useDeleteCommentMutation();
 
@@ -45,9 +41,7 @@ export function CommentActionsMenu({
 					variant="destructive"
 					disabled={deleteMutation.isPending}
 					className="cursor-pointer gap-2"
-					onClick={() =>
-						deleteMutation.mutate({ commentId, postId })
-					}
+					onClick={() => deleteMutation.mutate({ commentId, postId })}
 				>
 					<Trash2Icon className="size-3.5 stroke-[1.5]" />
 					{t('delete')}

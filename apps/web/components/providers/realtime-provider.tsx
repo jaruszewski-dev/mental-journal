@@ -3,10 +3,7 @@
 import { type ReactNode, useEffect } from 'react';
 
 import { useOwnPostModerationRealtime } from '@/features/realtime/hooks/use-own-post-moderation-realtime';
-import {
-	connectRealtimeSocket,
-	disconnectRealtimeSocket,
-} from '@/features/realtime/lib/realtime-socket';
+import { connectRealtimeSocket, disconnectRealtimeSocket } from '@/features/realtime/lib/realtime-socket';
 import { useAuthMeStore } from '@/store/auth-me.store';
 
 type RealtimeProviderProps = {

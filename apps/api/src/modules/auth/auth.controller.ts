@@ -20,9 +20,9 @@ import {
   CurrentUser,
 } from '../../common/decorators/current-user.decorator';
 import { SetErrorPath } from '../../common/decorators/set-error-path.decorator';
+import { UnauthorizedUserException } from '../../common/exceptions/custom/unauthorized-user.exception';
 import { AccountCanActGuard } from '../../common/guards/account-can-act.guard';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { UnauthorizedUserException } from '../../common/exceptions/custom/unauthorized-user.exception';
 import { AuthService } from './auth.service';
 import { IssueEmailVerificationDto } from './dtos/issue-email-verification.dto';
 import { IssueEmailVerificationResponseDto } from './dtos/issue-email-verification-response.dto';

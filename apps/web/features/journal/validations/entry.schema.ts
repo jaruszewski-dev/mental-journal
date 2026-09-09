@@ -18,11 +18,7 @@ export function createEntrySchema(errors: { contentRequired: string; contentMax:
 	});
 }
 
-export function updateEntrySchema(errors: {
-	contentRequired: string;
-	contentMax: string;
-	tagsMax: string;
-}) {
+export function updateEntrySchema(errors: { contentRequired: string; contentMax: string; tagsMax: string }) {
 	return z.object({
 		content: z.string().min(MIN_CONTENT, errors.contentRequired).max(MAX_CONTENT, errors.contentMax),
 		mood: z.number().int().min(MIN_MOOD).max(MAX_MOOD).optional(),

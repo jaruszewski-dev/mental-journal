@@ -17,7 +17,6 @@ export function useFeedInfiniteQuery(tags: string[] = []) {
 					: { tags },
 			),
 		initialPageParam: null as { id: string; createdAt: string } | null,
-		getNextPageParam: (lastPage) =>
-			lastPage.meta.hasMore ? lastPage.meta.nextCursor : undefined,
+		getNextPageParam: (lastPage) => (lastPage.meta.hasMore ? lastPage.meta.nextCursor : undefined),
 	});
 }

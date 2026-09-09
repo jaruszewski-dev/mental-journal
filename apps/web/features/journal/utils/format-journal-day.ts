@@ -1,14 +1,8 @@
-export function formatJournalDayLabel(
-	createdAt: string | Date,
-	locale: string,
-	now: Date = new Date(),
-): string {
+export function formatJournalDayLabel(createdAt: string | Date, locale: string, now: Date = new Date()): string {
 	const date = createdAt instanceof Date ? createdAt : new Date(createdAt);
 	const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 	const startOfDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-	const diffDays = Math.round(
-		(startOfToday.getTime() - startOfDate.getTime()) / (24 * 60 * 60 * 1000),
-	);
+	const diffDays = Math.round((startOfToday.getTime() - startOfDate.getTime()) / (24 * 60 * 60 * 1000));
 
 	if (diffDays === 0) {
 		return locale.startsWith('pl') ? 'Dziś' : 'Today';

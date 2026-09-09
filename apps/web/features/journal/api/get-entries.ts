@@ -34,9 +34,7 @@ export type ListJournalParams = {
 	lastMood?: number;
 };
 
-export async function getJournalEntries(
-	params: ListJournalParams = {},
-): Promise<ListJournalResponse> {
+export async function getJournalEntries(params: ListJournalParams = {}): Promise<ListJournalResponse> {
 	const { data } = await apiClient.get<ListJournalResponse>('/journal', {
 		params: {
 			...(params.sortBy ? { sortBy: params.sortBy } : {}),

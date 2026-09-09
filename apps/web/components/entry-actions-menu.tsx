@@ -10,10 +10,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-	EditEntryDialog,
-	type EditEntryValues,
-} from '@/features/journal/components/edit-entry-dialog';
+import { EditEntryDialog, type EditEntryValues } from '@/features/journal/components/edit-entry-dialog';
 import { useDeleteEntryMutation } from '@/features/journal/hooks/use-delete-entry-mutation';
 import { usePublishEntryMutation } from '@/features/journal/hooks/use-publish-entry-mutation';
 import { cn } from '@/lib/utils';

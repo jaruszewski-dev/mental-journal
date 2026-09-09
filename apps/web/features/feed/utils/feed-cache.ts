@@ -9,10 +9,7 @@ function toIso(value: string | Date): string {
 	return typeof value === 'string' ? value : value.toISOString();
 }
 
-function mapFeedPages(
-	old: FeedInfiniteData,
-	mapPageItems: (items: FeedItem[]) => FeedItem[],
-): FeedInfiniteData {
+function mapFeedPages(old: FeedInfiniteData, mapPageItems: (items: FeedItem[]) => FeedItem[]): FeedInfiniteData {
 	return {
 		...old,
 		pages: old.pages.map((page) => ({
@@ -66,9 +63,7 @@ export function activateFeedItem(queryClient: QueryClient, postId: string): void
 		if (!old) return old;
 
 		return mapFeedPages(old, (items) =>
-			items.map((item) =>
-				item.id === postId ? { ...item, status: 'ACTIVE' as const } : item,
-			),
+			items.map((item) => (item.id === postId ? { ...item, status: 'ACTIVE' as const } : item)),
 		);
 	});
 }

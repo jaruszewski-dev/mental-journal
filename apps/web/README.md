@@ -10,27 +10,27 @@ Monorepo root docs: [`../../README.md`](../../README.md) · API: [`../api/README
 
 ## Stack
 
-| Piece        | Tech                                      |
-| ------------ | ----------------------------------------- |
-| Framework    | Next.js 16 (App Router), React 19         |
-| Data         | TanStack Query (infinite lists), Axios    |
-| Lists        | TanStack Virtual (window virtualizer)     |
-| Forms        | react-hook-form + Zod                     |
-| i18n         | next-intl (`pl` default, `en`)            |
-| Realtime     | socket.io-client                          |
-| UI           | shadcn (base-nova) + Tailwind v4          |
-| Shared types | `@repo/api-types`                         |
+| Piece        | Tech                                   |
+| ------------ | -------------------------------------- |
+| Framework    | Next.js 16 (App Router), React 19      |
+| Data         | TanStack Query (infinite lists), Axios |
+| Lists        | TanStack Virtual (window virtualizer)  |
+| Forms        | react-hook-form + Zod                  |
+| i18n         | next-intl (`pl` default, `en`)         |
+| Realtime     | socket.io-client                       |
+| UI           | shadcn (base-nova) + Tailwind v4       |
+| Shared types | `@repo/api-types`                      |
 
 ## Features
 
-| Route / area   | Behavior                                                                 |
-| -------------- | ------------------------------------------------------------------------ |
-| Auth           | Register, login, verify email, resend verification, logout / logout-all  |
-| `/` (feed)     | Infinite public feed, tag filter (`GET /feed?tags=`), new-posts button   |
-| `/journal`     | Composer + infinite timeline; sort by date/mood; edit / publish / delete |
-| Comments       | Per-post section; create + delete own; realtime activate/hide            |
-| `/account`     | Anon name, password, avatar; logout-all                                  |
-| Realtime       | Socket after `GET /auth/ws-token`; own posts + open comments stay in sync|
+| Route / area | Behavior                                                                  |
+| ------------ | ------------------------------------------------------------------------- |
+| Auth         | Register, login, verify email, resend verification, logout / logout-all   |
+| `/` (feed)   | Infinite public feed, tag filter (`GET /feed?tags=`), new-posts button    |
+| `/journal`   | Composer + infinite timeline; sort by date/mood; edit / publish / delete  |
+| Comments     | Per-post section; create + delete own; realtime activate/hide             |
+| `/account`   | Anon name, password, avatar; logout-all                                   |
+| Realtime     | Socket after `GET /auth/ws-token`; own posts + open comments stay in sync |
 
 **Journal sort UI** maps to `sortBy` + `orderBy` (`date`/`mood` × `asc`/`desc`).  
 **Feed tags** use the shared journal tag catalog (multi-select).
@@ -67,13 +67,13 @@ Only web:
 pnpm --filter web dev
 ```
 
-| Script        | Description        |
-| ------------- | ------------------ |
-| `dev`         | Next on port 3000  |
-| `build`       | Production build   |
-| `start`       | Serve build        |
-| `check-types` | `tsc --noEmit`     |
-| `lint`        | ESLint             |
+| Script        | Description       |
+| ------------- | ----------------- |
+| `dev`         | Next on port 3000 |
+| `build`       | Production build  |
+| `start`       | Serve build       |
+| `check-types` | `tsc --noEmit`    |
+| `lint`        | ESLint            |
 
 ## UI
 

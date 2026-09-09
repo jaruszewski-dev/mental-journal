@@ -20,7 +20,9 @@ export function AccountView() {
 					<p className="font-heading text-base font-medium tracking-tight">
 						{t('logoutAllTitle')}
 					</p>
-					<p className="text-sm text-muted-foreground">{t('logoutAllDescription')}</p>
+					<p className="text-sm text-muted-foreground">
+						{t('logoutAllDescription')}
+					</p>
 				</div>
 				<Button
 					type="button"

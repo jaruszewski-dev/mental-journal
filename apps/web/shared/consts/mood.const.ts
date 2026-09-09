@@ -6,6 +6,4 @@ export const MOODS = [
 	{ value: 5, emoji: '😊' },
 ] as const;
 
-export const MOOD_EMOJI: Record<number, string> = Object.fromEntries(
-	MOODS.map(({ value, emoji }) => [value, emoji]),
-);
+export const MOOD_EMOJI: Record<number, string> = Object.fromEntries(MOODS.map(({ value, emoji }) => [value, emoji]));

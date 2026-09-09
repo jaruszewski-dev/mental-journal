@@ -20,10 +20,8 @@ export function JournalSortSelect({ value, onChange }: JournalSortSelectProps) {
 	const t = useTranslations('journal.sort');
 
 	const selected =
-		SORT_OPTIONS.find(
-			(option) =>
-				option.sortBy === value.sortBy && option.orderBy === value.orderBy,
-		)?.key ?? 'dateDesc';
+		SORT_OPTIONS.find((option) => option.sortBy === value.sortBy && option.orderBy === value.orderBy)
+			?.key ?? 'dateDesc';
 
 	return (
 		<div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">

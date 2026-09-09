@@ -4,11 +4,8 @@ import { TagIcon, XIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
+import { JOURNAL_TAG_CATALOG, type JournalTag } from '@/features/journal/validations/entry.schema';
 import { cn } from '@/lib/utils';
-import {
-	JOURNAL_TAG_CATALOG,
-	type JournalTag,
-} from '@/features/journal/validations/entry.schema';
 
 type FeedTagFilterProps = {
 	value: JournalTag[];
@@ -59,7 +56,9 @@ export function FeedTagFilter({ value, onChange }: FeedTagFilterProps) {
 					<TagIcon className="size-3.5" />
 					{t('tags')}
 					{value.length > 0 ? (
-						<span className="text-muted-foreground">{value.length}</span>
+						<span className="text-muted-foreground">
+							{value.length}
+						</span>
 					) : null}
 				</button>
 
@@ -100,7 +99,8 @@ export function FeedTagFilter({ value, onChange }: FeedTagFilterProps) {
 							</p>
 							<div className="flex flex-wrap gap-1.5">
 								{tags.map((tag) => {
-									const selected = value.includes(tag);
+									const selected =
+										value.includes(tag);
 									return (
 										<button
 											key={tag}
@@ -111,9 +111,15 @@ export function FeedTagFilter({ value, onChange }: FeedTagFilterProps) {
 													? 'bg-primary text-primary-foreground'
 													: 'bg-background text-muted-foreground ring-1 ring-border hover:text-foreground',
 											)}
-											onClick={() => toggleTag(tag)}
+											onClick={() =>
+												toggleTag(
+													tag,
+												)
+											}
 										>
-											{tTags(`items.${tag}`)}
+											{tTags(
+												`items.${tag}`,
+											)}
 										</button>
 									);
 								})}

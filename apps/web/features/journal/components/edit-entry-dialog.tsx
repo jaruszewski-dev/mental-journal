@@ -16,11 +16,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { useUpdateEntryMutation } from '../hooks/use-update-entry-mutation';
-import {
-	updateEntrySchema,
-	type JournalTag,
-	type UpdateEntryFormValues,
-} from '../validations/entry.schema';
+import { type JournalTag, type UpdateEntryFormValues,updateEntrySchema } from '../validations/entry.schema';
 import { MoodPicker } from './mood-picker';
 import { TagPicker } from './tag-picker';
 
@@ -37,12 +33,7 @@ type EditEntryDialogProps = {
 	onOpenChange: (open: boolean) => void;
 };
 
-export function EditEntryDialog({
-	entryId,
-	entry,
-	open,
-	onOpenChange,
-}: EditEntryDialogProps) {
+export function EditEntryDialog({ entryId, entry, open, onOpenChange }: EditEntryDialogProps) {
 	const t = useTranslations('entryActions');
 	const tComposer = useTranslations('composer');
 
@@ -56,15 +47,14 @@ export function EditEntryDialog({
 		[tComposer],
 	);
 
-	const { register, handleSubmit, reset, watch, setValue, formState } =
-		useForm<UpdateEntryFormValues>({
-			resolver: zodResolver(schema),
-			defaultValues: {
-				content: entry.content,
-				mood: entry.mood,
-				tags: entry.tags as JournalTag[],
-			},
-		});
+	const { register, handleSubmit, reset, watch, setValue, formState } = useForm<UpdateEntryFormValues>({
+		resolver: zodResolver(schema),
+		defaultValues: {
+			content: entry.content,
+			mood: entry.mood,
+			tags: entry.tags as JournalTag[],
+		},
+	});
 
 	const content = watch('content');
 	const mood = watch('mood');
@@ -135,10 +125,7 @@ export function EditEntryDialog({
 						</p>
 					) : null}
 
-					<MoodPicker
-						value={mood}
-						onChange={(v) => setValue('mood', v)}
-					/>
+					<MoodPicker value={mood} onChange={(v) => setValue('mood', v)} />
 				</form>
 
 				<DialogFooter>

@@ -168,7 +168,7 @@ export class JournalService {
     dto: UpdateEntryDto,
   ): Promise<{ id: string }> {
     await this.assertEntryExists(entryId, userId);
-    
+
     const { content, mood, tags } = dto;
 
     const { id } = await this.prisma.journalEntry.update({

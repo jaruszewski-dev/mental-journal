@@ -18,8 +18,7 @@ export function useDeleteCommentMutation() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ commentId }: DeleteCommentVariables) =>
-			deleteComment(commentId),
+		mutationFn: ({ commentId }: DeleteCommentVariables) => deleteComment(commentId),
 		onSuccess: (_data, variables) => {
 			removeCommentItem(queryClient, variables.postId, variables.commentId);
 			toast.success(t('deleteSuccess'), { position: 'bottom-center' });

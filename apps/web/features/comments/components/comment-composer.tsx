@@ -12,10 +12,7 @@ import { useAuthMeStore } from '@/store/auth-me.store';
 
 import { MAX_COMMENT_CONTENT_LENGTH } from '../consts/comment.const';
 import { useCreateCommentMutation } from '../hooks/use-create-comment-mutation';
-import {
-	type CreateCommentFormValues,
-	createCommentSchema,
-} from '../validations/create-comment.schema';
+import { type CreateCommentFormValues, createCommentSchema } from '../validations/create-comment.schema';
 
 type CommentComposerProps = {
 	postId: string;
@@ -74,10 +71,7 @@ export function CommentComposer({ postId }: CommentComposerProps) {
 	}
 
 	return (
-		<form
-			onSubmit={handleSubmit(onSubmit)}
-			className="border-t border-border/60 pt-3"
-		>
+		<form onSubmit={handleSubmit(onSubmit)} className="border-t border-border/60 pt-3">
 			<div className="flex items-end gap-2">
 				<UserAvatar
 					anonName={me?.anonName ?? ''}

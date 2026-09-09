@@ -1,10 +1,4 @@
-import {
-	createSeedPrisma,
-	disconnectSeedPrisma,
-	ensureSeedDatabase,
-	getDbNameFromUrl,
-	getSeedDatabaseUrl,
-} from './db';
+import { createSeedPrisma, disconnectSeedPrisma, ensureSeedDatabase, getDbNameFromUrl, getSeedDatabaseUrl } from './db';
 import { pushSeedSchema } from './push-schema';
 import { seedDatabase } from './seed';
 import { wipeSeedDatabase } from './wipe';

@@ -9,9 +9,7 @@ export type CreateCommentPayload = {
 
 export type CreateCommentResponse = CommentItem;
 
-export async function createComment(
-	payload: CreateCommentPayload,
-): Promise<CreateCommentResponse> {
+export async function createComment(payload: CreateCommentPayload): Promise<CreateCommentResponse> {
 	const { data } = await apiClient.post<CreateCommentResponse>('/comments', payload);
 	return data;
 }

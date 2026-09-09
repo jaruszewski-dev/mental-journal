@@ -6,19 +6,13 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { activateFeedItem, removeFeedItem } from '@/features/feed/utils/feed-cache';
-import {
-	activateJournalPost,
-	hideJournalPost,
-} from '@/features/journal/utils/journal-cache';
+import { activateJournalPost, hideJournalPost } from '@/features/journal/utils/journal-cache';
 import {
 	type FeedNewPostPayload,
 	type FeedPostHiddenPayload,
 	RealtimeEvent,
 } from '@/features/realtime/consts/realtime-events.const';
-import {
-	connectRealtimeSocket,
-	getRealtimeSocket,
-} from '@/features/realtime/lib/realtime-socket';
+import { connectRealtimeSocket, getRealtimeSocket } from '@/features/realtime/lib/realtime-socket';
 import { useAuthMeStore } from '@/store/auth-me.store';
 
 export function useOwnPostModerationRealtime() {

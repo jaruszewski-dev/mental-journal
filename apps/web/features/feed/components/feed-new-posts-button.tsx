@@ -5,14 +5,8 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import {
-	type FeedNewPostPayload,
-	RealtimeEvent,
-} from '@/features/realtime/consts/realtime-events.const';
-import {
-	connectRealtimeSocket,
-	getRealtimeSocket,
-} from '@/features/realtime/lib/realtime-socket';
+import { type FeedNewPostPayload, RealtimeEvent } from '@/features/realtime/consts/realtime-events.const';
+import { connectRealtimeSocket, getRealtimeSocket } from '@/features/realtime/lib/realtime-socket';
 import { useAuthMeStore } from '@/store/auth-me.store';
 
 import { feedQueryKey } from '../consts/feed-query-key';

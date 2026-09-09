@@ -19,15 +19,15 @@ For architecture diagrams and deeper design notes, see [`AGENT.md`](./AGENT.md).
 
 ## What’s in v1
 
-| Area     | Capabilities                                                                                          |
-| -------- | ----------------------------------------------------------------------------------------------------- |
-| Auth     | Register, verify email, login, refresh, logout, logout-all, `/me`, short-lived `/ws-token`            |
-| Account  | Update anon name / password / avatar (`PATCH /users/me`)                                              |
-| Journal  | Private CRUD + publish; list with cursor, `sortBy` (`date` \| `mood`), `orderBy` (`asc` \| `desc`)    |
-| Feed     | List ACTIVE public posts (cursor, optional `tags`); “new posts” + own-post moderation via Socket.IO   |
-| Comments | Create / list / delete on ACTIVE posts; realtime activate/hide                                        |
-| Safety   | Async AI moderation, trust score, temporary shadowban, moderation cases for human review later        |
-| Ops      | Health check, cron to lift expired shadowbans                                                         |
+| Area     | Capabilities                                                                                        |
+| -------- | --------------------------------------------------------------------------------------------------- |
+| Auth     | Register, verify email, login, refresh, logout, logout-all, `/me`, short-lived `/ws-token`          |
+| Account  | Update anon name / password / avatar (`PATCH /users/me`)                                            |
+| Journal  | Private CRUD + publish; list with cursor, `sortBy` (`date` \| `mood`), `orderBy` (`asc` \| `desc`)  |
+| Feed     | List ACTIVE public posts (cursor, optional `tags`); “new posts” + own-post moderation via Socket.IO |
+| Comments | Create / list / delete on ACTIVE posts; realtime activate/hide                                      |
+| Safety   | Async AI moderation, trust score, temporary shadowban, moderation cases for human review later      |
+| Ops      | Health check, cron to lift expired shadowbans                                                       |
 
 HTTP prefix: `/v1`. Example: `GET /v1/feed`.
 

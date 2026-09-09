@@ -10,8 +10,7 @@ export type Entry = EntryWithPost;
 
 export class JournalMapper {
   static toEntryItemDto(entry: EntryWithPost): EntryItemDto {
-    const post =
-      entry.post && entry.post.deletedAt == null ? entry.post : null;
+    const post = entry.post && entry.post.deletedAt == null ? entry.post : null;
 
     return {
       id: entry.id,

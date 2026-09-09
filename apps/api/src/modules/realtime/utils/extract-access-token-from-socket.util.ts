@@ -27,8 +27,5 @@ export function extractAccessTokenFromSocket(client: Socket): string | null {
     return fromAuth;
   }
 
-  return getCookieValue(
-    client.handshake.headers.cookie,
-    ACCESS_TOKEN_COOKIE,
-  );
+  return getCookieValue(client.handshake.headers.cookie, ACCESS_TOKEN_COOKIE);
 }

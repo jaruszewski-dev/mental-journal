@@ -7,12 +7,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-import { useJournalInfiniteQuery } from '../hooks/use-journal-infinite-query';
 import type { JournalListSort } from '../consts/journal-query-key';
-import {
-	formatJournalDayLabel,
-	journalDayKey,
-} from '../utils/format-journal-day';
+import { useJournalInfiniteQuery } from '../hooks/use-journal-infinite-query';
+import { formatJournalDayLabel, journalDayKey } from '../utils/format-journal-day';
 import { JournalEntryRow } from './journal-entry-row';
 import { JournalSortSelect } from './journal-sort-select';
 
@@ -20,13 +17,7 @@ const ESTIMATED_ITEM_SIZE = 96;
 const ESTIMATED_ITEM_WITH_DAY = 132;
 const LOADER_SIZE = 180;
 
-function JournalSkeleton({
-	count = 4,
-	className,
-}: {
-	count?: number;
-	className?: string;
-}) {
+function JournalSkeleton({ count = 4, className }: { count?: number; className?: string }) {
 	return (
 		<div className={cn('flex flex-col', className)} aria-hidden>
 			{Array.from({ length: count }, (_, i) => (
@@ -56,9 +47,7 @@ export function JournalList() {
 			const key = journalDayKey(entry.createdAt);
 			const prevKey = index > 0 ? journalDayKey(items[index - 1]!.createdAt) : null;
 			const nextKey =
-				index < items.length - 1
-					? journalDayKey(items[index + 1]!.createdAt)
-					: null;
+				index < items.length - 1 ? journalDayKey(items[index + 1]!.createdAt) : null;
 			return {
 				showDayLabel: key !== prevKey,
 				dayLabel: formatJournalDayLabel(entry.createdAt, locale),
@@ -73,9 +62,7 @@ export function JournalList() {
 		count: rowCount,
 		estimateSize: (index) => {
 			if (index >= items.length) return LOADER_SIZE;
-			return dayMeta[index]?.showDayLabel
-				? ESTIMATED_ITEM_WITH_DAY
-				: ESTIMATED_ITEM_SIZE;
+			return dayMeta[index]?.showDayLabel ? ESTIMATED_ITEM_WITH_DAY : ESTIMATED_ITEM_SIZE;
 		},
 		overscan: 6,
 		scrollMargin,
@@ -100,13 +87,7 @@ export function JournalList() {
 		}
 
 		void query.fetchNextPage();
-	}, [
-		lastVirtualIndex,
-		items.length,
-		query.hasNextPage,
-		query.isFetchingNextPage,
-		query.fetchNextPage,
-	]);
+	}, [lastVirtualIndex, items.length, query.hasNextPage, query.isFetchingNextPage, query.fetchNextPage]);
 
 	return (
 		<div className="flex flex-col">
@@ -130,9 +111,7 @@ export function JournalList() {
 					</Button>
 				</div>
 			) : items.length === 0 ? (
-				<p className="px-4 py-8 text-sm text-muted-foreground">
-					{t('empty')}
-				</p>
+				<p className="px-4 py-8 text-sm text-muted-foreground">{t('empty')}</p>
 			) : (
 				<div ref={listRef} className="relative w-full">
 					<div
@@ -140,7 +119,8 @@ export function JournalList() {
 						style={{ height: `${virtualizer.getTotalSize()}px` }}
 					>
 						{virtualItems.map((virtualRow) => {
-							const isLoaderRow = virtualRow.index >= items.length;
+							const isLoaderRow =
+								virtualRow.index >= items.length;
 							const item = items[virtualRow.index];
 							const meta = dayMeta[virtualRow.index];
 
@@ -148,22 +128,32 @@ export function JournalList() {
 								<div
 									key={virtualRow.key}
 									data-index={virtualRow.index}
-									ref={virtualizer.measureElement}
+									ref={
+										virtualizer.measureElement
+									}
 									className="absolute top-0 left-0 w-full"
 									style={{
 										transform: `translateY(${
 											virtualRow.start -
-											virtualizer.options.scrollMargin
+											virtualizer
+												.options
+												.scrollMargin
 										}px)`,
 									}}
 								>
 									{isLoaderRow ? (
 										<div
-											aria-busy={query.isFetchingNextPage}
-											aria-label={t('loadingMore')}
+											aria-busy={
+												query.isFetchingNextPage
+											}
+											aria-label={t(
+												'loadingMore',
+											)}
 										>
 											<JournalSkeleton
-												count={2}
+												count={
+													2
+												}
 												className={
 													query.isFetchingNextPage
 														? 'opacity-100'
@@ -173,10 +163,18 @@ export function JournalList() {
 										</div>
 									) : item && meta ? (
 										<JournalEntryRow
-											entry={item}
-											showDayLabel={meta.showDayLabel}
-											dayLabel={meta.dayLabel}
-											showBorderBottom={meta.showBorderBottom}
+											entry={
+												item
+											}
+											showDayLabel={
+												meta.showDayLabel
+											}
+											dayLabel={
+												meta.dayLabel
+											}
+											showBorderBottom={
+												meta.showBorderBottom
+											}
 										/>
 									) : null}
 								</div>

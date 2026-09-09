@@ -21,9 +21,7 @@ export function CommentItem({ item, postId }: CommentItemProps) {
 	const isPending = item.status === 'PENDING';
 
 	return (
-		<li
-			className={cn('flex gap-2.5 transition-opacity', isPending && 'opacity-50')}
-		>
+		<li className={cn('flex gap-2.5 transition-opacity', isPending && 'opacity-50')}>
 			<UserAvatar
 				anonName={item.anonName}
 				avatarUrl={item.avatarUrl}
@@ -43,7 +41,9 @@ export function CommentItem({ item, postId }: CommentItemProps) {
 						<time
 							dateTime={item.createdAt}
 							className="shrink-0 text-xs text-muted-foreground"
-							title={new Date(item.createdAt).toLocaleString(locale)}
+							title={new Date(item.createdAt).toLocaleString(
+								locale,
+							)}
 						>
 							{time}
 						</time>

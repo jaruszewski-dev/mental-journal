@@ -2,10 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
-import {
-	feedItemFromCreateResponse,
-	prependFeedItem,
-} from '@/features/feed/utils/feed-cache';
+import { feedItemFromCreateResponse, prependFeedItem } from '@/features/feed/utils/feed-cache';
 import { resolveApiErrorMessage } from '@/lib/api-error';
 
 import { publishEntry } from '../api/publish-entry';

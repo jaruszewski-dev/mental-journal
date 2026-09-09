@@ -27,8 +27,7 @@ export function FeedList() {
 
 	const virtualizer = useWindowVirtualizer({
 		count: rowCount,
-		estimateSize: (index) =>
-			index >= items.length ? LOADER_SIZE : ESTIMATED_ITEM_SIZE,
+		estimateSize: (index) => (index >= items.length ? LOADER_SIZE : ESTIMATED_ITEM_SIZE),
 		overscan: 6,
 		scrollMargin,
 	});
@@ -52,13 +51,7 @@ export function FeedList() {
 		}
 
 		void query.fetchNextPage();
-	}, [
-		lastVirtualIndex,
-		items.length,
-		query.hasNextPage,
-		query.isFetchingNextPage,
-		query.fetchNextPage,
-	]);
+	}, [lastVirtualIndex, items.length, query.hasNextPage, query.isFetchingNextPage, query.fetchNextPage]);
 
 	return (
 		<div className="flex flex-col">
@@ -92,29 +85,40 @@ export function FeedList() {
 						style={{ height: `${virtualizer.getTotalSize()}px` }}
 					>
 						{virtualItems.map((virtualRow) => {
-							const isLoaderRow = virtualRow.index >= items.length;
+							const isLoaderRow =
+								virtualRow.index >= items.length;
 							const item = items[virtualRow.index];
 
 							return (
 								<div
 									key={virtualRow.key}
 									data-index={virtualRow.index}
-									ref={virtualizer.measureElement}
+									ref={
+										virtualizer.measureElement
+									}
 									className="absolute top-0 left-0 w-full"
 									style={{
 										transform: `translateY(${
 											virtualRow.start -
-											virtualizer.options.scrollMargin
+											virtualizer
+												.options
+												.scrollMargin
 										}px)`,
 									}}
 								>
 									{isLoaderRow ? (
 										<div
-											aria-busy={query.isFetchingNextPage}
-											aria-label={t('loadingMore')}
+											aria-busy={
+												query.isFetchingNextPage
+											}
+											aria-label={t(
+												'loadingMore',
+											)}
 										>
 											<FeedSkeleton
-												count={2}
+												count={
+													2
+												}
 												className={
 													query.isFetchingNextPage
 														? 'opacity-100'
@@ -123,7 +127,11 @@ export function FeedList() {
 											/>
 										</div>
 									) : item ? (
-										<FeedItem item={item} />
+										<FeedItem
+											item={
+												item
+											}
+										/>
 									) : null}
 								</div>
 							);

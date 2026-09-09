@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 
-import { config } from 'dotenv';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { config } from 'dotenv';
 import { Pool } from 'pg';
 
 import { PrismaClient } from '../../api/src/generated/prisma/client';
@@ -14,9 +14,7 @@ const DB_NAME_PATTERN = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 export function getSeedDatabaseUrl(): string {
 	const url = process.env.SEED_DATABASE_URL?.trim();
 	if (!url) {
-		throw new Error(
-			'SEED_DATABASE_URL is required. Copy apps/seed/.env.example to apps/seed/.env',
-		);
+		throw new Error('SEED_DATABASE_URL is required. Copy apps/seed/.env.example to apps/seed/.env');
 	}
 
 	let parsed: URL;
@@ -43,9 +41,7 @@ export function assertSafeSeedDbName(dbName: string): void {
 	}
 
 	if (!dbName.endsWith('_seed')) {
-		throw new Error(
-			`SEED_DATABASE_URL database name must end with "_seed" (got "${dbName}").`,
-		);
+		throw new Error(`SEED_DATABASE_URL database name must end with "_seed" (got "${dbName}").`);
 	}
 }
 
@@ -90,10 +86,7 @@ export function createSeedPrisma(): { prisma: SeedPrisma; pool: Pool } {
 	return { prisma, pool };
 }
 
-export async function disconnectSeedPrisma(
-	prisma: SeedPrisma,
-	pool: Pool,
-): Promise<void> {
+export async function disconnectSeedPrisma(prisma: SeedPrisma, pool: Pool): Promise<void> {
 	await prisma.$disconnect();
 	await pool.end();
 }

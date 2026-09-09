@@ -18,8 +18,7 @@ export function useUpdateEntryMutation(options?: { onSuccess?: () => void }) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ entryId, payload }: UpdateEntryVariables) =>
-			updateEntry(entryId, payload),
+		mutationFn: ({ entryId, payload }: UpdateEntryVariables) => updateEntry(entryId, payload),
 		onSuccess: () => {
 			void queryClient.invalidateQueries({ queryKey: journalQueryKey });
 			toast.success(t('editSuccess'), { position: 'bottom-center' });

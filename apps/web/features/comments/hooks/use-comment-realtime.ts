@@ -10,10 +10,7 @@ import {
 	type CommentHiddenPayload,
 	RealtimeEvent,
 } from '@/features/realtime/consts/realtime-events.const';
-import {
-	connectRealtimeSocket,
-	getRealtimeSocket,
-} from '@/features/realtime/lib/realtime-socket';
+import { connectRealtimeSocket, getRealtimeSocket } from '@/features/realtime/lib/realtime-socket';
 import { useAuthMeStore } from '@/store/auth-me.store';
 
 import { activateCommentItem, removeCommentItem } from '../utils/comments-cache';

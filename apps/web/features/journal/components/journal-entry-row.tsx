@@ -17,12 +17,7 @@ type JournalEntryRowProps = {
 	showBorderBottom: boolean;
 };
 
-export function JournalEntryRow({
-	entry,
-	showDayLabel,
-	dayLabel,
-	showBorderBottom,
-}: JournalEntryRowProps) {
+export function JournalEntryRow({ entry, showDayLabel, dayLabel, showBorderBottom }: JournalEntryRowProps) {
 	const locale = useLocale();
 	const t = useTranslations('journal');
 	const tMood = useTranslations('composer.mood');
@@ -45,12 +40,9 @@ export function JournalEntryRow({
 				</div>
 			) : null}
 
-			<article
-				className={cn(
-					'px-4 py-3.5',
-					showBorderBottom && 'border-b border-border',
-				)}
-			>				<div className="flex items-start justify-between gap-2">
+			<article className={cn('px-4 py-3.5', showBorderBottom && 'border-b border-border')}>
+				{' '}
+				<div className="flex items-start justify-between gap-2">
 					<div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
 						<span
 							className={cn(
@@ -72,13 +64,19 @@ export function JournalEntryRow({
 								: isPending
 									? t('visibility.pending')
 									: isHidden
-										? t('visibility.hidden')
-										: t('visibility.public')}
+										? t(
+												'visibility.hidden',
+											)
+										: t(
+												'visibility.public',
+											)}
 						</span>
 						<time
 							dateTime={entry.createdAt}
 							className="text-xs text-muted-foreground"
-							title={new Date(entry.createdAt).toLocaleString(locale)}
+							title={new Date(entry.createdAt).toLocaleString(
+								locale,
+							)}
 						>
 							{time}
 						</time>
@@ -98,18 +96,21 @@ export function JournalEntryRow({
 						}
 					/>
 				</div>
-
 				<p className="mt-2 line-clamp-3 whitespace-pre-wrap text-sm leading-relaxed text-foreground">
 					{entry.content}
 				</p>
-
 				{entry.mood != null || entry.tags.length > 0 ? (
 					<div className="mt-3 flex flex-wrap items-center gap-1.5">
 						{entry.mood != null ? (
 							<span
 								className="text-base"
 								title={tMood(
-									String(entry.mood) as '1' | '2' | '3' | '4' | '5',
+									String(entry.mood) as
+										| '1'
+										| '2'
+										| '3'
+										| '4'
+										| '5',
 								)}
 							>
 								{MOOD_EMOJI[entry.mood]}
@@ -121,7 +122,11 @@ export function JournalEntryRow({
 								key={tag}
 								className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground"
 							>
-								{tTags(tag as Parameters<typeof tTags>[0])}
+								{tTags(
+									tag as Parameters<
+										typeof tTags
+									>[0],
+								)}
 							</span>
 						))}
 					</div>

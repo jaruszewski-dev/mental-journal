@@ -126,15 +126,15 @@ sequenceDiagram
 
 ## HTTP surface
 
-| Area     | Routes                                                                                         |
-| -------- | ---------------------------------------------------------------------------------------------- |
-| Health   | `GET /v1/health`                                                                               |
-| Auth     | `POST register`, `login`, `resend-verification`, `logout`, `logout-all`, `refresh`             |
-| Auth     | `GET verify-email`, `me`, `ws-token`                                                           |
-| Users    | `PATCH /v1/users/me` (multipart: anonName, password change, avatar)                            |
-| Journal  | `GET/POST /v1/journal`, `GET/PATCH/DELETE /v1/journal/:id`, `POST /v1/journal/:id/publish`     |
-| Feed     | `GET /v1/feed` — cursor + optional `tags`                                                      |
-| Comments | `POST /v1/comments`, `GET /v1/comments?postId=`, `DELETE /v1/comments/:id`                      |
+| Area     | Routes                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------ |
+| Health   | `GET /v1/health`                                                                           |
+| Auth     | `POST register`, `login`, `resend-verification`, `logout`, `logout-all`, `refresh`         |
+| Auth     | `GET verify-email`, `me`, `ws-token`                                                       |
+| Users    | `PATCH /v1/users/me` (multipart: anonName, password change, avatar)                        |
+| Journal  | `GET/POST /v1/journal`, `GET/PATCH/DELETE /v1/journal/:id`, `POST /v1/journal/:id/publish` |
+| Feed     | `GET /v1/feed` — cursor + optional `tags`                                                  |
+| Comments | `POST /v1/comments`, `GET /v1/comments?postId=`, `DELETE /v1/comments/:id`                 |
 
 ### List query params
 
@@ -146,12 +146,12 @@ sequenceDiagram
 
 Auth: JWT access token on the handshake (cookie or auth payload; web uses `GET /v1/auth/ws-token`).
 
-| Event               | When                                      |
-| ------------------- | ----------------------------------------- |
-| `feed:new-post`     | Post becomes `ACTIVE`                     |
-| `feed:post-hidden`  | Post becomes `HIDDEN`                     |
-| `comment:active`    | Comment becomes `ACTIVE`                  |
-| `comment:hidden`    | Comment becomes `HIDDEN`                  |
+| Event              | When                     |
+| ------------------ | ------------------------ |
+| `feed:new-post`    | Post becomes `ACTIVE`    |
+| `feed:post-hidden` | Post becomes `HIDDEN`    |
+| `comment:active`   | Comment becomes `ACTIVE` |
+| `comment:hidden`   | Comment becomes `HIDDEN` |
 
 ---
 
