@@ -116,7 +116,7 @@ AGENT.md                  Technical architecture (diagrams, flows)
 ## Production (Docker on one host)
 
 Dev compose (`docker/docker-compose.yml`) runs only Postgres + Redis.  
-Prod compose runs **postgres + redis + api + web**:
+Prod compose runs **postgres + redis + api + web + nginx**:
 
 ```sh
 cp docker/.env.prod.example docker/.env.prod
@@ -124,12 +124,12 @@ cp docker/.env.prod.example docker/.env.prod
 pnpm docker:prod:up
 ```
 
-- Web: `http://HOST:3000`
-- API / Socket.IO: `http://HOST:3001`
-- Postgres and Redis stay on the internal Docker network (not published)
+- App: `http://HOST` (Nginx on port 80)
+- `/v1` and `/socket.io` proxied to API
+- Postgres / Redis / api / web stay internal
 - API container runs `prisma migrate deploy` on start
 
-See `docker/.env.prod.example` for required values.
+See `docker/.env.prod.example` and `docker/README.md`.
 Per-package docs: [`apps/api/README.md`](./apps/api/README.md) · [`apps/web/README.md`](./apps/web/README.md) · [`apps/seed/README.md`](./apps/seed/README.md) · [`packages/api-types/README.md`](./packages/api-types/README.md)
 
 ## Out of scope (for now)
