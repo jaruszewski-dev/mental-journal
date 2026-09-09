@@ -1,6 +1,6 @@
 # Mental Journal API (`apps/api`)
 
-NestJS REST API for Mental Journal — private journal, public feed, comments, AI moderation, and auth.
+NestJS REST + Socket.IO API for Mental Journal — private journal, public feed, comments, AI moderation, account profile, and auth.
 
 Monorepo root docs: [`../../README.md`](../../README.md) · architecture notes: [`../../AGENT.md`](../../AGENT.md)
 
@@ -13,9 +13,11 @@ Monorepo root docs: [`../../README.md`](../../README.md) · architecture notes: 
 | Runtime    | NestJS 11, TypeScript                             |
 | DB         | PostgreSQL 16, Prisma 7                           |
 | Queue      | Redis + BullMQ                                    |
+| Realtime   | Socket.IO (`RealtimeGateway`)                     |
 | Auth       | JWT in httpOnly cookies + hashed refresh sessions |
 | Mail       | Resend (async `mail` queue)                       |
 | Moderation | OpenAI Moderations (async `moderation` queue)     |
+| Shared     | `@repo/api-types` (tags, error codes)             |
 
 Global prefix: **`/v1`**. Swagger (non-production): **`/api`**.
 
@@ -25,7 +27,7 @@ Global prefix: **`/v1`**. Swagger (non-production): **`/api`**.
 
 ```mermaid
 flowchart LR
-  Client["HTTP client"]
+  Client["Next.js / HTTP + WS"]
   API["NestJS /v1"]
   PG[(PostgreSQL)]
   Redis[(Redis)]
@@ -33,6 +35,7 @@ flowchart LR
   Resend[Resend]
 
   Client -->|cookies| API
+  Client -->|Socket.IO| API
   API --> PG
   API --> Redis
   Redis -->|workers| API
@@ -40,21 +43,23 @@ flowchart LR
   API -.-> Resend
 ```
 
-**v1 style:** `controller → service → Prisma`. Ports/adapters only for external edges (auth use-cases, mail enqueue, OpenAI). HTTP responses are DTOs only.
+**v1 style:** `controller → service → Prisma`. Ports/adapters only for external edges (auth use-cases, mail enqueue, OpenAI, realtime notify). HTTP responses are DTOs only.
 
 ### Modules
 
 ```
 src/
   modules/
-    auth/          register, login, verify, refresh, logout
-    user/          user persistence + adapters for auth ports
+    auth/          register, login, verify, refresh, logout, logout-all, ws-token
+    user/          profile update (anonName, password, avatar)
     session/       refresh sessions + adapters
     mail/          Resend + MailProcessor
     journal/       private entries + publish → Post
-    feed/          public ACTIVE posts
+    feed/          public ACTIVE posts (tags filter)
     comment/       comments on ACTIVE posts
     moderation/    OpenAI service, ModerationProcessor, shadowban cron
+    realtime/      Socket.IO gateway + notify adapters
+    storage/       avatar upload helpers
     queue/         BullMQ registration + job consts
     health/
   common/          guards, exceptions, assert* helpers
@@ -90,8 +95,8 @@ erDiagram
 flowchart TD
   A[Create Post or Comment PENDING] --> B[Enqueue moderation job]
   B --> C[OpenAI Moderations]
-  C -->|allow| D[ACTIVE + trustScore +1]
-  C -->|block| E[HIDDEN + trustScore -10]
+  C -->|allow| D[ACTIVE + trustScore +1 + realtime emit]
+  C -->|block| E[HIDDEN + trustScore -10 + realtime emit]
   E --> F{Already SHADOWBANNED?}
   F -->|yes| G[ModerationCase + evidence]
   F -->|no| H{trustScore <= -50?}
@@ -121,13 +126,32 @@ sequenceDiagram
 
 ## HTTP surface
 
-| Area     | Routes                                                                                                       |
-| -------- | ------------------------------------------------------------------------------------------------------------ | --- | -------------------- |
-| Health   | `GET /v1/health`                                                                                             |
-| Auth     | `/v1/auth/register`, `login`, `verify-email`, `me`, `resend-verification`, `logout`, `logout-all`, `refresh` |
-| Journal  | `/v1/journal` CRUD + `POST /v1/journal/:id/publish`                                                          |
-| Feed     | `GET /v1/feed`                                                                                               |
-| Comments | `POST                                                                                                        | GET | DELETE /v1/comments` |
+| Area     | Routes                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------- |
+| Health   | `GET /v1/health`                                                                               |
+| Auth     | `POST register`, `login`, `resend-verification`, `logout`, `logout-all`, `refresh`             |
+| Auth     | `GET verify-email`, `me`, `ws-token`                                                           |
+| Users    | `PATCH /v1/users/me` (multipart: anonName, password change, avatar)                            |
+| Journal  | `GET/POST /v1/journal`, `GET/PATCH/DELETE /v1/journal/:id`, `POST /v1/journal/:id/publish`     |
+| Feed     | `GET /v1/feed` — cursor + optional `tags`                                                      |
+| Comments | `POST /v1/comments`, `GET /v1/comments?postId=`, `DELETE /v1/comments/:id`                      |
+
+### List query params
+
+**Feed** (`GET /v1/feed`): `tags` (repeatable / array), `lastCursorId`, `lastCreatedAt`.
+
+**Journal** (`GET /v1/journal`): `sortBy` (`date` \| `mood`), `orderBy` (`asc` \| `desc`), cursor fields `lastCursorId`, `lastCreatedAt`, `lastMood` (when sorting by mood).
+
+### Realtime (Socket.IO)
+
+Auth: JWT access token on the handshake (cookie or auth payload; web uses `GET /v1/auth/ws-token`).
+
+| Event               | When                                      |
+| ------------------- | ----------------------------------------- |
+| `feed:new-post`     | Post becomes `ACTIVE`                     |
+| `feed:post-hidden`  | Post becomes `HIDDEN`                     |
+| `comment:active`    | Comment becomes `ACTIVE`                  |
+| `comment:hidden`    | Comment becomes `HIDDEN`                  |
 
 ---
 
@@ -176,7 +200,7 @@ See `.env.example` for required keys (`DATABASE_URL`, `REDIS_URL`, `JWT_*`, `OPE
 
 ## Out of scope (this package)
 
-- Frontend
-- Chat / WebSockets
+- Frontend UI (see `apps/web`)
+- Chat / DMs
 - CMS endpoints to resolve `ModerationCase`
-- Password reset
+- Email-based password reset

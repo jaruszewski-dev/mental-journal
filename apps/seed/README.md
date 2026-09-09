@@ -1,6 +1,8 @@
-# Seed CLI
+# Seed CLI (`apps/seed`)
 
 Fills / wipes the **seed** Postgres database (`mental_journal_seed`) on the same Docker Postgres instance as the app. Never touches the main `mental_journal` database.
+
+Monorepo root docs: [`../../README.md`](../../README.md)
 
 ## Setup
 
@@ -27,9 +29,11 @@ pnpm db:wipe    # TRUNCATE all tables in seed DB only
 pnpm db:seed    # push schema to seed DB, then fill with Faker data
 ```
 
+Package scripts (via filter): `wipe`, `push-schema`, `seed`.
+
 ## Login after seed
 
 - Email: `seed.user.1@example.com` … `seed.user.50@example.com`
 - Password: `Password1!`
 
-Point API at the seed DB temporarily via `DATABASE_URL=…/mental_journal_seed` in `apps/api/.env` if you want to browse seeded data in the app.
+Point API at the seed DB temporarily via `DATABASE_URL=…/mental_journal_seed` in `apps/api/.env` if you want to browse seeded data in the app (feed, journal, comments).
