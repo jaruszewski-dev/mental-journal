@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -6,6 +8,8 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 const apiOrigin = process.env.API_ORIGIN ?? 'http://localhost:3001';
 
 const nextConfig: NextConfig = {
+	output: 'standalone',
+	outputFileTracingRoot: path.join(__dirname, '../..'),
 	transpilePackages: ['@repo/api-types'],
 	turbopack: {
 		resolveAlias: {

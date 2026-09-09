@@ -6,6 +6,9 @@
 		"dev": "pnpm docker:up && turbo run dev",
 		"docker:up": "docker compose -f docker/docker-compose.yml up -d --wait",
 		"docker:down": "docker compose -f docker/docker-compose.yml down",
+		"docker:prod:up": "docker compose -f docker/docker-compose.prod.yml --env-file docker/.env.prod up -d --build",
+		"docker:prod:down": "docker compose -f docker/docker-compose.prod.yml --env-file docker/.env.prod down",
+		"docker:prod:logs": "docker compose -f docker/docker-compose.prod.yml --env-file docker/.env.prod logs -f",
 		"check-types": "turbo run check-types",
 		"db:generate": "turbo run db:generate --filter=api",
 		"db:migrate": "turbo run db:migrate --filter=api",
@@ -19,7 +22,7 @@
 		"format:check": "prettier . --check",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"prepare": "husky",
+		"prepare": "husky || true",
 		"check": "pnpm lint && pnpm format:check",
 		"ci:local": "pnpm lint:fix && pnpm format && pnpm check && pnpm api:test"
 	},

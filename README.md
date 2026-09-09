@@ -95,7 +95,8 @@ pnpm dev
 | `pnpm db:seed`                        | Push schema + fill seed DB |
 | `pnpm db:wipe`                        | Wipe seed DB only          |
 | `pnpm db:studio`                      | Prisma Studio              |
-| `pnpm docker:up` / `pnpm docker:down` | Postgres + Redis           |
+| `pnpm docker:up` / `pnpm docker:down` | Postgres + Redis (dev) |
+| `pnpm docker:prod:up` / `down` / `logs` | Full prod stack (api+web+db+redis) |
 | `pnpm lint` / `pnpm check`            | Lint / lint + format check |
 | `pnpm ci:local`                       | Fix + check + tests        |
 
@@ -105,13 +106,30 @@ pnpm dev
 apps/api/                 NestJS API, Prisma schema & migrations, Socket.IO
 apps/web/                 Next.js frontend (feed, journal, account, auth)
 apps/seed/                Faker seed + wipe CLI (mental_journal_seed DB)
-docker/                   Postgres + Redis compose
+docker/                   Postgres + Redis (dev) + production compose
 packages/api-types/       Shared tags, error codes / response shapes
 packages/eslint-config/   Shared ESLint presets
 packages/typescript-config/ Shared tsconfig bases
 AGENT.md                  Technical architecture (diagrams, flows)
 ```
 
+## Production (Docker on one host)
+
+Dev compose (`docker/docker-compose.yml`) runs only Postgres + Redis.  
+Prod compose runs **postgres + redis + api + web**:
+
+```sh
+cp docker/.env.prod.example docker/.env.prod
+# fill POSTGRES_PASSWORD, FRONTEND_URL, NEXT_PUBLIC_WS_URL, JWT_*, keys…
+pnpm docker:prod:up
+```
+
+- Web: `http://HOST:3000`
+- API / Socket.IO: `http://HOST:3001`
+- Postgres and Redis stay on the internal Docker network (not published)
+- API container runs `prisma migrate deploy` on start
+
+See `docker/.env.prod.example` for required values.
 Per-package docs: [`apps/api/README.md`](./apps/api/README.md) · [`apps/web/README.md`](./apps/web/README.md) · [`apps/seed/README.md`](./apps/seed/README.md) · [`packages/api-types/README.md`](./packages/api-types/README.md)
 
 ## Out of scope (for now)
