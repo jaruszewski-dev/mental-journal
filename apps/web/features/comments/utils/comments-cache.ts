@@ -18,6 +18,7 @@ export function commentItemFromCreateResponse(comment: {
 	status: 'ACTIVE' | 'PENDING';
 	anonName: string;
 	avatarUrl: string | null;
+	isMine?: boolean;
 	createdAt: string | Date;
 	updatedAt: string | Date | null;
 }): CommentItem {
@@ -27,6 +28,7 @@ export function commentItemFromCreateResponse(comment: {
 		status: comment.status,
 		anonName: comment.anonName,
 		avatarUrl: comment.avatarUrl,
+		isMine: comment.isMine ?? true,
 		createdAt: toIso(comment.createdAt),
 		updatedAt: comment.updatedAt == null ? null : toIso(comment.updatedAt),
 	};

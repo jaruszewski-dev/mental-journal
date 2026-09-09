@@ -6,6 +6,7 @@ export type CommentItem = {
 	status: 'ACTIVE' | 'PENDING';
 	anonName: string;
 	avatarUrl: string | null;
+	isMine: boolean;
 	createdAt: string;
 	updatedAt: string | null;
 };

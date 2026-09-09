@@ -42,7 +42,11 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
 						<div className="flex flex-col gap-3">
 							<ul className="flex flex-col gap-3">
 								{items.map((item) => (
-									<CommentItem key={item.id} item={item} />
+									<CommentItem
+										key={item.id}
+										item={item}
+										postId={postId}
+									/>
 								))}
 							</ul>
 

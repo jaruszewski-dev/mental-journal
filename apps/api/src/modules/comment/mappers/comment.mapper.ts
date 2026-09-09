@@ -7,7 +7,10 @@ type CommentWithAuthor = Comment & {
 };
 
 export class CommentMapper {
-  static toCommentItemDto(comment: CommentWithAuthor): CommentItemDto {
+  static toCommentItemDto(
+    comment: CommentWithAuthor,
+    viewerId: string,
+  ): CommentItemDto {
     return {
       id: comment.id,
       content: comment.content,
@@ -17,6 +20,7 @@ export class CommentMapper {
           : CommentStatus.ACTIVE,
       anonName: comment.author.anonName,
       avatarUrl: comment.author.avatarUrl,
+      isMine: comment.authorId === viewerId,
       createdAt: comment.createdAt,
       updatedAt: comment.updatedAt,
     };

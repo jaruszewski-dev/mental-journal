@@ -62,7 +62,7 @@ export class CommentService {
       authorId,
     });
 
-    return CommentMapper.toCommentItemDto(comment);
+    return CommentMapper.toCommentItemDto(comment, authorId);
   }
 
   async findAll(
@@ -108,7 +108,9 @@ export class CommentService {
     const last = page[page.length - 1];
 
     return {
-      items: page.map(CommentMapper.toCommentItemDto),
+      items: page.map((comment) =>
+        CommentMapper.toCommentItemDto(comment, viewerId),
+      ),
       meta: {
         hasMore,
         nextCursor:

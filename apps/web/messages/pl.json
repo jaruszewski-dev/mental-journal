@@ -93,6 +93,9 @@
 		"success": "Komentarz czeka na moderację",
 		"pendingReview": "Weryfikacja…",
 		"rejected": "Twój komentarz nie został zaakceptowany",
+		"menu": "Więcej opcji",
+		"delete": "Usuń komentarz",
+		"deleteSuccess": "Komentarz usunięty",
 		"errors": {
 			"contentRequired": "Wpisz treść komentarza",
 			"contentMax": "Komentarz może mieć max. {max} znaków"

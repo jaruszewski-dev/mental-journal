@@ -93,6 +93,9 @@
 		"success": "Comment is awaiting moderation",
 		"pendingReview": "Under review",
 		"rejected": "Your comment was not approved",
+		"menu": "More options",
+		"delete": "Delete comment",
+		"deleteSuccess": "Comment deleted",
 		"errors": {
 			"contentRequired": "Enter a comment",
 			"contentMax": "Comment can be at most {max} characters"
