@@ -95,6 +95,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "moduleNameMapper": {
+      "^@repo/api-types$": "<rootDir>/../../../packages/api-types/src/index.ts"
+    },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
